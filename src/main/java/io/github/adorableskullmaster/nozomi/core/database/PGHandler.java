@@ -27,11 +27,23 @@ public class PGHandler {
 
   private void setup() {
     setupWars();
+    setupApplicants();
   }
 
   private void setupWars() {
     try {
       String SQL = "CREATE TABLE IF NOT EXISTS wars (warID INTEGER);";
+      Statement statement = conn.createStatement();
+      statement.execute(SQL);
+      statement.close();
+    } catch (SQLException e) {
+      Bot.botExceptionHandler.captureException(e);
+    }
+  }
+
+  private void setupApplicants() {
+    try {
+      String SQL = "CREATE TABLE IF NOT EXISTS applicants (aid INTEGER, list INTEGER[])";
       Statement statement = conn.createStatement();
       statement.execute(SQL);
       statement.close();
