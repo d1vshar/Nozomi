@@ -2,6 +2,7 @@ package io.github.adorableskullmaster.nozomi.features.services;
 
 import io.github.adorableskullmaster.nozomi.Bot;
 import io.github.adorableskullmaster.nozomi.core.config.Config;
+import io.github.adorableskullmaster.nozomi.core.database.generated.tables.records.WarsRecord;
 import io.github.adorableskullmaster.nozomi.core.util.AuthUtility;
 import io.github.adorableskullmaster.nozomi.core.util.Utility;
 import io.github.adorableskullmaster.nozomi.features.commands.pw.member.CounterCommand;
@@ -13,16 +14,17 @@ import io.github.adorableskullmaster.pw4j.domains.Wars;
 import io.github.adorableskullmaster.pw4j.domains.subdomains.SWarContainer;
 import io.github.adorableskullmaster.pw4j.domains.subdomains.WarContainer;
 import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.MessageBuilder;
+import org.jooq.DSLContext;
+import org.jooq.Result;
+import org.jooq.SQLDialect;
+import org.jooq.impl.DSL;
 
 import java.awt.*;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static io.github.adorableskullmaster.nozomi.core.database.generated.tables.Wars.WARS;
 
 public class NewWarService implements Runnable {
 
@@ -110,17 +112,14 @@ public class NewWarService implements Runnable {
     return diff;
   }
 
-  private List<Integer> fetchWarsFromPG() throws SQLException {
+  private List<Integer> fetchWarsFromPG() {
     List<Integer> result = new ArrayList<>();
     result.add(0);
-    Statement statement;
-    statement = Bot.pg.getConn().createStatement();
-    ResultSet rs = statement.executeQuery("SELECT * FROM wars");
-    while (rs.next()) {
-      result.add(rs.getInt(1));
+    DSLContext db = DSL.using(Bot.pg.getConn(), SQLDialect.POSTGRES);
+    Result<WarsRecord> fetch = db.selectFrom(WARS).fetch();
+    for (WarsRecord warsRecord : fetch) {
+      result.add(warsRecord.getWarid());
     }
-    rs.close();
-    statement.close();
     return result;
   }
 
@@ -133,17 +132,9 @@ public class NewWarService implements Runnable {
         .collect(Collectors.toList());
   }
 
-  private void storeNewWars(List<Integer> newWars) throws SQLException {
-    String delete = "DELETE FROM wars";
-    Statement statement = Bot.pg.getConn().createStatement();
-    statement.execute(delete);
-    for (Integer id : newWars) {
-      String insert = "INSERT INTO wars (warID) VALUES(?)";
-      PreparedStatement pstmt = Bot.pg.getConn().prepareStatement(insert);
-      pstmt.setInt(1, id);
-      pstmt.executeUpdate();
-      pstmt.close();
-    }
-    statement.close();
+  private void storeNewWars(List<Integer> newWars) {
+    DSLContext db = DSL.using(Bot.pg.getConn(), SQLDialect.POSTGRES);
+    db.delete(WARS).execute();
+    db.insertInto(WARS).columns(WARS.WARID).values(newWars).execute();
   }
 }
