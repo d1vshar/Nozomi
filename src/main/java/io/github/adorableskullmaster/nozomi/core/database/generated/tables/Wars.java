@@ -3,6 +3,7 @@
  */
 package io.github.adorableskullmaster.nozomi.core.database.generated.tables;
 
+
 import io.github.adorableskullmaster.nozomi.core.database.generated.Public;
 import io.github.adorableskullmaster.nozomi.core.database.generated.tables.records.WarsRecord;
 import org.jooq.*;

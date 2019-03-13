@@ -21,6 +21,7 @@ import io.github.adorableskullmaster.nozomi.features.commands.pw.member.CounterC
 import io.github.adorableskullmaster.nozomi.features.commands.utility.*;
 import io.github.adorableskullmaster.nozomi.features.hooks.GenericListener;
 import io.github.adorableskullmaster.nozomi.features.services.BankCheckService;
+import io.github.adorableskullmaster.nozomi.features.services.NewApplicantService;
 import io.github.adorableskullmaster.nozomi.features.services.NewWarService;
 import io.github.adorableskullmaster.nozomi.features.services.VMBeigeService;
 import net.dv8tion.jda.core.AccountType;
@@ -111,6 +112,7 @@ public class Bot {
         executorService.scheduleAtFixedRate(new NewWarService(), 250, 300, TimeUnit.SECONDS);
         executorService.scheduleAtFixedRate(new BankCheckService(), 250, 1800, TimeUnit.SECONDS);
         executorService.scheduleAtFixedRate(new VMBeigeService(), 250, 60, TimeUnit.SECONDS);
+        executorService.scheduleAtFixedRate(new NewApplicantService(), 250, 3600, TimeUnit.SECONDS);
       }
     } catch (Exception e) {
       botExceptionHandler.captureException(e);

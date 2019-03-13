@@ -3,6 +3,8 @@
  */
 package io.github.adorableskullmaster.nozomi.core.database.generated;
 
+
+import io.github.adorableskullmaster.nozomi.core.database.generated.tables.Applicants;
 import io.github.adorableskullmaster.nozomi.core.database.generated.tables.Wars;
 import org.jooq.Catalog;
 import org.jooq.Table;
@@ -30,7 +32,12 @@ public class Public extends SchemaImpl {
    * The reference instance of <code>public</code>
    */
   public static final Public PUBLIC = new Public();
-  private static final long serialVersionUID = -1172674195;
+  private static final long serialVersionUID = 1155334663;
+  /**
+   * The table <code>public.applicants</code>.
+   */
+  public final Applicants APPLICANTS = Applicants.APPLICANTS;
+
   /**
    * The table <code>public.wars</code>.
    */
@@ -61,6 +68,7 @@ public class Public extends SchemaImpl {
 
   private final List<Table<?>> getTables0() {
     return Arrays.<Table<?>>asList(
+        Applicants.APPLICANTS,
         Wars.WARS);
   }
 }

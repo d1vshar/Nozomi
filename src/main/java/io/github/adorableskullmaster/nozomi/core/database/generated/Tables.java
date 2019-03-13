@@ -4,10 +4,10 @@
 package io.github.adorableskullmaster.nozomi.core.database.generated;
 
 
+import io.github.adorableskullmaster.nozomi.core.database.generated.tables.Applicants;
 import io.github.adorableskullmaster.nozomi.core.database.generated.tables.Wars;
 
 import javax.annotation.Generated;
-
 
 /**
  * Convenience access to all tables in public
@@ -21,6 +21,11 @@ import javax.annotation.Generated;
 )
 @SuppressWarnings({"all", "unchecked", "rawtypes"})
 public class Tables {
+
+  /**
+   * The table <code>public.applicants</code>.
+   */
+  public static final Applicants APPLICANTS = Applicants.APPLICANTS;
 
   /**
    * The table <code>public.wars</code>.

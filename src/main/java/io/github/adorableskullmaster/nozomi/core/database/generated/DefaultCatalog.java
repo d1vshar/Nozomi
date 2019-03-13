@@ -3,6 +3,7 @@
  */
 package io.github.adorableskullmaster.nozomi.core.database.generated;
 
+
 import org.jooq.Schema;
 import org.jooq.impl.CatalogImpl;
 
