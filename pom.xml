@@ -99,6 +99,21 @@
             <artifactId>cowsay</artifactId>
             <version>1.0.3</version>
         </dependency>
+        <dependency>
+            <groupId>org.jooq</groupId>
+            <artifactId>jooq</artifactId>
+            <version>3.11.10</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jooq</groupId>
+            <artifactId>jooq-meta</artifactId>
+            <version>3.11.10</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jooq</groupId>
+            <artifactId>jooq-codegen</artifactId>
+            <version>3.11.10</version>
+        </dependency>
 
         <dependency>
             <groupId>junit</groupId>
