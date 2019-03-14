@@ -7,10 +7,15 @@ import io.github.adorableskullmaster.nozomi.core.util.AuthUtility;
 import io.github.adorableskullmaster.nozomi.core.util.CommandResponseHandler;
 import io.github.adorableskullmaster.nozomi.core.util.Utility;
 import io.github.adorableskullmaster.nozomi.features.commands.MemberPoliticsAndWarCommand;
+import io.github.adorableskullmaster.pw4j.PoliticsAndWar;
+import io.github.adorableskullmaster.pw4j.PoliticsAndWarBuilder;
+import io.github.adorableskullmaster.pw4j.domains.Nation;
 import io.github.adorableskullmaster.pw4j.domains.NationMilitary;
 import io.github.adorableskullmaster.pw4j.domains.subdomains.NationMilitaryContainer;
 import io.github.adorableskullmaster.pw4j.domains.subdomains.SNationContainer;
 import net.dv8tion.jda.core.EmbedBuilder;
+import net.dv8tion.jda.core.MessageBuilder;
+import net.dv8tion.jda.core.entities.Message;
 
 import java.awt.*;
 import java.time.Instant;
@@ -20,11 +25,14 @@ import java.util.stream.Collectors;
 
 public class CounterCommand extends MemberPoliticsAndWarCommand {
 
+  private final PoliticsAndWar politicsAndWar;
+
   public CounterCommand() {
     this.name = "getCounterEmbed";
     this.aliases = new String[]{"backup"};
     this.help = "Gives closest getCounterEmbed for the target nation";
     this.arguments = "++getCounterEmbed <nationlink/nationid>";
+    this.politicsAndWar = new PoliticsAndWarBuilder().setApiKey(Bot.config.getCredentials().getMasterPWKey()).build();
   }
 
   @Override
@@ -42,10 +50,10 @@ public class CounterCommand extends MemberPoliticsAndWarCommand {
           int id;
           if (Utility.isNumber(args)) {
             id = Integer.parseInt(args);
-            commandEvent.reply(getEmbed(id, guild).build());
+            commandEvent.reply(getMessage(id, guild));
           } else if (Utility.isNumber(args.substring(args.lastIndexOf('=') + 1))) {
             id = Integer.parseInt(args.substring(args.lastIndexOf('=') + 1));
-            commandEvent.reply(getEmbed(id, guild).build());
+            commandEvent.reply(getMessage(id, guild));
           } else
             CommandResponseHandler.illegal(commandEvent, name);
         }
@@ -55,8 +63,13 @@ public class CounterCommand extends MemberPoliticsAndWarCommand {
     }
   }
 
-  public EmbedBuilder getEmbed(int targetId, Config.ConfigGuild guild) {
-    return getCounters(targetId, guild.getPwId());
+  public Message getMessage(int targetId, Config.ConfigGuild guild) {
+    MessageBuilder messageBuilder = new MessageBuilder();
+    Nation targetNation = politicsAndWar.getNation(targetId);
+    messageBuilder.setEmbed(getCounters(targetId, guild.getPwId()).build());
+    if (targetNation.getDefensivewars() >= 3)
+      messageBuilder.appendFormat("**NOTE:** %s has no defensive slots available.", targetNation.getName());
+    return messageBuilder.build();
   }
 
   private EmbedBuilder getCounters(int targetId, int aaId) {
