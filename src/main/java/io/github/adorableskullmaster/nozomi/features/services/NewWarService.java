@@ -80,7 +80,7 @@ public class NewWarService implements Runnable {
               }
               else {
                 embedBuilder.setColor(Color.RED);
-                EmbedBuilder counter = new CounterCommand().counter(Integer.parseInt(agg.getNationid()), guild);
+                EmbedBuilder counter = new CounterCommand().getEmbed(Integer.parseInt(agg.getNationid()), guild);
 
                 Bot.jda.getGuildById(guild.getDiscordId())
                     .getTextChannelById(guild.getDefensiveWarChannel())
