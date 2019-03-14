@@ -14,6 +14,7 @@ import io.github.adorableskullmaster.pw4j.domains.Wars;
 import io.github.adorableskullmaster.pw4j.domains.subdomains.SWarContainer;
 import io.github.adorableskullmaster.pw4j.domains.subdomains.WarContainer;
 import net.dv8tion.jda.core.EmbedBuilder;
+import net.dv8tion.jda.core.entities.Message;
 import org.jooq.DSLContext;
 import org.jooq.Result;
 import org.jooq.SQLDialect;
@@ -80,7 +81,7 @@ public class NewWarService implements Runnable {
               }
               else {
                 embedBuilder.setColor(Color.RED);
-                EmbedBuilder counter = new CounterCommand().counter(Integer.parseInt(agg.getNationid()), guild);
+                Message counter = new CounterCommand().getMessage(Integer.parseInt(agg.getNationid()), guild);
 
                 Bot.jda.getGuildById(guild.getDiscordId())
                     .getTextChannelById(guild.getDefensiveWarChannel())
@@ -89,7 +90,7 @@ public class NewWarService implements Runnable {
                 if(guild.isAutoCounter()) {
                   Bot.jda.getGuildById(guild.getDiscordId())
                       .getTextChannelById(guild.getDefensiveWarChannel())
-                      .sendMessage(counter.build())
+                      .sendMessage(counter)
                       .queue();
                 }
               }

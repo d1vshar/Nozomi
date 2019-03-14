@@ -57,20 +57,18 @@ public class Utility {
     return dtm.parse(datestring);
   }
 
-  public static <K, V extends Comparable<? super V>> LinkedHashMap<K, V> sortByValue(HashMap<K, V> map, boolean ascending) {
-    ArrayList<HashMap.Entry<K, V>> list = new ArrayList<>(map.entrySet());
+  public static LinkedHashMap<Integer, Double> sortByValue(final HashMap<Integer, Double> unsorted, boolean desc) {
 
-    if (ascending)
-      list.sort(HashMap.Entry.comparingByValue());
-    else
-      list.sort(HashMap.Entry.comparingByValue(Comparator.reverseOrder()));
+    if (desc)
+      return unsorted.entrySet()
+          .stream()
+          .sorted((Map.Entry.<Integer, Double>comparingByValue().reversed()))
+          .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
 
-    LinkedHashMap<K, V> result = new LinkedHashMap<>();
-    for (Map.Entry<K, V> entry : list) {
-      result.put(entry.getKey(), entry.getValue());
-    }
-
-    return result;
+    return unsorted.entrySet()
+        .stream()
+        .sorted((Map.Entry.comparingByValue()))
+        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
   }
 
 }
