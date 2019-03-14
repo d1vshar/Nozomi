@@ -7,6 +7,7 @@ import io.github.adorableskullmaster.pw4j.PoliticsAndWar;
 import io.github.adorableskullmaster.pw4j.PoliticsAndWarAPIException;
 import io.github.adorableskullmaster.pw4j.PoliticsAndWarBuilder;
 import io.github.adorableskullmaster.pw4j.domains.subdomains.AllianceBankContainer;
+import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageHistory;
 import net.dv8tion.jda.core.entities.TextChannel;
 
@@ -23,10 +24,14 @@ public class BankCheckService implements Runnable {
           if(isBankNotEmpty(guild)) {
             TextChannel gov = Bot.jda.getTextChannelById(guild.getMainChannel());
             MessageHistory history = new MessageHistory(gov);
-            history.retrievePast(1).queue(
+            history.retrievePast(10).queue(
                 c -> {
-                  if (c.get(0).getAuthor().getIdLong() == Bot.jda.getSelfUser().getIdLong())
-                    c.get(0).delete().queue();
+                  for (Message message : c) {
+                    if (message.getAuthor().getIdLong() == Bot.jda.getSelfUser().getIdLong()) {
+                      if (message.getContentDisplay().contains("Bank"))
+                        message.delete().queue();
+                    }
+                  }
                 }
             );
             Bot.jda.getGuildById(guild.getDiscordId())
