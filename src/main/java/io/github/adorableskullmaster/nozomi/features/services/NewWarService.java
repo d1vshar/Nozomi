@@ -13,7 +13,6 @@ import io.github.adorableskullmaster.pw4j.domains.Wars;
 import io.github.adorableskullmaster.pw4j.domains.subdomains.SWarContainer;
 import io.github.adorableskullmaster.pw4j.domains.subdomains.WarContainer;
 import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.MessageBuilder;
 
 import java.awt.*;
 import java.sql.PreparedStatement;
@@ -26,7 +25,9 @@ import java.util.stream.Collectors;
 
 public class NewWarService implements Runnable {
 
-  private static PoliticsAndWar politicsAndWar = new PoliticsAndWarBuilder().build();
+  private static PoliticsAndWar politicsAndWar = new PoliticsAndWarBuilder()
+      .setApiKey(Bot.config.getCredentials().getMasterPWKey())
+      .build();
 
   @Override
   public void run() {
