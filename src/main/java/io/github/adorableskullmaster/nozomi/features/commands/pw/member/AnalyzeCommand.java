@@ -65,7 +65,9 @@ public class AnalyzeCommand extends MemberPoliticsAndWarCommand {
   private EmbedBuilder analyzeNation(String url) {
     try {
       int nid = Integer.parseInt(url.substring(url.indexOf("=") + 1));
-      PoliticsAndWar politicsAndWar = new PoliticsAndWarBuilder().build();
+      PoliticsAndWar politicsAndWar = new PoliticsAndWarBuilder()
+          .setApiKey(Bot.config.getCredentials().getMasterPWKey())
+          .build();
       Nation nation = politicsAndWar.getNation(nid);
       List<String> cityIds = nation.getCityids();
       int cityCount = nation.getCities();

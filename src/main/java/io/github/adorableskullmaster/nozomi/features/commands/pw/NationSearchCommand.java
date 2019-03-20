@@ -89,7 +89,10 @@ public class NationSearchCommand extends PoliticsAndWarCommand {
     List<SNationContainer> result = new ArrayList<>();
     Nations nations = Bot.cacheManager.getNations();
     if (nations == null)
-      nations = new PoliticsAndWarBuilder().build().getNations(true);
+      nations = new PoliticsAndWarBuilder()
+          .setApiKey(Bot.config.getCredentials().getMasterPWKey())
+          .build()
+          .getNations(true);
     List<SNationContainer> containers = nations.getNationsContainer();
     if (Utility.isNumber(args)) {
       int nid = Integer.parseInt(args);

@@ -33,7 +33,9 @@ public class ServerInfoCommand extends UtilityCommand {
       Config.ConfigGuild guild = collect.get(0);
       int aid = guild.getPwId();
 
-      PoliticsAndWar politicsAndWar = new PoliticsAndWarBuilder().build();
+      PoliticsAndWar politicsAndWar = new PoliticsAndWarBuilder()
+          .setApiKey(Bot.config.getCredentials().getMasterPWKey())
+          .build();
       Alliance alliance = politicsAndWar.getAlliance(aid);
       int amembers = alliance.getMembers();
 

@@ -39,7 +39,11 @@ public class FindTargetCommand extends MemberPoliticsAndWarCommand {
     Bot.LOGGER.info("score:" + score + " | high(" + high + ")low(" + low + ")");
     List<Integer> result = new ArrayList<>();
 
-    List<SNationContainer> nations = new PoliticsAndWarBuilder().build().getNationsByScore(false,high,low).getNationsContainer();
+    List<SNationContainer> nations = new PoliticsAndWarBuilder()
+        .setApiKey(Bot.config.getCredentials().getMasterPWKey())
+        .build()
+        .getNationsByScore(false, high, low)
+        .getNationsContainer();
     Bot.LOGGER.info(nations.size() + " nations in range.");
 
     int c = 0;
