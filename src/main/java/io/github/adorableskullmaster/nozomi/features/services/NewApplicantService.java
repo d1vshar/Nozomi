@@ -27,7 +27,9 @@ public class NewApplicantService implements Runnable {
   private final PoliticsAndWar politicsAndWar;
 
   public NewApplicantService() {
-    this.politicsAndWar = new PoliticsAndWarBuilder().build();
+    this.politicsAndWar = new PoliticsAndWarBuilder()
+        .setApiKey(Bot.config.getCredentials().getMasterPWKey())
+        .build();
   }
 
   @Override

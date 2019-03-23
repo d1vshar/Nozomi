@@ -32,7 +32,9 @@ public class CounterCommand extends MemberPoliticsAndWarCommand {
     this.aliases = new String[]{"backup"};
     this.help = "Gives closest counter for the target nation";
     this.arguments = "++counter <nationlink/nationid>";
-    this.politicsAndWar = new PoliticsAndWarBuilder().setApiKey(Bot.config.getCredentials().getMasterPWKey()).build();
+    this.politicsAndWar = new PoliticsAndWarBuilder()
+        .setApiKey(Bot.config.getCredentials().getMasterPWKey())
+        .build();
   }
 
   @Override

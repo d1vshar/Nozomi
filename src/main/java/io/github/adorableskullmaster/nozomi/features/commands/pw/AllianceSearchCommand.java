@@ -96,7 +96,10 @@ public class AllianceSearchCommand extends PoliticsAndWarCommand {
 
     Alliances alliances = Bot.cacheManager.getAlliance();
     if (alliances == null)
-      alliances = new PoliticsAndWarBuilder().build().getAlliances();
+      alliances = new PoliticsAndWarBuilder()
+          .setApiKey(Bot.config.getCredentials().getMasterPWKey())
+          .build()
+          .getAlliances();
     List<SAllianceContainer> allianceList = alliances.getAlliances();
 
     if (Utility.isNumber(arg)) {

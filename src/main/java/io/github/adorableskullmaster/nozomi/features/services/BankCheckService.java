@@ -47,7 +47,9 @@ public class BankCheckService implements Runnable {
   }
 
   private boolean isBankNotEmpty(Config.ConfigGuild guild) throws PoliticsAndWarAPIException {
-    PoliticsAndWar politicsAndWar = new PoliticsAndWarBuilder().setApiKey(guild.getPwKey()).build();
+    PoliticsAndWar politicsAndWar = new PoliticsAndWarBuilder()
+        .setApiKey(Bot.config.getCredentials().getMasterPWKey())
+        .build();
     AllianceBankContainer allianceBankContent = politicsAndWar.getBank(guild.getPwId()).getAllianceBanks().get(0);
     return !(allianceBankContent.getMoney() <= 100000) || !(allianceBankContent.getBauxite() <= 100) || !(allianceBankContent.getFood() <= 1000) ||
         !(allianceBankContent.getCoal() <= 100) || !(allianceBankContent.getIron() <= 100) || !(allianceBankContent.getLead() <= 100) || !(allianceBankContent.getGasoline() <= 100) ||

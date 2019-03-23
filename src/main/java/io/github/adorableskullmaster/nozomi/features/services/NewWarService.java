@@ -29,7 +29,9 @@ import static io.github.adorableskullmaster.nozomi.core.database.generated.table
 
 public class NewWarService implements Runnable {
 
-  private static PoliticsAndWar politicsAndWar = new PoliticsAndWarBuilder().build();
+  private static PoliticsAndWar politicsAndWar = new PoliticsAndWarBuilder()
+      .setApiKey(Bot.config.getCredentials().getMasterPWKey())
+      .build();
 
   @Override
   public void run() {
