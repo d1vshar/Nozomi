@@ -17,6 +17,7 @@ import java.awt.*;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -36,24 +37,26 @@ public class NationSearchCommand extends PoliticsAndWarCommand {
   protected void execute(CommandEvent commandEvent) {
     try {
       if (!commandEvent.getArgs().trim().isEmpty()) {
-        List<SNationContainer> result = search(commandEvent.getArgs().trim());
+        ArrayList<SNationContainer> result = fuzzySearch(commandEvent.getArgs().trim());
         if (result.size() > 0) {
-          if (result.size() == 1)
+          if (result.size() == 1) {
             commandEvent.reply(embed(result.get(0)));
-          else if (result.size() < 10) {
-            OrderedMenu.Builder orderedMenu = new OrderedMenu.Builder();
-            orderedMenu.setColor(Color.CYAN)
+          } else if (result.size() < 10) {
+            OrderedMenu.Builder menu = new OrderedMenu.Builder()
+                .setColor(Color.CYAN)
                 .setEventWaiter(waiter)
                 .setTimeout(30, TimeUnit.SECONDS)
-                .setDescription("Choose one of the following: ")
-                .setSelection((message, integer) -> commandEvent.reply(embed(result.get(integer - 1))))
-                .useCancelButton(true);
+                .allowTextInput(true)
+                .setDescription("Choose one of the following:")
+                .useCancelButton(true)
+                .setCancel(message -> message.delete().queue())
+                .setSelection((message, integer) -> commandEvent.reply(embed(result.get(integer - 1))));
             for (SNationContainer container : result) {
-              orderedMenu.addChoice("**" + container.getNationId() + "**" + " | " + container.getNation() + " - " + container.getLeader());
+              menu.addChoice(String.format("**%s** - **%s** | **%s**", container.getNation(), container.getLeader(), container.getAlliance()));
             }
-            orderedMenu.build().display(commandEvent.getChannel());
+            menu.build().display(commandEvent.getChannel());
           } else {
-            CommandResponseHandler.error(commandEvent, "Too many results. Be more specific.");
+            CommandResponseHandler.error(commandEvent, "Too many results! Be more specific.");
           }
         } else {
           CommandResponseHandler.error(commandEvent, "No such nation found.");
@@ -84,6 +87,29 @@ public class NationSearchCommand extends PoliticsAndWarCommand {
     return embed.build();
   }
 
+  private ArrayList<SNationContainer> fuzzySearch(String query) {
+
+    List<SNationContainer> nationsContainer = Bot.cacheManager.getNations().getNationsContainer();
+
+    HashMap<Integer, String> nameHashMap = new HashMap<>();
+    HashMap<Integer, String> lNameHashMap = new HashMap<>();
+
+    for (SNationContainer container : nationsContainer) {
+      nameHashMap.put(container.getNationId(), container.getNation());
+      lNameHashMap.put(container.getNationId(), container.getLeader());
+    }
+
+    List<Integer> nameResult = Utility.stringSearch(query, nameHashMap, 85);
+    List<Integer> lNameResult = Utility.stringSearch(query, lNameHashMap, 85);
+
+    return (ArrayList<SNationContainer>) nationsContainer.stream()
+        .filter(nationContainer -> nameResult.contains(nationContainer.getNationId()) || lNameResult.contains(nationContainer.getNationId()))
+        .distinct()
+        .collect(Collectors.toList());
+  }
+
+  @SuppressWarnings("unused")
+  @Deprecated
   private List<SNationContainer> search(String args) {
     List<String> commons = new ArrayList<>(Arrays.asList("the", "is", "a", "an", "of", "some", "few"));
     List<SNationContainer> result = new ArrayList<>();

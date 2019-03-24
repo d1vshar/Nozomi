@@ -17,6 +17,7 @@ import java.awt.*;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -37,10 +38,8 @@ public class AllianceSearchCommand extends PoliticsAndWarCommand {
     try {
       commandEvent.async(() -> {
         if (!commandEvent.getArgs().trim().isEmpty()) {
-          commandEvent.getChannel().sendTyping().queue();
-          List<SAllianceContainer> results = search(commandEvent.getArgs());
-          List<String> names = results
-              .stream()
+          List<SAllianceContainer> results = fuzzySearch(commandEvent.getArgs());
+          List<String> names = results.stream()
               .map(SAllianceContainer::getName)
               .collect(Collectors.toList());
           if (results.size() > 0) {
@@ -90,6 +89,33 @@ public class AllianceSearchCommand extends PoliticsAndWarCommand {
     return embed.build();
   }
 
+  private List<SAllianceContainer> fuzzySearch(String query) {
+    query = query.toLowerCase();
+    List<SAllianceContainer> alliances = Bot.cacheManager.getAlliance().getAlliances();
+
+    HashMap<Integer, String> aNameMap = new HashMap<>();
+    HashMap<Integer, String> nameMap = new HashMap<>();
+
+    for (SAllianceContainer allianceContainer : alliances) {
+      if (allianceContainer != null) {
+        if (allianceContainer.getAcronym() != null)
+          aNameMap.put(Integer.parseInt(allianceContainer.getId()), allianceContainer.getAcronym().toLowerCase());
+        if (allianceContainer.getName() != null)
+          nameMap.put(Integer.parseInt(allianceContainer.getId()), allianceContainer.getName().toLowerCase());
+      }
+    }
+
+    List<Integer> nameResult = Utility.stringSearch(query, nameMap, 85);
+    List<Integer> aNameResult = Utility.stringSearch(query, aNameMap, 85);
+
+    return alliances.stream()
+        .filter(container -> nameResult.contains(Integer.parseInt(container.getId())) || aNameResult.contains(Integer.parseInt(container.getId())))
+        .distinct()
+        .collect(Collectors.toList());
+  }
+
+  @SuppressWarnings("unused")
+  @Deprecated
   private List<SAllianceContainer> search(String arg) {
     List<String> commons = new ArrayList<>(Arrays.asList("the", "is", "a", "an", "of", "some", "few"));
     List<SAllianceContainer> result = new ArrayList<>();

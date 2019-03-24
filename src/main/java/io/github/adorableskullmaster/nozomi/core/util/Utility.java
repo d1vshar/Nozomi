@@ -1,5 +1,6 @@
 package io.github.adorableskullmaster.nozomi.core.util;
 
+import me.xdrop.fuzzywuzzy.FuzzySearch;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Role;
@@ -49,12 +50,12 @@ public class Utility {
     return new Permission[]{Permission.MANAGE_ROLES};
   }
 
-  public static TemporalAccessor convertISO8601(String datestring) {
+  public static TemporalAccessor convertISO8601(String dateString) {
     DateTimeFormatter dtm = new DateTimeFormatterBuilder()
         .append(DateTimeFormatter.ISO_DATE_TIME)
         .toFormatter()
         .withZone(ZoneId.of("UTC"));
-    return dtm.parse(datestring);
+    return dtm.parse(dateString);
   }
 
   public static LinkedHashMap<Integer, Double> sortByValue(final HashMap<Integer, Double> unsorted, boolean desc) {
@@ -69,6 +70,18 @@ public class Utility {
         .stream()
         .sorted((Map.Entry.comparingByValue()))
         .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
+  }
+
+  public static List<Integer> stringSearch(String query, HashMap<Integer, String> terms, int filter) {
+    if (!(filter <= 100 && filter >= 0))
+      throw new IllegalArgumentException("Incorrect filter value passed");
+    ArrayList<Integer> result = new ArrayList<>();
+    for (Map.Entry<Integer, String> term : terms.entrySet()) {
+      int i = FuzzySearch.partialRatio(query, term.getValue());
+      if (i >= filter)
+        result.add(term.getKey());
+    }
+    return result;
   }
 
 }
