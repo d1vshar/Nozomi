@@ -30,11 +30,11 @@ public class DefaultCatalog extends CatalogImpl {
    * The reference instance of <code></code>
    */
   public static final DefaultCatalog DEFAULT_CATALOG = new DefaultCatalog();
-  private static final long serialVersionUID = -880724243;
+  private static final long serialVersionUID = -1407351919;
   /**
    * The schema <code>public</code>.
    */
-  public final Public PUBLIC = Public.PUBLIC;
+  public final Public PUBLIC = io.github.adorableskullmaster.nozomi.core.database.generated.Public.PUBLIC;
 
   /**
    * No further instances allowed
