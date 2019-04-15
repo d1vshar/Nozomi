@@ -30,7 +30,7 @@ public class Wars extends TableImpl<WarsRecord> {
    * The reference instance of <code>public.wars</code>
    */
   public static final Wars WARS = new Wars();
-  private static final long serialVersionUID = -1654142206;
+  private static final long serialVersionUID = -1354443748;
   /**
    * The column <code>public.wars.warid</code>.
    */

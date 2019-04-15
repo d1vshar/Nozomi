@@ -4,10 +4,10 @@
 package io.github.adorableskullmaster.nozomi.core.database.generated;
 
 
-import io.github.adorableskullmaster.nozomi.core.database.generated.tables.Applicants;
-import io.github.adorableskullmaster.nozomi.core.database.generated.tables.Wars;
+import io.github.adorableskullmaster.nozomi.core.database.generated.tables.*;
 
 import javax.annotation.Generated;
+
 
 /**
  * Convenience access to all tables in public
@@ -25,10 +25,25 @@ public class Tables {
   /**
    * The table <code>public.applicants</code>.
    */
-  public static final Applicants APPLICANTS = Applicants.APPLICANTS;
+  public static final Applicants APPLICANTS = io.github.adorableskullmaster.nozomi.core.database.generated.tables.Applicants.APPLICANTS;
+
+  /**
+   * The table <code>public.channels</code>.
+   */
+  public static final Channels CHANNELS = io.github.adorableskullmaster.nozomi.core.database.generated.tables.Channels.CHANNELS;
+
+  /**
+   * The table <code>public.guilds</code>.
+   */
+  public static final Guilds GUILDS = io.github.adorableskullmaster.nozomi.core.database.generated.tables.Guilds.GUILDS;
+
+  /**
+   * The table <code>public.texts</code>.
+   */
+  public static final Texts TEXTS = io.github.adorableskullmaster.nozomi.core.database.generated.tables.Texts.TEXTS;
 
   /**
    * The table <code>public.wars</code>.
    */
-  public static final Wars WARS = Wars.WARS;
+  public static final Wars WARS = io.github.adorableskullmaster.nozomi.core.database.generated.tables.Wars.WARS;
 }

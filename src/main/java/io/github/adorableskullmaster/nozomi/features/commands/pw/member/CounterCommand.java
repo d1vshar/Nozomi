@@ -2,13 +2,12 @@ package io.github.adorableskullmaster.nozomi.features.commands.pw.member;
 
 import com.jagrosh.jdautilities.command.CommandEvent;
 import io.github.adorableskullmaster.nozomi.Bot;
-import io.github.adorableskullmaster.nozomi.core.config.Config;
-import io.github.adorableskullmaster.nozomi.core.util.AuthUtility;
+import io.github.adorableskullmaster.nozomi.core.database.layer.Guild;
 import io.github.adorableskullmaster.nozomi.core.util.CommandResponseHandler;
+import io.github.adorableskullmaster.nozomi.core.util.Instances;
 import io.github.adorableskullmaster.nozomi.core.util.Utility;
 import io.github.adorableskullmaster.nozomi.features.commands.MemberPoliticsAndWarCommand;
 import io.github.adorableskullmaster.pw4j.PoliticsAndWar;
-import io.github.adorableskullmaster.pw4j.PoliticsAndWarBuilder;
 import io.github.adorableskullmaster.pw4j.domains.Nation;
 import io.github.adorableskullmaster.pw4j.domains.NationMilitary;
 import io.github.adorableskullmaster.pw4j.domains.subdomains.NationMilitaryContainer;
@@ -31,18 +30,15 @@ public class CounterCommand extends MemberPoliticsAndWarCommand {
     this.name = "counter";
     this.aliases = new String[]{"backup"};
     this.help = "Gives closest counter for the target nation";
-    this.arguments = "++counter <nationlink/nationid>";
-    this.politicsAndWar = new PoliticsAndWarBuilder()
-        .setApiKey(Bot.config.getCredentials().getMasterPWKey())
-        .build();
+    this.arguments = "++counter <Nation Link/Nation ID>";
+    this.politicsAndWar = Instances.getDefaultPW();
   }
 
   @Override
   protected void execute(CommandEvent commandEvent) {
     try {
+      Guild guild = Instances.getDBLayer().getGuild(commandEvent.getGuild().getIdLong());
       commandEvent.async(() -> {
-        Config.ConfigGuild guild = AuthUtility.getGuildConfig(commandEvent.getGuild().getIdLong());
-
         commandEvent.getChannel().sendTyping().queue();
         if (!commandEvent.getArgs().trim().isEmpty() && commandEvent.getArgs().trim().split(" ").length != 1) {
           CommandResponseHandler.illegal(commandEvent, name);
@@ -61,11 +57,11 @@ public class CounterCommand extends MemberPoliticsAndWarCommand {
         }
       });
     } catch (Exception e) {
-      Bot.botExceptionHandler.captureException(e, commandEvent);
+      Bot.BOT_EXCEPTION_HANDLER.captureException(e, commandEvent);
     }
   }
 
-  public Message getMessage(int targetId, Config.ConfigGuild guild) {
+  public Message getMessage(int targetId, Guild guild) {
     MessageBuilder messageBuilder = new MessageBuilder();
     Nation targetNation = politicsAndWar.getNation(targetId);
     messageBuilder.setEmbed(getCounters(targetId, guild.getPwId()).build());
@@ -94,44 +90,44 @@ public class CounterCommand extends MemberPoliticsAndWarCommand {
         .setFooter("Politics And War", "https://cdn.discordapp.com/attachments/392736524308840448/485867309995524096/57ad65f5467e958a079d2ee44a0e80ce.png")
         .setTimestamp(Instant.now());
 
-    int count =1;
-    for(Map.Entry<Integer,Double> entry : top3) {
+    int count = 1;
+    for (Map.Entry<Integer, Double> entry : top3) {
       SNationContainer temp = getNationFromNationsCache(entry.getKey());
-      String s = String.format("[%s](%s) - %.2f - %.2f", temp.getNation(),"https://politicsandwar.com/nation/id="+temp.getNationId(), temp.getScore(), entry.getValue());
-      embedBuilder.addField("Preference #"+count,s,false);
+      String s = String.format("[%s](%s) - %.2f - %.2f", temp.getNation(), "https://politicsandwar.com/nation/id=" + temp.getNationId(), temp.getScore(), entry.getValue());
+      embedBuilder.addField("Preference #" + count, s, false);
       count++;
     }
     return embedBuilder;
   }
 
   private LinkedHashMap<Integer, Double> getTop3Counters(HashMap<Integer, Double> memberMap) {
-    LinkedHashMap<Integer,Double> insertLinkMap = new LinkedHashMap<>();
+    LinkedHashMap<Integer, Double> insertLinkMap = new LinkedHashMap<>();
     LinkedHashMap<Integer, Double> sortByValue = Utility.sortByValue(memberMap, true);
 
-    int i=1;
-    for(Map.Entry<Integer,Double> entry: sortByValue.entrySet()) {
-      if(i==4)
+    int i = 1;
+    for (Map.Entry<Integer, Double> entry : sortByValue.entrySet()) {
+      if (i == 4)
         break;
-      insertLinkMap.put(entry.getKey(),entry.getValue());
+      insertLinkMap.put(entry.getKey(), entry.getValue());
       i++;
     }
     return insertLinkMap;
   }
 
   private HashMap<Integer, Double> calculateMembersNSM(List<NationMilitaryContainer> members) {
-    HashMap<Integer,Double> result = new HashMap<>();
-    for(NationMilitaryContainer member : members) {
-      result.put(member.getNationId(),calculateNSM(member));
+    HashMap<Integer, Double> result = new HashMap<>();
+    for (NationMilitaryContainer member : members) {
+      result.put(member.getNationId(), calculateNSM(member));
     }
     return result;
   }
 
   private double calculateNSM(NationMilitaryContainer container) {
-    return (container.getSoldiers() + (container.getTanks()*6) + (container.getAircraft()*83.33) + (container.getShips()*1000))/750;
+    return (container.getSoldiers() + (container.getTanks() * 6) + (container.getAircraft() * 83.33) + (container.getShips() * 1000)) / 750;
   }
 
   private List<NationMilitaryContainer> getEveryoneEligible(int aaId, double high, double low) {
-    NationMilitary nationMilitary = Bot.cacheManager.getNationMilitary();
+    NationMilitary nationMilitary = Bot.CACHE.getNationMilitary();
     return nationMilitary.getNationMilitaries()
         .stream()
         .filter(nationMilitaryContainer -> nationMilitaryContainer.getAllianceId() == aaId)
@@ -141,7 +137,7 @@ public class CounterCommand extends MemberPoliticsAndWarCommand {
   }
 
   private NationMilitaryContainer getNationFromMilitaryCache(int id) {
-    NationMilitary nationMilitary = Bot.cacheManager.getNationMilitary();
+    NationMilitary nationMilitary = Bot.CACHE.getNationMilitary();
 
     return nationMilitary.getNationMilitaries()
         .stream()
@@ -151,7 +147,7 @@ public class CounterCommand extends MemberPoliticsAndWarCommand {
   }
 
   private SNationContainer getNationFromNationsCache(int id) {
-    return Bot.cacheManager.getNations()
+    return Bot.CACHE.getNations()
         .getNationsContainer()
         .stream()
         .filter(nationContainer -> nationContainer.getNationId() == id)

@@ -9,17 +9,22 @@ import io.sentry.event.interfaces.ExceptionInterface;
 public class BotExceptionHandler {
 
   private EventBuilder eventBuilder;
+
   public BotExceptionHandler() {
     eventBuilder = new EventBuilder();
-    eventBuilder.withRelease(getClass().getPackage().getImplementationVersion() + (Bot.dev ? " beta" : ""));
-    Sentry.init(Bot.config.getCredentials().getSentryDSN());
+    eventBuilder.withRelease(getClass().getPackage().getImplementationVersion());
+
+    if (Bot.configuration.isSentryEnabled())
+      Sentry.init(Bot.configuration.getSentryDSN());
+    else
+      Sentry.close();
   }
 
   public void captureException(Throwable t) {
     Bot.LOGGER.error("Error Encountered: ", t);
     eventBuilder.withMessage(t.getMessage())
         .withSentryInterface(new ExceptionInterface(t));
-    if(!Bot.dev)
+    if (Bot.configuration.isSentryEnabled())
       Sentry.capture(eventBuilder);
   }
 

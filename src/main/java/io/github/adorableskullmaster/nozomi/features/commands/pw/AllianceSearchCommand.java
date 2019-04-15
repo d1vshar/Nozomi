@@ -4,9 +4,9 @@ import com.jagrosh.jdautilities.command.CommandEvent;
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import io.github.adorableskullmaster.nozomi.Bot;
 import io.github.adorableskullmaster.nozomi.core.util.CommandResponseHandler;
+import io.github.adorableskullmaster.nozomi.core.util.Instances;
 import io.github.adorableskullmaster.nozomi.core.util.Utility;
 import io.github.adorableskullmaster.nozomi.features.commands.PoliticsAndWarCommand;
-import io.github.adorableskullmaster.pw4j.PoliticsAndWarBuilder;
 import io.github.adorableskullmaster.pw4j.domains.Alliances;
 import io.github.adorableskullmaster.pw4j.domains.subdomains.SAllianceContainer;
 import net.dv8tion.jda.core.EmbedBuilder;
@@ -69,7 +69,7 @@ public class AllianceSearchCommand extends PoliticsAndWarCommand {
         }
       });
     } catch (Exception e) {
-      Bot.botExceptionHandler.captureException(e, commandEvent);
+      Bot.BOT_EXCEPTION_HANDLER.captureException(e, commandEvent);
     }
   }
 
@@ -94,12 +94,9 @@ public class AllianceSearchCommand extends PoliticsAndWarCommand {
     List<String> commons = new ArrayList<>(Arrays.asList("the", "is", "a", "an", "of", "some", "few"));
     List<SAllianceContainer> result = new ArrayList<>();
 
-    Alliances alliances = Bot.cacheManager.getAlliance();
+    Alliances alliances = Bot.CACHE.getAlliances();
     if (alliances == null)
-      alliances = new PoliticsAndWarBuilder()
-          .setApiKey(Bot.config.getCredentials().getMasterPWKey())
-          .build()
-          .getAlliances();
+      alliances = Instances.getDefaultPW().getAlliances();
     List<SAllianceContainer> allianceList = alliances.getAlliances();
 
     if (Utility.isNumber(arg)) {
