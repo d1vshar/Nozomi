@@ -30,7 +30,6 @@ public class Cache {
     this.nationMilitaryCache = new EntityCache<>();
     this.nationsCache = new EntityCache<>();
     this.politicsAndWar = Instances.getDefaultPW();
-    Bot.LOGGER.info(Bot.configuration.getMasterPWKey());
 
     ScheduledExecutorService executorService = new ScheduledThreadPoolExecutor(1);
     update();

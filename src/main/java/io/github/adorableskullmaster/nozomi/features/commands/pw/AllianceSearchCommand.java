@@ -100,10 +100,7 @@ public class AllianceSearchCommand extends PoliticsAndWarCommand {
     List<SAllianceContainer> allianceList = alliances.getAlliances();
 
     if (Utility.isNumber(arg)) {
-      int count = 0;
       for (SAllianceContainer alliance : allianceList) {
-        count++;
-        System.out.println(count);
         if (alliance.getId() != null && alliance.getId().equals(arg)) {
           result.add(alliance);
           break;
