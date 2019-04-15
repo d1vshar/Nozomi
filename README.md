@@ -1,3 +1,5 @@
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
+
 # Nozomi
 
 Nozomi is a Discord bot made by WarGamer for the online browser game Politics and War.
@@ -6,14 +8,15 @@ Nozomi is a Discord bot made by WarGamer for the online browser game Politics an
 
 - Nation and Alliance search
 - Finds best counters for your raiders
-- New War Monitor
-- Analyze a target
+- New war monitor
+- New applicant monitor
+- Analyze a nation
+- Notifier for nations that leave beige or VM in 1 turn
 
 #### Planned Features
 
-- New Applicant Monitor
-- Trade Monitor
-- MMR Audit command
+- Nation Alliance Tracker
+- Raid finder
 
 ## How to use?
 
@@ -26,36 +29,14 @@ I highly recommend Heroku for hosting the bot. It's free for 500mb (needs your c
 
 ### Self-Hosting
 
-#### Prerequisites
+Click the "Deploy to Heroku" button on top to deploy to Heroku. **_dabs_**
 
-- Postgres Database
-- Maven 3
-- JDK 8
+#### Running it on PC
 
-#### Configuring the bot
+Possible but not recommended. Anyways you'll just have to clone the repo, build it using 
+maven, configure .env variable that includes setting up the Database.
 
-You have to configure the bot by adding `configContainer.json` file in `src\main\resources\configContainer\configContainer.json`.
-You will have to create the folder since it does not exist.
-
-As for the structure of the `configContainer.json` and more instructions have a look at the wiki of the project.
-
-#### Building the bot
-
-Clone the repo. Open command line in the folder. Run `maven compile assembly:single`. A jar will be made in `target` folder.
-
-#### Running the bot 
-
-Running the generated executable jar will run the bot. Make sure the postgres db server is already up before running it. 
-
-### Self-Hosting for free 24/7 on Heroku (the way I host it)
-
-Make a Heroku app and provide Heroku Postgres add-on and use the db url there in `configContainer.json` as mentioned in wiki.
-
-Build the app mentioned in normal self hosting... and then type this in terminal (in same folder)
-
-`heroku deploy:jar target\Nozomi-jar-with-dependencies.jar -a <YOUR_HEROKU_APP_NAME>`
-
-Then use the Heroku dashboard to scale and that's it.
+Not that hard if you've played with such stuff before. 
 
 ## Contributing
 
