@@ -34,12 +34,12 @@
       "description": "Open Weather Map API key",
       "value": "",
       "required": false
-    },
-    "formation": {
-      "worker": {
-        "quantity": 1,
-        "size": "free"
-      }
+    }
+  },
+  "formation": {
+    "worker": {
+      "quantity": 1,
+      "size": "free"
     }
   }
 }
