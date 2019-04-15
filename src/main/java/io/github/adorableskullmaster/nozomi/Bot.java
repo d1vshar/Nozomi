@@ -47,33 +47,33 @@ public class Bot {
     EventWaiter eventWaiter = new EventWaiter();
 
     CommandClientBuilder clientBuilder = new CommandClientBuilder();
-    String token = configuration.getBotToken();
-    clientBuilder.setPrefix("++")
+    clientBuilder.setPrefix(configuration.getPrefix())
         .setOwnerId(configuration.getOwnerId())
         .setEmojis("✔", "‼", "❌")
         .setServerInvite("https://discord.gg/GrnewCF")
         .setStatus(OnlineStatus.ONLINE)
-        .setGame(Game.playing("++help"))
+        .setGame(Game.playing(configuration.getPrefix()+"help"))
         .useHelpBuilder(false)
         .addCommands(Setup.initCommands(eventWaiter));
 
     jda = new JDABuilder(AccountType.BOT)
-        .setToken(token)
+        .setToken(configuration.getBotToken())
         .addEventListener(eventWaiter)
         .addEventListener(clientBuilder.build())
         .addEventListener(new GenericListener())
         .addEventListener(new DatabaseListener())
         .build()
         .awaitReady();
+
     initServices();
   }
 
   private static void initServices() {
     LOGGER.info("Starting Services");
     ScheduledExecutorService executorService = new ScheduledThreadPoolExecutor(2);
-    executorService.scheduleAtFixedRate(new NewWarService(), 0, 600, TimeUnit.SECONDS);
-    executorService.scheduleAtFixedRate(new BankCheckService(), 0, 3600, TimeUnit.SECONDS);
-    executorService.scheduleAtFixedRate(new VMBeigeService(), 0, 60, TimeUnit.SECONDS);
-    executorService.scheduleAtFixedRate(new NewApplicantService(), 0, 7200, TimeUnit.SECONDS);
+    executorService.scheduleAtFixedRate(new NewWarService(), 0, 5, TimeUnit.MINUTES);
+    executorService.scheduleAtFixedRate(new BankCheckService(), 0, 60, TimeUnit.MINUTES);
+    executorService.scheduleAtFixedRate(new VMBeigeService(), 0, 1, TimeUnit.MINUTES);
+    executorService.scheduleAtFixedRate(new NewApplicantService(), 0, 120, TimeUnit.MINUTES);
   }
 }

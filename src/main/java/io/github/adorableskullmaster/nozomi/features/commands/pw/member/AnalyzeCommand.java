@@ -25,7 +25,7 @@ public class AnalyzeCommand extends MemberPoliticsAndWarCommand {
     this.name = "analyze";
     this.aliases = new String[]{"kowalski"};
     this.help = "Analyzes target nations";
-    this.arguments = "++analyze <nation link>";
+    this.arguments = "++analyze <Nation Link>";
   }
 
   @Override

@@ -3,11 +3,14 @@ package io.github.adorableskullmaster.nozomi.features.commands;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
+import io.github.adorableskullmaster.nozomi.core.database.generated.tables.records.ChannelsRecord;
+import io.github.adorableskullmaster.nozomi.core.database.generated.tables.records.TextsRecord;
 import io.github.adorableskullmaster.nozomi.core.util.CommandResponseHandler;
 import io.github.adorableskullmaster.nozomi.core.util.Instances;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import org.jooq.DSLContext;
+import org.jooq.UpdateSetMoreStep;
 import org.jooq.impl.DSL;
 
 import java.sql.Connection;
@@ -246,37 +249,41 @@ public class SetupCommand extends Command {
       boolean isJoin = settingsMap.containsKey("join");
       long memberrole = Long.parseLong(settingsMap.get("member"));
 
-      //CHANNELS
-      long offensivechannel = Long.parseLong(settingsMap.get("offwar"));
-      long defensivechannel = Long.parseLong(settingsMap.get("defwar"));
-      long mainchannel = Long.parseLong(settingsMap.get("main"));
-      long govchannel = Long.parseLong(settingsMap.get("gov"));
-      long vmbeigechannel = Long.parseLong(settingsMap.get("vmb"));
-      long nationtrackerchannel = Long.parseLong(settingsMap.get("aatrack"));
-      long logchannel = Long.parseLong(settingsMap.get("log"));
-
-      //TEXTS
-      String join = settingsMap.get("join");
-      String joinImg = settingsMap.get("joinImg");
-
       long id = commandEvent.getGuild().getIdLong();
 
-      db.update(TEXTS)
-          .set(TEXTS.JOIN, join)
-          .set(TEXTS.JOINIMG, joinImg)
-          .where(TEXTS.ID.eq(id))
-          .execute();
+      //TEXTS
+      if(isJoin) {
+        String join = settingsMap.get("join");
+        UpdateSetMoreStep<TextsRecord> texts = db.update(TEXTS)
+            .set(TEXTS.JOIN, join);
+        if(settingsMap.containsKey("joinImg")) {
+          String joinImg = settingsMap.get("joinImg");
+          texts.set(TEXTS.JOINIMG, joinImg);
+        }
+        texts.where(TEXTS.ID.eq(id)).execute();
+      }
 
-      db.update(CHANNELS)
+      //CHANNELS
+      long mainchannel = Long.parseLong(settingsMap.get("main"));
+      long govchannel = Long.parseLong(settingsMap.get("gov"));
+      long logchannel = Long.parseLong(settingsMap.get("log"));
+
+      UpdateSetMoreStep<ChannelsRecord> chanels = db.update(CHANNELS)
           .set(CHANNELS.MAINCHANNEL, mainchannel)
           .set(CHANNELS.GOVCHANNEL, govchannel)
-          .set(CHANNELS.VMBEIGECHANNEL, vmbeigechannel)
-          .set(CHANNELS.NATIONTRACKERCHANNEL, nationtrackerchannel)
-          .set(CHANNELS.LOGCHANNEL, logchannel)
-          .set(CHANNELS.OFFENSIVECHANNEL, offensivechannel)
-          .set(CHANNELS.DEFENSIVECHANNEL, defensivechannel)
-          .where(CHANNELS.ID.eq(id))
-          .execute();
+          .set(CHANNELS.LOGCHANNEL, logchannel);
+
+      if(isWarNotifier) {
+        chanels.set(CHANNELS.OFFENSIVECHANNEL,Long.parseLong(settingsMap.get("offwar")));
+        chanels.set(CHANNELS.DEFENSIVECHANNEL,Long.parseLong(settingsMap.get("defwar")));
+      }
+      if(isVMBeige) {
+        chanels.set(CHANNELS.VMBEIGECHANNEL,Long.parseLong(settingsMap.get("vmb")));
+      }
+      if(isNationTracker) {
+        chanels.set(CHANNELS.NATIONTRACKERCHANNEL,Long.parseLong(settingsMap.get("aatrack")));
+      }
+      chanels.where(CHANNELS.ID.eq(id)).execute();
 
       db.update(GUILDS)
           .set(GUILDS.PWID, pwid)

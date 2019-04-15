@@ -14,7 +14,7 @@ public class Instances {
   public static PoliticsAndWar getDefaultPW() {
     return new PoliticsAndWarBuilder()
         .setApiKey(Bot.configuration.getMasterPWKey())
-        .setEnableCache(true, 20, 300000)
+        .setEnableCache(true, 10, 300000)
         .build();
   }
 

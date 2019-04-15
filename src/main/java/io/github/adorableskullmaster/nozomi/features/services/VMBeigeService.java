@@ -42,7 +42,7 @@ public class VMBeigeService implements Runnable {
 
   private void process() throws PoliticsAndWarAPIException, NullPointerException {
     try {
-      Nations nationsObj = politicsAndWar.getNations(true);
+      Nations nationsObj = Bot.CACHE.getNations();
       DB db = Instances.getDBLayer();
       List<Long> guildIds = db.getAllSetupGuildIds();
 

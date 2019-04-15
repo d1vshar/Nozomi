@@ -14,6 +14,8 @@ public class Configuration {
     return getOwmKey() != null;
   }
 
+  public String getPrefix() { return System.getenv("PREFIX"); }
+
   public String getBotToken() {
     return System.getenv("TOKEN");
   }

@@ -30,7 +30,7 @@ public class CounterCommand extends MemberPoliticsAndWarCommand {
     this.name = "counter";
     this.aliases = new String[]{"backup"};
     this.help = "Gives closest counter for the target nation";
-    this.arguments = "++counter <nationlink/nationid>";
+    this.arguments = "++counter <Nation Link/Nation ID>";
     this.politicsAndWar = Instances.getDefaultPW();
   }
 
