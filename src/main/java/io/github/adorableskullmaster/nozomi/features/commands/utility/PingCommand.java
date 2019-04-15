@@ -11,7 +11,7 @@ public class PingCommand extends UtilityCommand {
 
   public PingCommand() {
     this.name = "ping";
-    this.help = "Get Current in Ping of Bot in ms";
+    this.help = "Get current in Ping of Bot in ms";
     this.arguments = "++ping";
   }
 
@@ -24,7 +24,7 @@ public class PingCommand extends UtilityCommand {
           .setColor(Color.CYAN);
       commandEvent.reply(embed.build());
     } catch (Exception e) {
-      Bot.botExceptionHandler.captureException(e, commandEvent);
+      Bot.BOT_EXCEPTION_HANDLER.captureException(e, commandEvent);
     }
   }
 }

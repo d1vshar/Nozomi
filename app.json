@@ -1,0 +1,46 @@
+{
+  "name": "Nozomi",
+  "logo": "https://i.imgur.com/cfkCAhu.png",
+  "description": "A Discord bot for online game Politics and War.",
+  "website": "https://github.com/Adorable-SkullMaster/Nozomi",
+  "repository": "https://github.com/Adorable-SkullMaster/Nozomi",
+  "addons": [
+    "heroku-postgresql:hobby-dev"
+  ],
+  "env": {
+    "PREFIX": {
+      "description": "Command prefix to be used"
+    },
+    "TOKEN": {
+      "description": "Discord bot token"
+    },
+    "OWNER_ID": {
+      "description": "Discord ID of the owner"
+    },
+    "PW_KEY": {
+      "description": "Politics and War API key of the owner",
+      "value": ""
+    },
+    "SENTRY": {
+      "description": "Sentry Bug Reporting DSN",
+      "value": "",
+      "required": false
+    },
+    "CHW_KEY": {
+      "description": "Chewey API key",
+      "value": "",
+      "required": false
+    },
+    "OWM_KEY": {
+      "description": "Open Weather Map API key",
+      "value": "",
+      "required": false
+    }
+  },
+  "formation": {
+    "worker": {
+      "quantity": 1,
+      "size": "free"
+    }
+  }
+}

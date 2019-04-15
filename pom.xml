@@ -6,7 +6,7 @@
 
     <groupId>io.github.adorable-skullmaster</groupId>
     <artifactId>Nozomi</artifactId>
-    <version>0.6.6</version>
+    <version>0.7.0</version>
     <name>Nozomi</name>
     <url>https://github.com/Adorable-SkullMaster/Nozomi</url>
     <packaging>jar</packaging>
@@ -61,7 +61,7 @@
         <dependency>
             <groupId>net.dv8tion</groupId>
             <artifactId>JDA</artifactId>
-            <version>3.8.3_462</version>
+            <version>3.8.2_459</version>
         </dependency>
         <dependency>
             <groupId>com.jagrosh</groupId>
@@ -98,6 +98,21 @@
             <groupId>com.github.ricksbrown</groupId>
             <artifactId>cowsay</artifactId>
             <version>1.0.3</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jooq</groupId>
+            <artifactId>jooq</artifactId>
+            <version>3.11.10</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jooq</groupId>
+            <artifactId>jooq-meta</artifactId>
+            <version>3.11.10</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jooq</groupId>
+            <artifactId>jooq-codegen</artifactId>
+            <version>3.11.10</version>
         </dependency>
 
         <dependency>

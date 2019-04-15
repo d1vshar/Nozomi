@@ -8,7 +8,6 @@ import io.github.adorableskullmaster.nozomi.features.commands.OwnerCommand;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
-import java.sql.SQLException;
 import java.util.concurrent.TimeUnit;
 
 public class ShutdownCommand extends OwnerCommand {
@@ -25,11 +24,6 @@ public class ShutdownCommand extends OwnerCommand {
 
   private static void safExit(JDA jda) {
     jda.shutdownNow();
-    try {
-      Bot.pg.getConn().close();
-    } catch (SQLException e) {
-      e.printStackTrace();
-    }
     System.exit(0);
   }
 
@@ -52,7 +46,7 @@ public class ShutdownCommand extends OwnerCommand {
           )
       );
     } catch (Exception e) {
-      Bot.botExceptionHandler.captureException(e, commandEvent);
+      Bot.BOT_EXCEPTION_HANDLER.captureException(e, commandEvent);
     }
   }
 }

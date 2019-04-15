@@ -37,10 +37,10 @@ public class StatusCommand extends OwnerCommand {
             int threadCount = Thread.activeCount();
             long ping = commandEvent.getJDA().getPing();
 
-            boolean nationsCache = Bot.cacheManager.getNations() != null;
-            boolean alliancesCache = Bot.cacheManager.getAlliance() != null;
-            boolean militaryCache = Bot.cacheManager.getNationMilitary() != null;
-            boolean citiesCache = Bot.cacheManager.getAllCities() != null;
+            boolean nationsCache = Bot.CACHE.getNations() != null;
+            boolean alliancesCache = Bot.CACHE.getAlliances() != null;
+            boolean militaryCache = Bot.CACHE.getNationMilitary() != null;
+            boolean citiesCache = Bot.CACHE.getAllCities() != null;
             List<Boolean> booleanList = new ArrayList<>(Arrays.asList(nationsCache, alliancesCache, militaryCache, citiesCache));
 
             EmbedBuilder embedBuilder = new EmbedBuilder();
@@ -51,15 +51,14 @@ public class StatusCommand extends OwnerCommand {
                 .addField("Current Memory", totalMemory + "MB", true)
                 .addField("Threads", Integer.toString(threadCount), true)
                 .addField("Cache State", Long.toString(booleanList.stream().filter(Boolean::booleanValue).count()), true)
-                .setFooter("Nozomi v" + getClass().getPackage().getImplementationVersion() + (Bot.dev ? " beta" : ""),
-                    commandEvent.getSelfUser().getAvatarUrl())
+                .setFooter("Nozomi v" + getClass().getPackage().getImplementationVersion(), commandEvent.getSelfUser().getAvatarUrl())
                 .setTimestamp(Instant.now());
 
             commandEvent.reply(embedBuilder.build());
           }
       );
     } catch (Exception e) {
-      Bot.botExceptionHandler.captureException(e, commandEvent);
+      Bot.BOT_EXCEPTION_HANDLER.captureException(e, commandEvent);
     }
   }
 

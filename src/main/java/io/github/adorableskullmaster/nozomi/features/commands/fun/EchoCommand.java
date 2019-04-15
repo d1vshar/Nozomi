@@ -1,10 +1,10 @@
-package io.github.adorableskullmaster.nozomi.features.commands.moderator;
+package io.github.adorableskullmaster.nozomi.features.commands.fun;
 
 import com.jagrosh.jdautilities.command.CommandEvent;
 import io.github.adorableskullmaster.nozomi.Bot;
-import io.github.adorableskullmaster.nozomi.features.commands.ModeratorCommand;
+import io.github.adorableskullmaster.nozomi.features.commands.FunCommand;
 
-public class EchoCommand extends ModeratorCommand {
+public class EchoCommand extends FunCommand {
 
   public EchoCommand() {
     this.name = "echo";
@@ -22,7 +22,7 @@ public class EchoCommand extends ModeratorCommand {
         commandEvent.reply(args);
       commandEvent.getMessage().delete().queue();
     } catch (Exception e) {
-      Bot.botExceptionHandler.captureException(e, commandEvent);
+      Bot.BOT_EXCEPTION_HANDLER.captureException(e, commandEvent);
     }
   }
 

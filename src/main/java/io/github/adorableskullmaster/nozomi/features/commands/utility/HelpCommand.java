@@ -3,10 +3,13 @@ package io.github.adorableskullmaster.nozomi.features.commands.utility;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import io.github.adorableskullmaster.nozomi.Bot;
-import io.github.adorableskullmaster.nozomi.core.config.Config;
-import io.github.adorableskullmaster.nozomi.core.util.AuthUtility;
+import io.github.adorableskullmaster.nozomi.core.database.layer.Guild;
+import io.github.adorableskullmaster.nozomi.core.util.Instances;
 import io.github.adorableskullmaster.nozomi.core.util.Utility;
-import io.github.adorableskullmaster.nozomi.features.commands.*;
+import io.github.adorableskullmaster.nozomi.features.commands.FunCommand;
+import io.github.adorableskullmaster.nozomi.features.commands.MemberPoliticsAndWarCommand;
+import io.github.adorableskullmaster.nozomi.features.commands.PoliticsAndWarCommand;
+import io.github.adorableskullmaster.nozomi.features.commands.UtilityCommand;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Role;
 
@@ -29,25 +32,24 @@ public class HelpCommand extends UtilityCommand {
   @Override
   protected void execute(CommandEvent commandEvent) {
     try {
-      Config.ConfigGuild guild = AuthUtility.getGuildConfig(commandEvent.getGuild().getIdLong());
-      if (guild!=null) {
+      Guild guild = Instances.getDBLayer().getGuild(commandEvent.getGuild().getIdLong());
+      if (guild != null) {
         mod = false;
-        member =false;
-        if(commandEvent.getMember().hasPermission(Utility.getModerator()))
+        member = false;
+        if (commandEvent.getMember().hasPermission(Utility.getModerator()))
           mod = true;
-        if(commandEvent.getMember().getRoles().stream().map(Role::getIdLong).anyMatch(id -> id == guild.getMemberRole()))
+        if (commandEvent.getMember().getRoles().stream().map(Role::getIdLong).anyMatch(id -> id == guild.getMemberRole()))
           member = true;
         String[] args = commandEvent.getArgs().trim().split(" ");
         if (args[0].isEmpty())
           commandEvent.reply(getAll(commandEvent).build());
         else if (args.length == 1) {
           commandEvent.reply(getByName(commandEvent, commandEvent.getArgs().trim()).build());
-        }
-        else
+        } else
           commandEvent.reply("Incorrect commands usage. Please use it like this: `++help ping` or just `++help`");
       }
     } catch (Exception e) {
-      Bot.botExceptionHandler.captureException(e,commandEvent);
+      Bot.BOT_EXCEPTION_HANDLER.captureException(e, commandEvent);
     }
   }
 
@@ -55,36 +57,31 @@ public class HelpCommand extends UtilityCommand {
     List<Command> commands = commandEvent.getClient().getCommands();
     final EmbedBuilder embed = new EmbedBuilder();
 
-    List<Command> adminCommands = new ArrayList<>();
     List<Command> pwCommands = new ArrayList<>();
     List<Command> protectedCommands = new ArrayList<>();
     List<Command> funCommands = new ArrayList<>();
     List<Command> utilityCommands = new ArrayList<>();
 
     for (Command command : commands) {
-      if (command instanceof ModeratorCommand)
-        adminCommands.add(command);
-      else if(command instanceof FunCommand)
+      if (command instanceof FunCommand)
         funCommands.add(command);
-      else if(command instanceof MemberPoliticsAndWarCommand)
+      else if (command instanceof MemberPoliticsAndWarCommand)
         protectedCommands.add(command);
-      else if(command instanceof PoliticsAndWarCommand)
+      else if (command instanceof PoliticsAndWarCommand)
         pwCommands.add(command);
-      else if(command instanceof UtilityCommand)
+      else if (command instanceof UtilityCommand)
         utilityCommands.add(command);
     }
 
     embed.setColor(Color.CYAN)
         .setTitle("Help")
         .setDescription("Use ++help <commands> for more information");
-    if(mod)
-      embed.addField("Moderator Commands",adminCommands.stream().map(Command::getName).collect(Collectors.joining(", ")),false);
-    if(member) {
+    if (member) {
       pwCommands.addAll(protectedCommands);
     }
-    embed.addField("Politics And War Commands",pwCommands.stream().map(Command::getName).collect(Collectors.joining(", ")),false)
-        .addField("Fun Commands",funCommands.stream().map(Command::getName).collect(Collectors.joining(", ")),false)
-        .addField("Utility Commands",utilityCommands.stream().map(Command::getName).collect(Collectors.joining(", ")),false);
+    embed.addField("Politics And War Commands", pwCommands.stream().map(Command::getName).collect(Collectors.joining(", ")), false)
+        .addField("Fun Commands", funCommands.stream().map(Command::getName).collect(Collectors.joining(", ")), false)
+        .addField("Utility Commands", utilityCommands.stream().map(Command::getName).collect(Collectors.joining(", ")), false);
 
     return embed;
   }
