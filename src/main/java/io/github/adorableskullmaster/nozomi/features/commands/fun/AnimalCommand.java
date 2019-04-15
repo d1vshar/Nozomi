@@ -24,29 +24,41 @@ public class AnimalCommand extends FunCommand {
       RandomAnimal animal = new RandomAnimal();
       String url = "";
       switch (i) {
-        case 0: url = animal.getCheweyRabbit();
-        break;
-        case 1: url = animal.getRandomCat();
-        break;
-        case 2: url = animal.getCheweyCat();
-        break;
-        case 3: url = animal.getRandomDog();
-        break;
-        case 4: url = animal.getCheweyDog();
-        break;
-        case 5: url = animal.getCheweyBirb();
-        break;
-        case 6: url = animal.getRandomWolf();
-        break;
-        case 7: url = animal.getCheweyOtter();
-        break;
-        case 8: url = animal.getCheweySnake();
-        break;
-        case 9: url = animal.getShibe();
-        break;
-        case 10: url = animal.getCheweyDuck();
-        break;
-        case 11: url = animal.getCheweyTurtle();
+        case 0:
+          url = animal.getCheweyRabbit();
+          break;
+        case 1:
+          url = animal.getRandomCat();
+          break;
+        case 2:
+          url = animal.getCheweyCat();
+          break;
+        case 3:
+          url = animal.getRandomDog();
+          break;
+        case 4:
+          url = animal.getCheweyDog();
+          break;
+        case 5:
+          url = animal.getCheweyBirb();
+          break;
+        case 6:
+          url = animal.getRandomWolf();
+          break;
+        case 7:
+          url = animal.getCheweyOtter();
+          break;
+        case 8:
+          url = animal.getCheweySnake();
+          break;
+        case 9:
+          url = animal.getShibe();
+          break;
+        case 10:
+          url = animal.getCheweyDuck();
+          break;
+        case 11:
+          url = animal.getCheweyTurtle();
       }
       EmbedBuilder embedBuilder = new EmbedBuilder();
       embedBuilder.setTitle("Random Animal")
@@ -54,7 +66,7 @@ public class AnimalCommand extends FunCommand {
           .setImage(url);
       commandEvent.reply(embedBuilder.build());
     } catch (Exception e) {
-      Bot.botExceptionHandler.captureException(e,commandEvent);
+      Bot.BOT_EXCEPTION_HANDLER.captureException(e, commandEvent);
     }
   }
 }

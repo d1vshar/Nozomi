@@ -1,10 +1,8 @@
 package io.github.adorableskullmaster.nozomi.core.database.layer;
 
-import io.github.adorableskullmaster.nozomi.core.database.generated.tables.Guilds;
 import io.github.adorableskullmaster.nozomi.core.database.generated.tables.Texts;
+import io.github.adorableskullmaster.nozomi.core.database.generated.tables.records.TextsRecord;
 import org.jooq.DSLContext;
-import org.jooq.Record2;
-import org.jooq.Record3;
 
 public class GuildTexts {
 
@@ -16,28 +14,13 @@ public class GuildTexts {
 
   GuildTexts(DSLContext db, long id) {
 
-    Record2<Boolean, Boolean> booleans = db.select(Guilds.GUILDS.JOINTEXTS, Guilds.GUILDS.LEAVETEXTS)
-        .from(Guilds.GUILDS)
-        .where(Guilds.GUILDS.ID.eq(id))
-        .fetchOne();
-    Record3<String, String, String> texts = db.select(Texts.TEXTS.JOIN, Texts.TEXTS.JOINIMG, Texts.TEXTS.LEAVE)
-        .from(Texts.TEXTS)
+    TextsRecord texts = db.selectFrom(Texts.TEXTS)
         .where(Texts.TEXTS.ID.eq(id))
         .fetchOne();
 
-    this.join = booleans.value1();
-    this.leave = booleans.value2();
-    this.joinText = texts.value1();
-    this.joinImage = texts.value2();
-    this.leaveText = texts.component3();
-  }
-
-  public boolean isJoin() {
-    return join;
-  }
-
-  public boolean isLeave() {
-    return leave;
+    this.joinText = texts.getJoin();
+    this.joinImage = texts.getJoinimg();
+    this.leaveText = texts.getLeave();
   }
 
   public String getJoinText() {

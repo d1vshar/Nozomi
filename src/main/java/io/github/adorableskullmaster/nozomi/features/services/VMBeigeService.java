@@ -1,11 +1,11 @@
 package io.github.adorableskullmaster.nozomi.features.services;
 
 import io.github.adorableskullmaster.nozomi.Bot;
-import io.github.adorableskullmaster.nozomi.core.config.Config;
-import io.github.adorableskullmaster.nozomi.core.util.AuthUtility;
+import io.github.adorableskullmaster.nozomi.core.database.DB;
+import io.github.adorableskullmaster.nozomi.core.database.layer.Guild;
+import io.github.adorableskullmaster.nozomi.core.util.Instances;
 import io.github.adorableskullmaster.pw4j.PoliticsAndWar;
 import io.github.adorableskullmaster.pw4j.PoliticsAndWarAPIException;
-import io.github.adorableskullmaster.pw4j.PoliticsAndWarBuilder;
 import io.github.adorableskullmaster.pw4j.domains.Nations;
 import io.github.adorableskullmaster.pw4j.domains.subdomains.SNationContainer;
 import net.dv8tion.jda.core.EmbedBuilder;
@@ -20,9 +20,7 @@ import java.util.TimeZone;
 
 public class VMBeigeService implements Runnable {
 
-  private PoliticsAndWar politicsAndWar = new PoliticsAndWarBuilder()
-      .setApiKey(Bot.config.getCredentials().getMasterPWKey())
-      .build();
+  private PoliticsAndWar politicsAndWar = Instances.getDefaultPW();
 
   @Override
   public void run() {
@@ -38,47 +36,32 @@ public class VMBeigeService implements Runnable {
         }
       }
     } catch (Throwable e) {
-      Bot.botExceptionHandler.captureException(e);
+      Bot.BOT_EXCEPTION_HANDLER.captureException(e);
     }
   }
 
   private void process() throws PoliticsAndWarAPIException, NullPointerException {
-    Nations nationsObj = politicsAndWar.getNations(true);
-    List<Config.ConfigGuild> guilds = Bot.config.getGuilds();
+    try {
+      Nations nationsObj = politicsAndWar.getNations(true);
+      DB db = Instances.getDBLayer();
+      List<Long> guildIds = db.getAllSetupGuildIds();
 
-    if (nationsObj.isSuccess()) {
-      List<SNationContainer> nations = nationsObj.getNationsContainer();
-      for (SNationContainer nation : nations) {
-        if (nation.getScore() > 500) {
-          if (Integer.parseInt(nation.getVacmode()) == 1) {
-            for (Config.ConfigGuild guild : guilds) {
-              if (AuthUtility.checkService("VMBeigeService",guild.getDiscordId())) {
-                TextChannel channel = Bot.jda.getGuildById(guild.getDiscordId()).getTextChannelById(guild.getVmBeigeChannel());
-                channel.sendMessage(
-                    new EmbedBuilder()
-                        .setAuthor("https://politicsandwar.com/nation/id=" + nation.getNationId(), "https://politicsandwar.com/nation/id=" + nation.getNationId())
-                        .setColor(Color.WHITE)
-                        .setTitle(nation.getNation() + " is leaving VM next turn!")
-                        .addField("Leader Name", nation.getLeader(), true)
-                        .addField("Alliance", nation.getAlliance(), true)
-                        .addField("Score", Double.toString(nation.getScore()), true)
-                        .setFooter("Politics And War", "https://cdn.discordapp.com/attachments/392736524308840448/485867309995524096/57ad65f5467e958a079d2ee44a0e80ce.png")
-                        .setTimestamp(Instant.now())
-                        .build()
-                ).queue();
-              }
-            }
-          }
-          if (nation.getColor().equalsIgnoreCase("beige")) {
-            if (politicsAndWar.getNation(nation.getNationId()).getBeigeTurnsLeft() == 1) {
-              for (Config.ConfigGuild guild : guilds) {
-                if (AuthUtility.checkService("VMBeigeService",guild.getDiscordId())) {
-                  TextChannel channel = Bot.jda.getGuildById(guild.getDiscordId()).getTextChannelById(guild.getVmBeigeChannel());
+      if (nationsObj.isSuccess()) {
+        List<SNationContainer> nations = nationsObj.getNationsContainer();
+
+        for (SNationContainer nation : nations) {
+          if (nation.getScore() > 500) {
+
+            if (Integer.parseInt(nation.getVacmode()) == 1) {
+              for (Long guildId : guildIds) {
+                Guild guild = db.getGuild(guildId);
+                if (guild.isVmBeigeTracker()) {
+                  TextChannel channel = Bot.jda.getGuildById(guild.getId()).getTextChannelById(guild.getId());
                   channel.sendMessage(
                       new EmbedBuilder()
                           .setAuthor("https://politicsandwar.com/nation/id=" + nation.getNationId(), "https://politicsandwar.com/nation/id=" + nation.getNationId())
-                          .setColor(new Color(Integer.valueOf("cfbb63", 16)))
-                          .setTitle(nation.getNation() + " is leaving Beige next turn!")
+                          .setColor(Color.WHITE)
+                          .setTitle(nation.getNation() + " is leaving VM next turn!")
                           .addField("Leader Name", nation.getLeader(), true)
                           .addField("Alliance", nation.getAlliance(), true)
                           .addField("Score", Double.toString(nation.getScore()), true)
@@ -89,9 +72,34 @@ public class VMBeigeService implements Runnable {
                 }
               }
             }
+
+            if (nation.getColor().equalsIgnoreCase("beige")) {
+              if (politicsAndWar.getNation(nation.getNationId()).getBeigeTurnsLeft() == 1) {
+                for (Long guildId : guildIds) {
+                  Guild guild = db.getGuild(guildId);
+                  if (guild.isVmBeigeTracker()) {
+                    TextChannel channel = Bot.jda.getGuildById(guild.getId()).getTextChannelById(guild.getGuildChannels().getVmBeigeChannel());
+                    channel.sendMessage(
+                        new EmbedBuilder()
+                            .setAuthor("https://politicsandwar.com/nation/id=" + nation.getNationId(), "https://politicsandwar.com/nation/id=" + nation.getNationId())
+                            .setColor(new Color(Integer.valueOf("cfbb63", 16)))
+                            .setTitle(nation.getNation() + " is leaving Beige next turn!")
+                            .addField("Leader Name", nation.getLeader(), true)
+                            .addField("Alliance", nation.getAlliance(), true)
+                            .addField("Score", Double.toString(nation.getScore()), true)
+                            .setFooter("Politics And War", "https://cdn.discordapp.com/attachments/392736524308840448/485867309995524096/57ad65f5467e958a079d2ee44a0e80ce.png")
+                            .setTimestamp(Instant.now())
+                            .build()
+                    ).queue();
+                  }
+                }
+              }
+            }
           }
         }
       }
+    } catch (Exception e) {
+      Bot.BOT_EXCEPTION_HANDLER.captureException(e);
     }
   }
 }

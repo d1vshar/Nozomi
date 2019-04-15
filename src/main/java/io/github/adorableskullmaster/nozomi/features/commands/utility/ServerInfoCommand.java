@@ -2,10 +2,10 @@ package io.github.adorableskullmaster.nozomi.features.commands.utility;
 
 import com.jagrosh.jdautilities.command.CommandEvent;
 import io.github.adorableskullmaster.nozomi.Bot;
-import io.github.adorableskullmaster.nozomi.core.config.Config;
+import io.github.adorableskullmaster.nozomi.core.database.layer.Guild;
+import io.github.adorableskullmaster.nozomi.core.util.Instances;
 import io.github.adorableskullmaster.nozomi.features.commands.UtilityCommand;
 import io.github.adorableskullmaster.pw4j.PoliticsAndWar;
-import io.github.adorableskullmaster.pw4j.PoliticsAndWarBuilder;
 import io.github.adorableskullmaster.pw4j.domains.Alliance;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.OnlineStatus;
@@ -13,8 +13,6 @@ import net.dv8tion.jda.core.entities.Member;
 
 import java.awt.*;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class ServerInfoCommand extends UtilityCommand {
 
@@ -29,15 +27,12 @@ public class ServerInfoCommand extends UtilityCommand {
   protected void execute(CommandEvent commandEvent) {
     try {
       commandEvent.getChannel().sendTyping().queue();
-      List<Config.ConfigGuild> collect = Bot.config.getGuilds().stream().filter(guild -> guild.getDiscordId() == commandEvent.getGuild().getIdLong()).collect(Collectors.toList());
-      Config.ConfigGuild guild = collect.get(0);
+      Guild guild = Instances.getDBLayer().getGuild(commandEvent.getGuild().getIdLong());
       int aid = guild.getPwId();
 
-      PoliticsAndWar politicsAndWar = new PoliticsAndWarBuilder()
-          .setApiKey(Bot.config.getCredentials().getMasterPWKey())
-          .build();
+      PoliticsAndWar politicsAndWar = Instances.getDefaultPW();
       Alliance alliance = politicsAndWar.getAlliance(aid);
-      int amembers = alliance.getMembers();
+      int aaMembers = alliance.getMembers();
 
       int online = 0;
       for (Member member : commandEvent.getGuild().getMembers()) {
@@ -48,10 +43,10 @@ public class ServerInfoCommand extends UtilityCommand {
       EmbedBuilder embedBuilder = new EmbedBuilder();
       embedBuilder.setTitle(commandEvent.getGuild().getName())
           .setColor(Color.BLACK)
-          .setAuthor("https://politicsandwar.com/alliance/id="+aid, "https://politicsandwar.com/alliance/id="+aid)
+          .setAuthor("https://politicsandwar.com/alliance/id=" + aid, "https://politicsandwar.com/alliance/id=" + aid)
           .setThumbnail(commandEvent.getSelfUser().getAvatarUrl())
           .addField("Discord Users", online + "/" + commandEvent.getGuild().getMembers().size(), true)
-          .addField("In-game Members", Integer.toString(amembers), true)
+          .addField("In-game Members", Integer.toString(aaMembers), true)
           .addField("Owner",
               commandEvent.getGuild().getOwner().getUser().getName() + "#" + commandEvent.getGuild().getOwner().getUser().getDiscriminator(), true)
           .addField("Score", alliance.getScore(), true)
@@ -60,7 +55,7 @@ public class ServerInfoCommand extends UtilityCommand {
           .build();
       commandEvent.reply(embedBuilder.build());
     } catch (Exception e) {
-      Bot.botExceptionHandler.captureException(e, commandEvent);
+      Bot.BOT_EXCEPTION_HANDLER.captureException(e, commandEvent);
     }
   }
 }

@@ -34,10 +34,10 @@ I highly recommend Heroku for hosting the bot. It's free for 500mb (needs your c
 
 #### Configuring the bot
 
-You have to configure the bot by adding `config.json` file in `src\main\resources\config\config.json`.
+You have to configure the bot by adding `configContainer.json` file in `src\main\resources\configContainer\configContainer.json`.
 You will have to create the folder since it does not exist.
 
-As for the structure of the `config.json` and more instructions have a look at the wiki of the project.
+As for the structure of the `configContainer.json` and more instructions have a look at the wiki of the project.
 
 #### Building the bot
 
@@ -49,7 +49,7 @@ Running the generated executable jar will run the bot. Make sure the postgres db
 
 ### Self-Hosting for free 24/7 on Heroku (the way I host it)
 
-Make a Heroku app and provide Heroku Postgres add-on and use the db url there in `config.json` as mentioned in wiki.
+Make a Heroku app and provide Heroku Postgres add-on and use the db url there in `configContainer.json` as mentioned in wiki.
 
 Build the app mentioned in normal self hosting... and then type this in terminal (in same folder)
 

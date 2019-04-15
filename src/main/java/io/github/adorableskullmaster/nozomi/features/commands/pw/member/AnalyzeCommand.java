@@ -2,9 +2,9 @@ package io.github.adorableskullmaster.nozomi.features.commands.pw.member;
 
 import com.jagrosh.jdautilities.command.CommandEvent;
 import io.github.adorableskullmaster.nozomi.Bot;
+import io.github.adorableskullmaster.nozomi.core.util.Instances;
 import io.github.adorableskullmaster.nozomi.features.commands.MemberPoliticsAndWarCommand;
 import io.github.adorableskullmaster.pw4j.PoliticsAndWar;
-import io.github.adorableskullmaster.pw4j.PoliticsAndWarBuilder;
 import io.github.adorableskullmaster.pw4j.domains.Alliance;
 import io.github.adorableskullmaster.pw4j.domains.City;
 import io.github.adorableskullmaster.pw4j.domains.Nation;
@@ -36,20 +36,20 @@ public class AnalyzeCommand extends MemberPoliticsAndWarCommand {
             commandEvent.getChannel().sendTyping().queue();
             commandEvent.getChannel().sendMessage("Analyzing... might take some time!").queue(
                 (event) -> {
-                    if (identify(commandEvent.getArgs()) == ResponseType.NATION) {
-                      EmbedBuilder embedBuilder = analyzeNation(commandEvent.getArgs());
-                      event.delete().queue();
-                      if (embedBuilder != null)
-                        commandEvent.reply(embedBuilder.build());
-                      else
-                        throw new NullPointerException();
-                    }
+                  if (identify(commandEvent.getArgs()) == ResponseType.NATION) {
+                    EmbedBuilder embedBuilder = analyzeNation(commandEvent.getArgs());
+                    event.delete().queue();
+                    if (embedBuilder != null)
+                      commandEvent.reply(embedBuilder.build());
+                    else
+                      throw new NullPointerException();
+                  }
                 }
             );
           }
       );
     } catch (Exception e) {
-      Bot.botExceptionHandler.captureException(e, commandEvent);
+      Bot.BOT_EXCEPTION_HANDLER.captureException(e, commandEvent);
     }
   }
 
@@ -65,9 +65,7 @@ public class AnalyzeCommand extends MemberPoliticsAndWarCommand {
   private EmbedBuilder analyzeNation(String url) {
     try {
       int nid = Integer.parseInt(url.substring(url.indexOf("=") + 1));
-      PoliticsAndWar politicsAndWar = new PoliticsAndWarBuilder()
-          .setApiKey(Bot.config.getCredentials().getMasterPWKey())
-          .build();
+      PoliticsAndWar politicsAndWar = Instances.getDefaultPW();
       Nation nation = politicsAndWar.getNation(nid);
       List<String> cityIds = nation.getCityids();
       int cityCount = nation.getCities();
@@ -94,7 +92,7 @@ public class AnalyzeCommand extends MemberPoliticsAndWarCommand {
         powered.add(city.getPowered().equalsIgnoreCase("Yes"));
 
         commerce.add((Integer.parseInt(city.getImpSupermarket()) * 0.03) + (Integer.parseInt(city.getImpBank()) * 0.05)
-            + (Integer.parseInt(city.getImpMall()) * 0.09) + (Integer.parseInt(city.getImpStadium()) * 0.12) + (Integer.parseInt(city.getImpSubway()))*0.08);
+            + (Integer.parseInt(city.getImpMall()) * 0.09) + (Integer.parseInt(city.getImpStadium()) * 0.12) + (Integer.parseInt(city.getImpSubway())) * 0.08);
 
         manufacturing.add(Integer.parseInt(city.getImpGasrefinery()) + Integer.parseInt(city.getImpMunitionsfactory())
             + Integer.parseInt(city.getImpAluminumrefinery()) + Integer.parseInt(city.getImpSteelmill()));
@@ -135,7 +133,7 @@ public class AnalyzeCommand extends MemberPoliticsAndWarCommand {
     nationInfoString = String.format("**%s** is a **%s %s** nation has been **%s** lately.", nation.getName(), (newNation ? "new" : "old"), tier, activeString);
     rawString = String.format("It has an average **%s raw mines per city (Total: %d)**", totalMines / nation.getCities(), totalMines);
     manuComPowString = String.format("It has **%s manufacturing improvements per city (Total: %d)** and **%s%% average commerce** ",
-        totalManu / nation.getCities(), totalManu, (int) (Math.ceil((totalComm / (double)nation.getCities()) * 100)));
+        totalManu / nation.getCities(), totalManu, (int) (Math.ceil((totalComm / (double) nation.getCities()) * 100)));
     if (powered.stream().noneMatch(aBoolean -> aBoolean.equals(true)))
       manuComPowString += " but **no powered cities.**";
     else if (powered.stream().allMatch(aBoolean -> aBoolean.equals(true)))

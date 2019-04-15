@@ -21,14 +21,14 @@ public class OpenWeatherMapAPI {
 
   public static CurrentWeather fetchCurrentByName(String name) throws URISyntaxException, IOException {
     URIBuilder builder = new URIBuilder(baseUrl);
-    builder.addParameter("q", name).addParameter("APPID", Bot.config.getCredentials().getOwmKey());
+    builder.addParameter("q", name).addParameter("APPID", Bot.configuration.getOwmKey());
 
     return fetchCurrent(builder.build());
   }
 
   public static CurrentWeather fetchCurrentByName(String name, String country) throws URISyntaxException, IOException {
     URIBuilder builder = new URIBuilder(baseUrl);
-    builder.addParameter("q", name + "," + country).addParameter("APPID", Bot.config.getCredentials().getOwmKey());
+    builder.addParameter("q", name + "," + country).addParameter("APPID", Bot.configuration.getOwmKey());
 
     return fetchCurrent(builder.build());
   }

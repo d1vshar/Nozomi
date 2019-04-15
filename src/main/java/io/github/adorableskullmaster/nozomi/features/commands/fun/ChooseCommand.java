@@ -33,7 +33,7 @@ public class ChooseCommand extends FunCommand {
       } else
         commandEvent.reply("LOL! I choose me. Dummy provide me options.");
     } catch (Exception e) {
-      Bot.botExceptionHandler.captureException(e, commandEvent);
+      Bot.BOT_EXCEPTION_HANDLER.captureException(e, commandEvent);
     }
   }
 }

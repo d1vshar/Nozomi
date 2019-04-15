@@ -28,7 +28,7 @@ public class WeatherCommand extends UtilityCommand {
     try {
       IOUtils.copy(inputStream, writer, "UTF-8");
     } catch (IOException e) {
-      Bot.botExceptionHandler.captureException(e);
+      Bot.BOT_EXCEPTION_HANDLER.captureException(e);
     }
     String colorString = writer.toString();
     this.icons = new JSONObject(colorString);
@@ -68,7 +68,7 @@ public class WeatherCommand extends UtilityCommand {
         CommandResponseHandler.illegal(commandEvent, name);
       }
     } catch (Exception e) {
-      Bot.botExceptionHandler.captureException(e, commandEvent);
+      Bot.BOT_EXCEPTION_HANDLER.captureException(e, commandEvent);
     }
   }
 }

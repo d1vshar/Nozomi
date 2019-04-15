@@ -34,15 +34,11 @@ public class Guilds extends TableImpl<GuildsRecord> {
    * The reference instance of <code>public.guilds</code>
    */
   public static final Guilds GUILDS = new Guilds();
-  private static final long serialVersionUID = -1089978569;
+  private static final long serialVersionUID = 1403176854;
   /**
    * The column <code>public.guilds.id</code>.
    */
   public final TableField<GuildsRecord, Long> ID = createField("id", org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
-  /**
-   * The column <code>public.guilds.pwid</code>.
-   */
-  public final TableField<GuildsRecord, Integer> PWID = createField("pwid", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
   /**
    * The column <code>public.guilds.pwkey</code>.
    */
@@ -79,6 +75,18 @@ public class Guilds extends TableImpl<GuildsRecord> {
    * The column <code>public.guilds.autocounter</code>.
    */
   public final TableField<GuildsRecord, Boolean> AUTOCOUNTER = createField("autocounter", org.jooq.impl.SQLDataType.BOOLEAN.nullable(false), this, "");
+  /**
+   * The column <code>public.guilds.setup</code>.
+   */
+  public final TableField<GuildsRecord, Boolean> SETUP = createField("setup", org.jooq.impl.SQLDataType.BOOLEAN.nullable(false), this, "");
+  /**
+   * The column <code>public.guilds.memberrole</code>.
+   */
+  public final TableField<GuildsRecord, Long> MEMBERROLE = createField("memberrole", org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+  /**
+   * The column <code>public.guilds.pwid</code>.
+   */
+  public final TableField<GuildsRecord, Integer> PWID = createField("pwid", org.jooq.impl.SQLDataType.INTEGER, this, "");
 
   /**
    * Create a <code>public.guilds</code> table reference

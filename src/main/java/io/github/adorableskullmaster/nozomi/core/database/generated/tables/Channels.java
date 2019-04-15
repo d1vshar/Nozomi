@@ -34,7 +34,7 @@ public class Channels extends TableImpl<ChannelsRecord> {
    * The reference instance of <code>public.channels</code>
    */
   public static final Channels CHANNELS = new Channels();
-  private static final long serialVersionUID = 1824110482;
+  private static final long serialVersionUID = 1223230684;
   /**
    * The column <code>public.channels.id</code>.
    */
@@ -47,10 +47,6 @@ public class Channels extends TableImpl<ChannelsRecord> {
    * The column <code>public.channels.defensivechannel</code>.
    */
   public final TableField<ChannelsRecord, Long> DEFENSIVECHANNEL = createField("defensivechannel", org.jooq.impl.SQLDataType.BIGINT, this, "");
-  /**
-   * The column <code>public.channels.autocounter</code>.
-   */
-  public final TableField<ChannelsRecord, Boolean> AUTOCOUNTER = createField("autocounter", org.jooq.impl.SQLDataType.BOOLEAN, this, "");
   /**
    * The column <code>public.channels.mainchannel</code>.
    */

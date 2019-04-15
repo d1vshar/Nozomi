@@ -5,9 +5,9 @@ import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import com.jagrosh.jdautilities.menu.OrderedMenu;
 import io.github.adorableskullmaster.nozomi.Bot;
 import io.github.adorableskullmaster.nozomi.core.util.CommandResponseHandler;
+import io.github.adorableskullmaster.nozomi.core.util.Instances;
 import io.github.adorableskullmaster.nozomi.core.util.Utility;
 import io.github.adorableskullmaster.nozomi.features.commands.PoliticsAndWarCommand;
-import io.github.adorableskullmaster.pw4j.PoliticsAndWarBuilder;
 import io.github.adorableskullmaster.pw4j.domains.Nations;
 import io.github.adorableskullmaster.pw4j.domains.subdomains.SNationContainer;
 import net.dv8tion.jda.core.EmbedBuilder;
@@ -64,7 +64,7 @@ public class NationSearchCommand extends PoliticsAndWarCommand {
       }
 
     } catch (Exception e) {
-      Bot.botExceptionHandler.captureException(e, commandEvent);
+      Bot.BOT_EXCEPTION_HANDLER.captureException(e, commandEvent);
     }
   }
 
@@ -87,12 +87,9 @@ public class NationSearchCommand extends PoliticsAndWarCommand {
   private List<SNationContainer> search(String args) {
     List<String> commons = new ArrayList<>(Arrays.asList("the", "is", "a", "an", "of", "some", "few"));
     List<SNationContainer> result = new ArrayList<>();
-    Nations nations = Bot.cacheManager.getNations();
+    Nations nations = Bot.CACHE.getNations();
     if (nations == null)
-      nations = new PoliticsAndWarBuilder()
-          .setApiKey(Bot.config.getCredentials().getMasterPWKey())
-          .build()
-          .getNations(true);
+      nations = Instances.getDefaultPW().getNations(true);
     List<SNationContainer> containers = nations.getNationsContainer();
     if (Utility.isNumber(args)) {
       int nid = Integer.parseInt(args);
