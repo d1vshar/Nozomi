@@ -56,7 +56,7 @@ public class VMBeigeService implements Runnable {
               for (Long guildId : guildIds) {
                 Guild guild = db.getGuild(guildId);
                 if (guild.isVmBeigeTracker()) {
-                  TextChannel channel = Bot.jda.getGuildById(guild.getId()).getTextChannelById(guild.getId());
+                  TextChannel channel = Bot.jda.getGuildById(guild.getId()).getTextChannelById(guild.getGuildChannels().getVmBeigeChannel());
                   channel.sendMessage(
                       new EmbedBuilder()
                           .setAuthor("https://politicsandwar.com/nation/id=" + nation.getNationId(), "https://politicsandwar.com/nation/id=" + nation.getNationId())
