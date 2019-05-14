@@ -3,11 +3,11 @@ package io.github.adorableskullmaster.nozomi.features.commands.utility;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import com.jagrosh.jdautilities.commons.JDAUtilitiesInfo;
 import io.github.adorableskullmaster.nozomi.Bot;
+import io.github.adorableskullmaster.nozomi.core.util.Utility;
 import io.github.adorableskullmaster.nozomi.features.commands.UtilityCommand;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.JDAInfo;
 
-import java.awt.*;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +36,7 @@ public class AboutCommand extends UtilityCommand {
           .addField("Version", getClass().getPackage().getImplementationVersion(), true)
           .addField("Author", commandEvent.getGuild().getMemberById(commandEvent.getClient().getOwnerId()).getAsMention(), true)
           .addField("Built using", String.join(", ", dependencies), false)
-          .setColor(Color.CYAN)
+          .setColor(Utility.getGuildSpecificRoleColor(commandEvent))
           .setFooter("Uwu", commandEvent.getGuild().getIconUrl())
           .setTimestamp(Instant.now());
       commandEvent.reply(embed.build());

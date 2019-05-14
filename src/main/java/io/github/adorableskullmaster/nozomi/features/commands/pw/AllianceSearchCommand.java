@@ -13,7 +13,6 @@ import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.MessageEmbed;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
-import java.awt.*;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,6 +23,7 @@ import java.util.stream.Collectors;
 public class AllianceSearchCommand extends PoliticsAndWarCommand {
 
   private final EventWaiter waiter;
+  private CommandEvent commandEvent;
 
   public AllianceSearchCommand(EventWaiter waiter) {
     this.waiter = waiter;
@@ -34,6 +34,7 @@ public class AllianceSearchCommand extends PoliticsAndWarCommand {
 
   @Override
   protected void execute(CommandEvent commandEvent) {
+    this.commandEvent = commandEvent;
     try {
       commandEvent.async(() -> {
         if (!commandEvent.getArgs().trim().isEmpty()) {
@@ -76,7 +77,7 @@ public class AllianceSearchCommand extends PoliticsAndWarCommand {
   private MessageEmbed embed(SAllianceContainer alliance) {
     EmbedBuilder embed = new EmbedBuilder();
     embed.setTitle(alliance.getName() + (alliance.getAcronym().isEmpty() ? "(" + alliance.getAcronym() + ")" : ""))
-        .setColor(Color.CYAN)
+        .setColor(Utility.getGuildSpecificRoleColor(commandEvent))
         .setAuthor("https://politicsandwar.com/alliance/id=" + alliance.getId(), "https://politicsandwar.com/alliance/id=" + alliance.getId())
         .addField("Color", alliance.getColor().toUpperCase(), false)
         .addField("Members", Integer.toString(alliance.getMembers()), false)
@@ -84,7 +85,7 @@ public class AllianceSearchCommand extends PoliticsAndWarCommand {
         .addField("Score", Double.toString(alliance.getScore()), false)
         .addField("Average Score", Double.toString(alliance.getAvgscore()), false)
         .addField("Discord Invite Link", alliance.getIrcchan(), false)
-        .setFooter("Politics And War", "https://cdn.discordapp.com/attachments/392736524308840448/485867309995524096/57ad65f5467e958a079d2ee44a0e80ce.png")
+        .setFooter("Politics And War", Utility.getPWIcon())
         .setTimestamp(Instant.now())
         .setImage(alliance.getFlagurl());
     return embed.build();

@@ -3,17 +3,10 @@ package io.github.adorableskullmaster.nozomi.core.util;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import io.github.adorableskullmaster.nozomi.Bot;
 import io.sentry.Sentry;
-import io.sentry.event.EventBuilder;
-import io.sentry.event.interfaces.ExceptionInterface;
 
 public class BotExceptionHandler {
 
-  private EventBuilder eventBuilder;
-
   public BotExceptionHandler() {
-    eventBuilder = new EventBuilder();
-    eventBuilder.withRelease(getClass().getPackage().getImplementationVersion());
-
     if (Bot.configuration.isSentryEnabled())
       Sentry.init(Bot.configuration.getSentryDSN());
     else
@@ -22,10 +15,8 @@ public class BotExceptionHandler {
 
   public void captureException(Throwable t) {
     Bot.LOGGER.error("Error Encountered: ", t);
-    eventBuilder.withMessage(t.getMessage())
-        .withSentryInterface(new ExceptionInterface(t));
     if (Bot.configuration.isSentryEnabled())
-      Sentry.capture(eventBuilder);
+      Sentry.capture(t);
   }
 
   public void captureException(Throwable t, CommandEvent event) {

@@ -1,6 +1,7 @@
 package io.github.adorableskullmaster.nozomi.features.commands;
 
 import io.github.adorableskullmaster.nozomi.Bot;
+import io.github.adorableskullmaster.nozomi.core.database.layer.Guild;
 import io.github.adorableskullmaster.nozomi.core.util.Instances;
 import net.dv8tion.jda.core.entities.Role;
 
@@ -14,12 +15,14 @@ public abstract class MemberPoliticsAndWarCommand extends PoliticsAndWarCommand 
         "❌ You do not have the Member role",
         event -> {
           try {
-            return event.getMember()
+            Guild guild = Instances.getDBLayer().getGuild(event.getGuild().getIdLong());
+            return guild!=null &&
+                event.getMember()
                 .getRoles()
                 .stream()
                 .map(Role::getIdLong)
                 .collect(Collectors.toList())
-                .contains(Instances.getDBLayer().getGuild(event.getGuild().getIdLong()).getMemberRole());
+                .contains(guild.getMemberRole());
           } catch (SQLException e) {
             Bot.BOT_EXCEPTION_HANDLER.captureException(e);
             return false;

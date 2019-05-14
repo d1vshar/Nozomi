@@ -139,15 +139,21 @@ public class SetupCommand extends Command {
     commandEvent.getTextChannel().sendMessage(":large_orange_diamond: Do you want to enable vm/beige notifier? (yes/no)").queue(
         (s) -> waitForEvent(
             commandEvent,
-            x -> {
+            (x) -> {
               if (x.getMessage().getContentDisplay().equalsIgnoreCase("yes")) {
                 commandEvent.getTextChannel().sendMessage("What's your VM/Beige tracker channel? (mention)").queue(
                     (c) -> waitForEvent(commandEvent, d -> {
                       settingsMap.put("vmb", d.getMessage().getMentionedChannels().get(0).getId());
-                      aatrack(commandEvent);
+                      commandEvent.getTextChannel().sendMessage("Enter score filter (number)").queue(
+                          (q)-> waitForEvent(commandEvent, z-> {
+                            settingsMap.put("scorefilter",z.getMessage().getContentDisplay());
+                            aatrack(commandEvent);
+                          })
+                      );
                     })
                 );
-              } else
+              }
+              else
                 aatrack(commandEvent);
             }
         )
@@ -225,7 +231,6 @@ public class SetupCommand extends Command {
   }
 
   private void main(CommandEvent commandEvent) {
-
     commandEvent.getTextChannel().sendMessage(":large_orange_diamond: What's your main server channel? (mention)").queue(
         (c) -> waitForEvent(commandEvent, x -> {
           settingsMap.put("main", x.getMessage().getMentionedChannels().get(0).getId());
@@ -245,6 +250,7 @@ public class SetupCommand extends Command {
       boolean isNationTracker = settingsMap.containsKey("aatrack");
       boolean isBank = settingsMap.containsKey("bank");
       boolean isVMBeige = settingsMap.containsKey("vmb");
+      int scoreFilter = Integer.parseInt(settingsMap.get("scorefilter"));
       boolean applicant = settingsMap.containsKey("applicant");
       boolean isJoin = settingsMap.containsKey("join");
       long memberrole = Long.parseLong(settingsMap.get("member"));
@@ -292,6 +298,7 @@ public class SetupCommand extends Command {
           .set(GUILDS.NATIONTRACKER, isNationTracker)
           .set(GUILDS.BANKNOTIFIER, isBank)
           .set(GUILDS.VMBEIGETRACKER, isVMBeige)
+          .set(GUILDS.NATIONSCOREFILTER, scoreFilter)
           .set(GUILDS.AUTOCOUNTER, true)
           .set(GUILDS.APPLICANTNOTIFIER, applicant)
           .set(GUILDS.JOINTEXTS, isJoin)

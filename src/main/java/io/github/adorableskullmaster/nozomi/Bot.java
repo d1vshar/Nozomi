@@ -71,9 +71,9 @@ public class Bot {
   private static void initServices() {
     LOGGER.info("Starting Services");
     ScheduledExecutorService executorService = new ScheduledThreadPoolExecutor(2);
-    executorService.scheduleAtFixedRate(new NewWarService(), 0, 5, TimeUnit.MINUTES);
-    executorService.scheduleAtFixedRate(new BankCheckService(), 0, 60, TimeUnit.MINUTES);
+    executorService.scheduleAtFixedRate(new NewWarService(), 0, configuration.getNewWarFrequency(), TimeUnit.MINUTES);
+    executorService.scheduleAtFixedRate(new BankCheckService(), 0, configuration.getBankCheckFrequency(), TimeUnit.MINUTES);
+    executorService.scheduleAtFixedRate(new NewApplicantService(), 0, configuration.getNewApplicantFrequency(), TimeUnit.MINUTES);
     executorService.scheduleAtFixedRate(new VMBeigeService(), 0, 1, TimeUnit.MINUTES);
-    executorService.scheduleAtFixedRate(new NewApplicantService(), 0, 120, TimeUnit.MINUTES);
   }
 }

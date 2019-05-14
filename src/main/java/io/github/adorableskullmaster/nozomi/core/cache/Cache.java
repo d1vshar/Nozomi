@@ -4,7 +4,6 @@ import io.github.adorableskullmaster.nozomi.Bot;
 import io.github.adorableskullmaster.nozomi.core.util.Instances;
 import io.github.adorableskullmaster.pw4j.PoliticsAndWar;
 import io.github.adorableskullmaster.pw4j.PoliticsAndWarAPIException;
-import io.github.adorableskullmaster.pw4j.domains.AllCities;
 import io.github.adorableskullmaster.pw4j.domains.Alliances;
 import io.github.adorableskullmaster.pw4j.domains.NationMilitary;
 import io.github.adorableskullmaster.pw4j.domains.Nations;
@@ -19,21 +18,19 @@ public class Cache {
 
   private EntityCache<Nations> nationsCache;
   private EntityCache<Alliances> allianceCache;
-  private EntityCache<AllCities> allCitiesCache;
   private EntityCache<NationMilitary> nationMilitaryCache;
 
   private PoliticsAndWar politicsAndWar;
 
   public Cache() {
     this.allianceCache = new EntityCache<>();
-    this.allCitiesCache = new EntityCache<>();
     this.nationMilitaryCache = new EntityCache<>();
     this.nationsCache = new EntityCache<>();
     this.politicsAndWar = Instances.getDefaultPW();
 
     ScheduledExecutorService executorService = new ScheduledThreadPoolExecutor(1);
     update();
-    executorService.scheduleAtFixedRate(new CacheUpdater(), 1800, 1800, TimeUnit.SECONDS);
+    executorService.scheduleAtFixedRate(new CacheUpdater(), 1, 1, TimeUnit.HOURS);
     Bot.LOGGER.info("Cache initiated");
   }
 
@@ -43,10 +40,6 @@ public class Cache {
 
   public Alliances getAlliances() {
     return allianceCache.getEntity();
-  }
-
-  public AllCities getAllCities() {
-    return allCitiesCache.getEntity();
   }
 
   public NationMilitary getNationMilitary() {
@@ -60,12 +53,10 @@ public class Cache {
 
       Nations nations = politicsAndWar.getNations(true);
       NationMilitary allMilitaries = politicsAndWar.getAllMilitaries();
-      AllCities allCities = politicsAndWar.getAllCities();
       Alliances alliances = politicsAndWar.getAlliances();
 
       nationsCache.updateEntity(nations);
       allianceCache.updateEntity(alliances);
-      allCitiesCache.updateEntity(allCities);
       nationMilitaryCache.updateEntity(allMilitaries);
 
       Instant end = Instant.now();

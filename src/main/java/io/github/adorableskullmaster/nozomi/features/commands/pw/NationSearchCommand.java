@@ -13,7 +13,6 @@ import io.github.adorableskullmaster.pw4j.domains.subdomains.SNationContainer;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.MessageEmbed;
 
-import java.awt.*;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,6 +23,7 @@ import java.util.stream.Collectors;
 public class NationSearchCommand extends PoliticsAndWarCommand {
 
   private final EventWaiter waiter;
+  private CommandEvent commandEvent;
 
   public NationSearchCommand(EventWaiter waiter) {
     this.waiter = waiter;
@@ -34,6 +34,7 @@ public class NationSearchCommand extends PoliticsAndWarCommand {
 
   @Override
   protected void execute(CommandEvent commandEvent) {
+    this.commandEvent = commandEvent;
     try {
       if (!commandEvent.getArgs().trim().isEmpty()) {
         List<SNationContainer> result = search(commandEvent.getArgs().trim());
@@ -42,7 +43,7 @@ public class NationSearchCommand extends PoliticsAndWarCommand {
             commandEvent.reply(embed(result.get(0)));
           else if (result.size() < 10) {
             OrderedMenu.Builder orderedMenu = new OrderedMenu.Builder();
-            orderedMenu.setColor(Color.CYAN)
+            orderedMenu.setColor(Utility.getGuildSpecificRoleColor(commandEvent))
                 .setEventWaiter(waiter)
                 .setTimeout(30, TimeUnit.SECONDS)
                 .setDescription("Choose one of the following: ")
@@ -71,7 +72,7 @@ public class NationSearchCommand extends PoliticsAndWarCommand {
   private MessageEmbed embed(SNationContainer nation) {
     EmbedBuilder embed = new EmbedBuilder();
     embed.setTitle(nation.getNation())
-        .setColor(Color.CYAN)
+        .setColor(Utility.getGuildSpecificRoleColor(commandEvent))
         .setAuthor("https://politicsandwar.com/nation/id=" + nation.getNationId(), "https://politicsandwar.com/nation/id=" + nation.getNationId())
         .addField("Leader Name", nation.getLeader(), true)
         .addField("Color", nation.getColor().toUpperCase(), true)
@@ -79,7 +80,7 @@ public class NationSearchCommand extends PoliticsAndWarCommand {
         .addField("Rank", Integer.toString(nation.getRank()), true)
         .addField("Score", Double.toString(nation.getScore()), true)
         .addField("Alliance", nation.getAlliance(), true)
-        .setFooter("Politics And War", "https://cdn.discordapp.com/attachments/392736524308840448/485867309995524096/57ad65f5467e958a079d2ee44a0e80ce.png")
+        .setFooter("Politics And War", Utility.getPWIcon())
         .setTimestamp(Instant.now());
     return embed.build();
   }

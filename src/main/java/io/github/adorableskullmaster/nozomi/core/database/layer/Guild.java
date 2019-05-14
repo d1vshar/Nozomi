@@ -17,6 +17,7 @@ public class Guild {
   private final boolean bankNotifier;
   private final boolean nationTracker;
   private final boolean vmBeigeTracker;
+  private final Integer nationScoreFilter;
   private final boolean autoCounter;
   private final long memberRole;
   private final boolean setup;
@@ -37,6 +38,7 @@ public class Guild {
     bankNotifier = record.getBanknotifier();
     nationTracker = record.getNationtracker();
     vmBeigeTracker = record.getVmbeigetracker();
+    nationScoreFilter = record.getNationscorefilter();
     autoCounter = record.getAutocounter();
     memberRole = record.getMemberrole();
     setup = record.getSetup();
@@ -104,5 +106,9 @@ public class Guild {
 
   public boolean isSetup() {
     return setup;
+  }
+
+  public Integer getNationScoreFilter() {
+    return nationScoreFilter;
   }
 }
