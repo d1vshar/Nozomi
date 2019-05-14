@@ -5,15 +5,15 @@ import io.github.adorableskullmaster.nozomi.core.database.generated.tables.recor
 import org.jooq.DSLContext;
 
 public class GuildChannels {
-  private final long offensiveChannel;
-  private final long defensiveChannel;
-  private final long mainChannel;
-  private final long govChannel;
-  private final long vmBeigeChannel;
-  private final long nationTrackerChannel;
-  private final long logChannel;
+  private final Long offensiveChannel;
+  private final Long defensiveChannel;
+  private final Long mainChannel;
+  private final Long govChannel;
+  private final Long vmBeigeChannel;
+  private final Long nationTrackerChannel;
+  private final Long logChannel;
 
-  GuildChannels(DSLContext db, long id) {
+  GuildChannels(DSLContext db, Long id) {
     ChannelsRecord channelsRecord = db.selectFrom(Channels.CHANNELS)
         .where(Channels.CHANNELS.ID.eq(id))
         .fetchOne();
@@ -27,31 +27,31 @@ public class GuildChannels {
     logChannel = channelsRecord.getLogchannel();
   }
 
-  public long getOffensiveChannel() {
+  public Long getOffensiveChannel() {
     return offensiveChannel;
   }
 
-  public long getDefensiveChannel() {
+  public Long getDefensiveChannel() {
     return defensiveChannel;
   }
 
-  public long getMainChannel() {
+  public Long getMainChannel() {
     return mainChannel;
   }
 
-  public long getGovChannel() {
+  public Long getGovChannel() {
     return govChannel;
   }
 
-  public long getVmBeigeChannel() {
+  public Long getVmBeigeChannel() {
     return vmBeigeChannel;
   }
 
-  public long getNationTrackerChannel() {
+  public Long getNationTrackerChannel() {
     return nationTrackerChannel;
   }
 
-  public long getLogChannel() {
+  public Long getLogChannel() {
     return logChannel;
   }
 }

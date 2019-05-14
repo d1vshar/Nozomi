@@ -6,23 +6,23 @@ import org.jooq.DSLContext;
 
 public class Guild {
 
-  private final long id;
+  private final Long id;
   private final DSLContext db;
   private final int pwId;
   private final String pwKey;
-  private final boolean joinTexts;
-  private final boolean leaveTexts;
-  private final boolean warNotifier;
-  private final boolean applicantNotifier;
-  private final boolean bankNotifier;
-  private final boolean nationTracker;
-  private final boolean vmBeigeTracker;
+  private final Boolean joinTexts;
+  private final Boolean leaveTexts;
+  private final Boolean warNotifier;
+  private final Boolean applicantNotifier;
+  private final Boolean bankNotifier;
+  private final Boolean nationTracker;
+  private final Boolean vmBeigeTracker;
   private final Integer nationScoreFilter;
-  private final boolean autoCounter;
-  private final long memberRole;
-  private final boolean setup;
+  private final Boolean autoCounter;
+  private final Long memberRole;
+  private final Boolean setup;
 
-  public Guild(DSLContext db, long id) {
+  public Guild(DSLContext db, Long id) {
     this.id = id;
     this.db = db;
     GuildsRecord record = db.selectFrom(Guilds.GUILDS)
@@ -64,47 +64,47 @@ public class Guild {
     return pwKey;
   }
 
-  public long getId() {
+  public Long getId() {
     return id;
   }
 
-  public boolean isJoinTexts() {
+  public Boolean isJoinTexts() {
     return joinTexts;
   }
 
-  public boolean isLeaveTexts() {
+  public Boolean isLeaveTexts() {
     return leaveTexts;
   }
 
-  public boolean isWarNotifier() {
+  public Boolean isWarNotifier() {
     return warNotifier;
   }
 
-  public boolean isApplicantNotifier() {
+  public Boolean isApplicantNotifier() {
     return applicantNotifier;
   }
 
-  public boolean isBankNotifier() {
+  public Boolean isBankNotifier() {
     return bankNotifier;
   }
 
-  public boolean isNationTracker() {
+  public Boolean isNationTracker() {
     return nationTracker;
   }
 
-  public boolean isVmBeigeTracker() {
+  public Boolean isVmBeigeTracker() {
     return vmBeigeTracker;
   }
 
-  public boolean isAutoCounter() {
+  public Boolean isAutoCounter() {
     return autoCounter;
   }
 
-  public long getMemberRole() {
+  public Long getMemberRole() {
     return memberRole;
   }
 
-  public boolean isSetup() {
+  public Boolean isSetup() {
     return setup;
   }
 

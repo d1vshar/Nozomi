@@ -11,7 +11,7 @@ import static io.github.adorableskullmaster.nozomi.core.database.generated.table
 
 public class GuildApplicants {
   private final DSLContext db;
-  private final long id;
+  private final Long id;
 
   GuildApplicants(DSLContext db, long id) {
     this.db = db;

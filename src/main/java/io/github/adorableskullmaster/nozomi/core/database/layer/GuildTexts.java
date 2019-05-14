@@ -6,8 +6,8 @@ import org.jooq.DSLContext;
 
 public class GuildTexts {
 
-  private boolean join;
-  private boolean leave;
+  private Boolean join;
+  private Boolean leave;
   private String joinText;
   private String leaveText;
   private String joinImage;
