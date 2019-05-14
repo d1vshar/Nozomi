@@ -40,8 +40,7 @@ public class StatusCommand extends OwnerCommand {
             boolean nationsCache = Bot.CACHE.getNations() != null;
             boolean alliancesCache = Bot.CACHE.getAlliances() != null;
             boolean militaryCache = Bot.CACHE.getNationMilitary() != null;
-            boolean citiesCache = Bot.CACHE.getAllCities() != null;
-            List<Boolean> booleanList = new ArrayList<>(Arrays.asList(nationsCache, alliancesCache, militaryCache, citiesCache));
+            List<Boolean> booleanList = new ArrayList<>(Arrays.asList(nationsCache, alliancesCache, militaryCache));
 
             EmbedBuilder embedBuilder = new EmbedBuilder();
             embedBuilder.setTitle("Bot Status")

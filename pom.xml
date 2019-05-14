@@ -6,7 +6,7 @@
 
     <groupId>io.github.adorable-skullmaster</groupId>
     <artifactId>Nozomi</artifactId>
-    <version>0.7.0</version>
+    <version>0.7.1</version>
     <name>Nozomi</name>
     <url>https://github.com/Adorable-SkullMaster/Nozomi</url>
     <packaging>jar</packaging>
@@ -14,9 +14,6 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <maven.compiler.target>1.8</maven.compiler.target>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <java.version>1.8</java.version>
     </properties>
 
     <repositories>
@@ -46,7 +43,7 @@
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <version>42.2.1</version>
+            <version>42.2.5</version>
         </dependency>
         <dependency>
             <groupId>com.google.code.gson</groupId>
@@ -72,7 +69,7 @@
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
-            <version>4.5.6</version>
+            <version>4.5.8</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -87,7 +84,7 @@
         <dependency>
             <groupId>io.sentry</groupId>
             <artifactId>sentry-log4j2</artifactId>
-            <version>1.7.16</version>
+            <version>1.7.22</version>
         </dependency>
         <dependency>
             <groupId>commons-io</groupId>
@@ -102,17 +99,17 @@
         <dependency>
             <groupId>org.jooq</groupId>
             <artifactId>jooq</artifactId>
-            <version>3.11.10</version>
+            <version>3.11.11</version>
         </dependency>
         <dependency>
             <groupId>org.jooq</groupId>
             <artifactId>jooq-meta</artifactId>
-            <version>3.11.10</version>
+            <version>3.11.11</version>
         </dependency>
         <dependency>
             <groupId>org.jooq</groupId>
             <artifactId>jooq-codegen</artifactId>
-            <version>3.11.10</version>
+            <version>3.11.11</version>
         </dependency>
 
         <dependency>
@@ -120,6 +117,12 @@
             <artifactId>junit</artifactId>
             <version>4.11</version>
             <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.annotation</groupId>
+            <artifactId>javax.annotation-api</artifactId>
+            <version>1.3.2</version>
         </dependency>
     </dependencies>
 
@@ -150,6 +153,14 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.0</version>
+                <configuration>
+                    <release>12</release>
+                </configuration>
             </plugin>
         </plugins>
     </build>
