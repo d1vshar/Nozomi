@@ -31,7 +31,7 @@ public class NewApplicantService implements Runnable {
 
           for (SNationContainer applicant : newApplicants) {
             EmbedBuilder embedBuilder = new EmbedBuilder().setTitle("New Applicant: " + applicant.getNation())
-                .setColor(Color.CYAN)
+                .setColor(Color.GREEN)
                 .setAuthor("https://politicsandwar.com/alliance/id=" + guild.getPwId(), "https://politicsandwar.com/alliance/id=" + guild.getPwId());
 
             Bot.jda.getTextChannelById(guild.getGuildChannels().getGovChannel())

@@ -3,6 +3,7 @@ package io.github.adorableskullmaster.nozomi.features.commands.pw.member;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import io.github.adorableskullmaster.nozomi.Bot;
 import io.github.adorableskullmaster.nozomi.core.util.Instances;
+import io.github.adorableskullmaster.nozomi.core.util.Utility;
 import io.github.adorableskullmaster.nozomi.features.commands.MemberPoliticsAndWarCommand;
 import io.github.adorableskullmaster.pw4j.PoliticsAndWar;
 import io.github.adorableskullmaster.pw4j.domains.Alliance;
@@ -10,7 +11,6 @@ import io.github.adorableskullmaster.pw4j.domains.City;
 import io.github.adorableskullmaster.pw4j.domains.Nation;
 import net.dv8tion.jda.core.EmbedBuilder;
 
-import java.awt.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
@@ -21,6 +21,8 @@ import java.util.List;
 
 public class AnalyzeCommand extends MemberPoliticsAndWarCommand {
 
+  private CommandEvent commandEvent;
+
   public AnalyzeCommand() {
     this.name = "analyze";
     this.aliases = new String[]{"kowalski"};
@@ -30,6 +32,7 @@ public class AnalyzeCommand extends MemberPoliticsAndWarCommand {
 
   @Override
   protected void execute(CommandEvent commandEvent) {
+    this.commandEvent = commandEvent;
     try {
       commandEvent.async(
           () -> {
@@ -155,11 +158,11 @@ public class AnalyzeCommand extends MemberPoliticsAndWarCommand {
                                  String allianceString) {
     String url = "https://politicsandwar.com/nation/id=" + nation.getNationid();
     EmbedBuilder embedBuilder = new EmbedBuilder().setTitle("Kowalski, analysis")
-        .setColor(Color.CYAN)
+        .setColor(Utility.getGuildSpecificRoleColor(commandEvent))
         .setAuthor(url, url)
         .setThumbnail("https://i.imgur.com/qbmpc0p.jpg")
         .addField("Target Nation", "[" + nation.getName() + "](" + url + ")", false)
-        .setFooter("Politics And War", "https://cdn.discordapp.com/attachments/392736524308840448/485867309995524096/57ad65f5467e958a079d2ee44a0e80ce.png")
+        .setFooter("Politics And War", Utility.getPWIcon())
         .setTimestamp(Instant.now());
 
     String ns = String.join("\n", nationInfoString, rawString, manuComPowString, militaryString);

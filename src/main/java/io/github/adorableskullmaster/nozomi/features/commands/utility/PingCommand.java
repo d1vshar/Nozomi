@@ -2,10 +2,9 @@ package io.github.adorableskullmaster.nozomi.features.commands.utility;
 
 import com.jagrosh.jdautilities.command.CommandEvent;
 import io.github.adorableskullmaster.nozomi.Bot;
+import io.github.adorableskullmaster.nozomi.core.util.Utility;
 import io.github.adorableskullmaster.nozomi.features.commands.UtilityCommand;
 import net.dv8tion.jda.core.EmbedBuilder;
-
-import java.awt.*;
 
 public class PingCommand extends UtilityCommand {
 
@@ -21,7 +20,7 @@ public class PingCommand extends UtilityCommand {
       long ping = commandEvent.getJDA().getPing();
       EmbedBuilder embed = new EmbedBuilder();
       embed.appendDescription("Pong! It took me " + Long.toString(ping) + "ms to respond!")
-          .setColor(Color.CYAN);
+          .setColor(Utility.getGuildSpecificRoleColor(commandEvent));
       commandEvent.reply(embed.build());
     } catch (Exception e) {
       Bot.BOT_EXCEPTION_HANDLER.captureException(e, commandEvent);

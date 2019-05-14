@@ -18,13 +18,14 @@ import net.dv8tion.jda.core.entities.Message;
 
 import java.awt.*;
 import java.time.Instant;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class CounterCommand extends MemberPoliticsAndWarCommand {
 
   private final PoliticsAndWar politicsAndWar;
+  private CommandEvent commandEvent;
 
   public CounterCommand() {
     this.name = "counter";
@@ -36,6 +37,7 @@ public class CounterCommand extends MemberPoliticsAndWarCommand {
 
   @Override
   protected void execute(CommandEvent commandEvent) {
+    this.commandEvent = commandEvent;
     try {
       Guild guild = Instances.getDBLayer().getGuild(commandEvent.getGuild().getIdLong());
       commandEvent.async(() -> {
@@ -82,12 +84,19 @@ public class CounterCommand extends MemberPoliticsAndWarCommand {
 
   private EmbedBuilder createCounterEmbed(int targetId, double targetNSM, Set<Map.Entry<Integer, Double>> top3) {
     SNationContainer targetContainer = getNationFromNationsCache(targetId);
-    EmbedBuilder embedBuilder = new EmbedBuilder().setColor(Color.CYAN)
+
+    Color color;
+    if(commandEvent==null)
+      color = Color.CYAN;
+    else
+      color= Utility.getGuildSpecificRoleColor(commandEvent);
+
+    EmbedBuilder embedBuilder = new EmbedBuilder().setColor(color)
         .setAuthor(targetContainer.getNation() + " - " + targetContainer.getScore() + " - " + String.format("%.2f", targetNSM),
             "https://politicsandwar.com/nation/id=" + targetContainer.getNationId())
         .setTitle("Counter Finder")
         .setDescription("**_Nation Name - Score - Nozomi Strength Meter©_**")
-        .setFooter("Politics And War", "https://cdn.discordapp.com/attachments/392736524308840448/485867309995524096/57ad65f5467e958a079d2ee44a0e80ce.png")
+        .setFooter("Politics And War", Utility.getPWIcon())
         .setTimestamp(Instant.now());
 
     int count = 1;

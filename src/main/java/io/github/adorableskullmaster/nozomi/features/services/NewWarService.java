@@ -10,6 +10,7 @@ import io.github.adorableskullmaster.nozomi.features.commands.pw.member.CounterC
 import io.github.adorableskullmaster.pw4j.PoliticsAndWar;
 import io.github.adorableskullmaster.pw4j.domains.War;
 import io.github.adorableskullmaster.pw4j.domains.Wars;
+import io.github.adorableskullmaster.pw4j.domains.subdomains.NationMilitaryContainer;
 import io.github.adorableskullmaster.pw4j.domains.subdomains.SNationContainer;
 import io.github.adorableskullmaster.pw4j.domains.subdomains.SWarContainer;
 import io.github.adorableskullmaster.pw4j.domains.subdomains.WarContainer;
@@ -55,19 +56,33 @@ public class NewWarService implements Runnable {
         for (Long guildId : guildIds) {
           Guild guild = db.getGuild(guildId);
           List<SNationContainer> nations = Bot.CACHE.getNations().getNationsContainer();
+          List<NationMilitaryContainer> nationMilitaries = Bot.CACHE.getNationMilitary().getNationMilitaries();
+
+          int aggId = Integer.parseInt(warObj.getAggressorId());
+          int defId = Integer.parseInt(warObj.getDefenderId());
 
           SNationContainer agg = nations.stream()
-              .filter(nationContainer -> nationContainer.getNationId() == Integer.parseInt(warObj.getAggressorId()))
+              .filter(nationContainer -> nationContainer.getNationId() == aggId)
               .findFirst()
               .orElse(null);
           SNationContainer def = nations.stream()
-              .filter(nationContainer -> nationContainer.getNationId() == Integer.parseInt(warObj.getDefenderId()))
+              .filter(nationContainer -> nationContainer.getNationId() == defId)
+              .findFirst()
+              .orElse(null);
+
+          NationMilitaryContainer aggMil = nationMilitaries.stream()
+              .filter(nationMilitaryContainer -> nationMilitaryContainer.getNationId() == aggId)
+              .findFirst()
+              .orElse(null);
+
+          NationMilitaryContainer defMil = nationMilitaries.stream()
+              .filter(nationMilitaryContainer -> nationMilitaryContainer.getNationId() == defId)
               .findFirst()
               .orElse(null);
 
           if (guild.isSetup() && guild.isWarNotifier() && (agg != null && def != null)) {
             if (agg.getAllianceid() == guild.getPwId() || def.getAllianceid() == guild.getPwId()) {
-              EmbedBuilder embedBuilder = embed(warObj, agg, def);
+              EmbedBuilder embedBuilder = embed(warObj, agg, def, aggMil, defMil);
 
               if (agg.getAllianceid() == guild.getPwId()) {
                 embedBuilder.setColor(Color.GREEN);
@@ -100,20 +115,44 @@ public class NewWarService implements Runnable {
     }
   }
 
-  private EmbedBuilder embed(WarContainer warObj, SNationContainer agg, SNationContainer def) {
-    return new EmbedBuilder().setTitle("New War: " + warObj.getWarType())
-        .setThumbnail(Bot.jda.getSelfUser().getAvatarUrl())
-        .setDescription("Reason: " + warObj.getWarReason())
-        .addField("Aggressor Nation Name", "[" + agg.getNation() + "](https://politicsandwar.com/nation/id=" + agg.getNationId() + ")", true)
-        .addField("Aggressor Leader Name", agg.getLeader(), true)
-        .addField("Aggressor Alliance Name", "[" + warObj.getAggressorAllianceName() + "](https://politicsandwar.com/alliance/id=" + agg.getAllianceid() + ")", true)
-        .addField("Aggressor Score", Double.toString(agg.getScore()), true)
-        .addField("Defender Nation Name", "[" + def.getNation() + "](https://politicsandwar.com/nation/id=" + def.getNationId() + ")", true)
-        .addField("Defender Leader Name", def.getLeader(), true)
-        .addField("Defender Alliance Name", "[" + warObj.getDefenderAllianceName() + "](https://politicsandwar.com/alliance/id=" + def.getAllianceid() + ")",
+  private EmbedBuilder embed(WarContainer warObj, SNationContainer agg, SNationContainer def, NationMilitaryContainer aggMil, NationMilitaryContainer defMil) {
+    return new EmbedBuilder().setTitle(String.format("%s on %s: " + warObj.getWarType(), agg.getAlliance(), def.getAlliance()))
+        .setDescription(String.format(
+            "[%s of %s](https://politicsandwar.com/nation/id=%d) attacked [%s of %s](https://politicsandwar.com/nation/id=%d) \n\n Reason: `%s`",
+            agg.getLeader(), agg.getNation(), agg.getNationId(), def.getLeader(), def.getNation(), def.getNationId(), warObj.getWarReason()))
+        .addField("Score", String.format(
+            "%.1f on %.1f",
+            agg.getScore(), def.getScore()
+            ),
             true)
-        .addField("Defender Score", Double.toString(def.getScore()), true)
-        .setFooter("Politics And War", "https://cdn.discordapp.com/attachments/392736524308840448/485867309995524096/57ad65f5467e958a079d2ee44a0e80ce.png")
+        .addField("Cities", String.format(
+            "%d on %d",
+            agg.getCities(), def.getCities()
+            ),
+            true)
+        .addField("Last Active", String.format(
+            "%s on %s",
+            Utility.getMinutesString(agg.getMinutessinceactive()), Utility.getMinutesString(def.getMinutessinceactive())
+            ),
+            true)
+        .addField("War Policy", String.format(
+            "%s on %s",
+            agg.getWarPolicy(), def.getWarPolicy()
+            ),
+            true)
+        .addField("War Slots", String.format(
+            "%d/5 & %d/3 on %d/5 & %d/3",
+            agg.getOffensivewars(), agg.getDefensivewars(),
+            def.getOffensivewars(), def.getDefensivewars()
+            ),
+            true)
+        .addField("Military", String.format(
+            "%d/%d/%d/%d on %d/%d/%d/%d",
+            aggMil.getSoldiers(), aggMil.getTanks(), aggMil.getAircraft(), aggMil.getShips(),
+            defMil.getSoldiers(), defMil.getTanks(), defMil.getAircraft(), defMil.getShips()
+            ),
+            true)
+        .setFooter("Politics And War", Utility.getPWIcon())
         .setTimestamp(Utility.convertISO8601(warObj.getDate()));
   }
 

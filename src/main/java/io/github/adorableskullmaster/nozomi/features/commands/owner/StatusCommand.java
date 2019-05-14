@@ -2,10 +2,10 @@ package io.github.adorableskullmaster.nozomi.features.commands.owner;
 
 import com.jagrosh.jdautilities.command.CommandEvent;
 import io.github.adorableskullmaster.nozomi.Bot;
+import io.github.adorableskullmaster.nozomi.core.util.Utility;
 import io.github.adorableskullmaster.nozomi.features.commands.OwnerCommand;
 import net.dv8tion.jda.core.EmbedBuilder;
 
-import java.awt.*;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -44,7 +44,7 @@ public class StatusCommand extends OwnerCommand {
 
             EmbedBuilder embedBuilder = new EmbedBuilder();
             embedBuilder.setTitle("Bot Status")
-                .setColor(Color.CYAN)
+                .setColor(Utility.getGuildSpecificRoleColor(commandEvent))
                 .addField("Uptime", hrs + "h " + min + "m " + sec + "s", true)
                 .addField("WebSocket Ping", Long.toString(ping), true)
                 .addField("Current Memory", totalMemory + "MB", true)

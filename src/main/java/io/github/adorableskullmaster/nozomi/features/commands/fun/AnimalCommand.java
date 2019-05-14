@@ -3,10 +3,10 @@ package io.github.adorableskullmaster.nozomi.features.commands.fun;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import io.github.adorableskullmaster.nozomi.Bot;
 import io.github.adorableskullmaster.nozomi.core.models.animals.RandomAnimal;
+import io.github.adorableskullmaster.nozomi.core.util.Utility;
 import io.github.adorableskullmaster.nozomi.features.commands.FunCommand;
 import net.dv8tion.jda.core.EmbedBuilder;
 
-import java.awt.*;
 import java.util.Random;
 
 public class AnimalCommand extends FunCommand {
@@ -62,7 +62,7 @@ public class AnimalCommand extends FunCommand {
       }
       EmbedBuilder embedBuilder = new EmbedBuilder();
       embedBuilder.setTitle("Random Animal")
-          .setColor(Color.CYAN)
+          .setColor(Utility.getGuildSpecificRoleColor(commandEvent))
           .setImage(url);
       commandEvent.reply(embedBuilder.build());
     } catch (Exception e) {

@@ -4,6 +4,7 @@ import io.github.adorableskullmaster.nozomi.Bot;
 import io.github.adorableskullmaster.nozomi.core.database.layer.Guild;
 import io.github.adorableskullmaster.nozomi.core.database.layer.GuildTexts;
 import io.github.adorableskullmaster.nozomi.core.util.Instances;
+import io.github.adorableskullmaster.nozomi.core.util.Utility;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.entities.Message;
@@ -11,7 +12,6 @@ import net.dv8tion.jda.core.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.core.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
-import java.awt.*;
 import java.sql.SQLException;
 
 public class GenericListener extends ListenerAdapter {
@@ -43,7 +43,7 @@ public class GenericListener extends ListenerAdapter {
     MessageBuilder messageBuilder = new MessageBuilder();
     messageBuilder.setContent(String.format(event.getUser().getAsMention() + ", welcome to %s!", event.getGuild().getName()));
     EmbedBuilder embedBuilder = new EmbedBuilder();
-    embedBuilder.setColor(Color.CYAN)
+    embedBuilder.setColor(Utility.getGuildSpecificRoleColor(event))
         .setAuthor(event.getGuild().getName(), "https://politicsandwar.com/alliance/id=" + guild.getPwId(), event.getGuild().getIconUrl())
         .setDescription(guildTexts.getJoinText());
     if (guildTexts.getJoinImage() != null)
