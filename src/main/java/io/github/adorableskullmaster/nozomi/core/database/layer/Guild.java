@@ -17,7 +17,7 @@ public class Guild {
   private final boolean bankNotifier;
   private final boolean nationTracker;
   private final boolean vmBeigeTracker;
-  private final int nationScoreFilter;
+  private final Integer nationScoreFilter;
   private final boolean autoCounter;
   private final long memberRole;
   private final boolean setup;
@@ -108,7 +108,7 @@ public class Guild {
     return setup;
   }
 
-  public int getNationScoreFilter() {
+  public Integer getNationScoreFilter() {
     return nationScoreFilter;
   }
 }

@@ -51,7 +51,10 @@ public class VMBeigeService implements Runnable {
           if (Integer.parseInt(nation.getVacmode()) == 1) {
             for (Long guildId : guildIds) {
               Guild guild = db.getGuild(guildId);
-              if (guild.isVmBeigeTracker() && nation.getScore()>=guild.getNationScoreFilter()) {
+              Integer filter = guild.getNationScoreFilter();
+              if(filter==null)
+                filter = 500;
+              if (guild.isVmBeigeTracker() && nation.getScore()>=filter) {
                 TextChannel channel = Bot.jda.getGuildById(guild.getId()).getTextChannelById(guild.getGuildChannels().getVmBeigeChannel());
                 channel.sendMessage(
                     new EmbedBuilder()
