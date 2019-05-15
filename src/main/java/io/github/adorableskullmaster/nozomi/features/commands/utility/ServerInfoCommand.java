@@ -2,7 +2,7 @@ package io.github.adorableskullmaster.nozomi.features.commands.utility;
 
 import com.jagrosh.jdautilities.command.CommandEvent;
 import io.github.adorableskullmaster.nozomi.Bot;
-import io.github.adorableskullmaster.nozomi.core.database.layer.Guild;
+import io.github.adorableskullmaster.nozomi.core.database.layer.GuildSettings;
 import io.github.adorableskullmaster.nozomi.core.util.Instances;
 import io.github.adorableskullmaster.nozomi.features.commands.UtilityCommand;
 import io.github.adorableskullmaster.pw4j.PoliticsAndWar;
@@ -27,8 +27,8 @@ public class ServerInfoCommand extends UtilityCommand {
   protected void execute(CommandEvent commandEvent) {
     try {
       commandEvent.getChannel().sendTyping().queue();
-      Guild guild = Instances.getDBLayer().getGuild(commandEvent.getGuild().getIdLong());
-      int aid = guild.getPwId();
+      GuildSettings guildSettings = Instances.getBotDatabaseLayer().getGuildSettings(commandEvent.getGuild().getIdLong());
+      int aid = guildSettings.getModuleSettings().getAaId();
 
       PoliticsAndWar politicsAndWar = Instances.getDefaultPW();
       Alliance alliance = politicsAndWar.getAlliance(aid);

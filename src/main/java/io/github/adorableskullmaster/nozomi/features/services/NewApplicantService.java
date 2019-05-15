@@ -1,8 +1,9 @@
 package io.github.adorableskullmaster.nozomi.features.services;
 
 import io.github.adorableskullmaster.nozomi.Bot;
-import io.github.adorableskullmaster.nozomi.core.database.DB;
-import io.github.adorableskullmaster.nozomi.core.database.layer.Guild;
+import io.github.adorableskullmaster.nozomi.core.database.layer.BotDatabase;
+import io.github.adorableskullmaster.nozomi.core.database.layer.GuildSettings;
+import io.github.adorableskullmaster.nozomi.core.database.layer.tables.ModuleSettings;
 import io.github.adorableskullmaster.nozomi.core.util.Instances;
 import io.github.adorableskullmaster.pw4j.domains.subdomains.SNationContainer;
 import net.dv8tion.jda.core.EmbedBuilder;
@@ -19,22 +20,24 @@ public class NewApplicantService implements Runnable {
   public void run() {
     try {
       Bot.LOGGER.info("Starting Applicant Thread");
-      DB db = Instances.getDBLayer();
-      List<Long> guildIds = db.getAllSetupGuildIds();
+      BotDatabase db = Instances.getBotDatabaseLayer();
+      List<Long> guildIds = db.getAllActivatedGuildIds();
 
       for (Long guildId : guildIds) {
 
-        Guild guild = db.getGuild(guildId);
+        GuildSettings guildSettings = db.getGuildSettings(guildId);
+        ModuleSettings moduleSettings = guildSettings.getModuleSettings();
 
-        if (guild.isSetup() && guild.isApplicantNotifier()) {
-          List<SNationContainer> newApplicants = getNewApplicants(guild);
+        if (moduleSettings.isApplicantModuleEnabled()) {
+          List<SNationContainer> newApplicants = getNewApplicants(db,guildId,moduleSettings.getAaId());
 
           for (SNationContainer applicant : newApplicants) {
             EmbedBuilder embedBuilder = new EmbedBuilder().setTitle("New Applicant: " + applicant.getNation())
                 .setColor(Color.GREEN)
-                .setAuthor("https://politicsandwar.com/alliance/id=" + guild.getPwId(), "https://politicsandwar.com/alliance/id=" + guild.getPwId());
+                .setAuthor("https://politicsandwar.com/alliance/id=" + moduleSettings.getAaId(),
+                    "https://politicsandwar.com/alliance/id=" + moduleSettings.getAaId());
 
-            Bot.jda.getTextChannelById(guild.getGuildChannels().getGovChannel())
+            Bot.jda.getTextChannelById(moduleSettings.getId())
                 .sendMessage(embedBuilder.build())
                 .queue();
 
@@ -46,15 +49,15 @@ public class NewApplicantService implements Runnable {
     }
   }
 
-  private List<SNationContainer> getNewApplicants(Guild guild) {
-    List<SNationContainer> containerApplicants = getCurrentApplicants(guild.getPwId());
+  private List<SNationContainer> getNewApplicants(BotDatabase botDatabase, long id, int aid) {
+    List<SNationContainer> containerApplicants = getCurrentApplicants(aid);
 
     List<Integer> currentApplicants = containerApplicants.stream()
         .map(SNationContainer::getNationId)
         .collect(Collectors.toList());
-    List<Integer> loadedApplicants = getLoadedApplicants(guild);
+    List<Integer> loadedApplicants = getLoadedApplicants(botDatabase, id);
 
-    update(guild, currentApplicants);
+    update(botDatabase, currentApplicants, id);
     List<Integer> diff = getDiff(loadedApplicants, currentApplicants);
 
     return containerApplicants.stream()
@@ -81,10 +84,10 @@ public class NewApplicantService implements Runnable {
         .collect(Collectors.toList());
   }
 
-  private List<Integer> getLoadedApplicants(Guild guild) {
+  private List<Integer> getLoadedApplicants(BotDatabase botDatabase, long id) {
     ArrayList<Integer> result = new ArrayList<>();
     try {
-      List<Integer> applicants = guild.getGuildApplicants().getAllApplicants();
+      List<Integer> applicants = botDatabase.getApplicants(id);
       if (applicants != null)
         return applicants;
     } catch (DataAccessException e) {
@@ -94,9 +97,9 @@ public class NewApplicantService implements Runnable {
     return result;
   }
 
-  private void update(Guild guild, List<Integer> list) {
+  private void update(BotDatabase botDatabase, List<Integer> list, long id) {
     try {
-      guild.getGuildApplicants().update(list);
+      botDatabase.updateApplicants(list,id);
     } catch (DataAccessException e) {
       Bot.BOT_EXCEPTION_HANDLER.captureException(e);
     }

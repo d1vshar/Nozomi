@@ -28,7 +28,7 @@ import java.util.List;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = -2055724119;
+    private static final long serialVersionUID = -453281519;
 
     /**
      * The reference instance of <code>public</code>
@@ -36,24 +36,39 @@ public class Public extends SchemaImpl {
     public static final Public PUBLIC = new Public();
 
     /**
+     * The table <code>public.applicantmodule</code>.
+     */
+    public final Applicantmodule APPLICANTMODULE = io.github.adorableskullmaster.nozomi.core.database.generated.tables.Applicantmodule.APPLICANTMODULE;
+
+    /**
      * The table <code>public.applicants</code>.
      */
     public final Applicants APPLICANTS = io.github.adorableskullmaster.nozomi.core.database.generated.tables.Applicants.APPLICANTS;
 
     /**
-     * The table <code>public.channels</code>.
+     * The table <code>public.bankmodule</code>.
      */
-    public final Channels CHANNELS = io.github.adorableskullmaster.nozomi.core.database.generated.tables.Channels.CHANNELS;
+    public final Bankmodule BANKMODULE = io.github.adorableskullmaster.nozomi.core.database.generated.tables.Bankmodule.BANKMODULE;
 
     /**
-     * The table <code>public.guilds</code>.
+     * The table <code>public.guildconfig</code>.
      */
-    public final Guilds GUILDS = io.github.adorableskullmaster.nozomi.core.database.generated.tables.Guilds.GUILDS;
+    public final Guildconfig GUILDCONFIG = io.github.adorableskullmaster.nozomi.core.database.generated.tables.Guildconfig.GUILDCONFIG;
 
     /**
-     * The table <code>public.texts</code>.
+     * The table <code>public.textsmodule</code>.
      */
-    public final Texts TEXTS = io.github.adorableskullmaster.nozomi.core.database.generated.tables.Texts.TEXTS;
+    public final Textsmodule TEXTSMODULE = io.github.adorableskullmaster.nozomi.core.database.generated.tables.Textsmodule.TEXTSMODULE;
+
+    /**
+     * The table <code>public.vacmodemodule</code>.
+     */
+    public final Vacmodemodule VACMODEMODULE = io.github.adorableskullmaster.nozomi.core.database.generated.tables.Vacmodemodule.VACMODEMODULE;
+
+    /**
+     * The table <code>public.warmodule</code>.
+     */
+    public final Warmodule WARMODULE = io.github.adorableskullmaster.nozomi.core.database.generated.tables.Warmodule.WARMODULE;
 
     /**
      * The table <code>public.wars</code>.
@@ -85,10 +100,13 @@ public class Public extends SchemaImpl {
 
     private final List<Table<?>> getTables0() {
         return Arrays.<Table<?>>asList(
+            Applicantmodule.APPLICANTMODULE,
             Applicants.APPLICANTS,
-            Channels.CHANNELS,
-            Guilds.GUILDS,
-            Texts.TEXTS,
+            Bankmodule.BANKMODULE,
+            Guildconfig.GUILDCONFIG,
+            Textsmodule.TEXTSMODULE,
+            Vacmodemodule.VACMODEMODULE,
+            Warmodule.WARMODULE,
             Wars.WARS);
     }
 }

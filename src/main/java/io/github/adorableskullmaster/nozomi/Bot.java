@@ -6,7 +6,6 @@ import io.github.adorableskullmaster.nozomi.core.cache.Cache;
 import io.github.adorableskullmaster.nozomi.core.config.Configuration;
 import io.github.adorableskullmaster.nozomi.core.util.BotExceptionHandler;
 import io.github.adorableskullmaster.nozomi.core.util.Setup;
-import io.github.adorableskullmaster.nozomi.features.hooks.DatabaseListener;
 import io.github.adorableskullmaster.nozomi.features.hooks.GenericListener;
 import io.github.adorableskullmaster.nozomi.features.services.BankCheckService;
 import io.github.adorableskullmaster.nozomi.features.services.NewApplicantService;
@@ -38,7 +37,6 @@ public class Bot {
     configuration = new Configuration();
     BOT_EXCEPTION_HANDLER = new BotExceptionHandler();
     CACHE = new Cache();
-    Setup.initDatabase();
   }
 
   public static void main(String[] args) throws LoginException, InterruptedException {
@@ -61,7 +59,6 @@ public class Bot {
         .addEventListener(eventWaiter)
         .addEventListener(clientBuilder.build())
         .addEventListener(new GenericListener())
-        .addEventListener(new DatabaseListener())
         .build()
         .awaitReady();
 

@@ -22,11 +22,6 @@
             <name>jcenter-bintray</name>
             <url>http://jcenter.bintray.com</url>
         </repository>
-        <repository> <!-- Required for OkHTTP 3.13.0-SNAPSHOT -->
-            <id>sonatype</id>
-            <name>sonatype-snapshots</name>
-            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
-        </repository>
     </repositories>
 
     <dependencies>
@@ -58,7 +53,7 @@
         <dependency>
             <groupId>net.dv8tion</groupId>
             <artifactId>JDA</artifactId>
-            <version>3.8.2_459</version>
+            <version>3.8.3_463</version>
         </dependency>
         <dependency>
             <groupId>com.jagrosh</groupId>

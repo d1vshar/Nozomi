@@ -1,8 +1,9 @@
 package io.github.adorableskullmaster.nozomi.features.services;
 
 import io.github.adorableskullmaster.nozomi.Bot;
-import io.github.adorableskullmaster.nozomi.core.database.DB;
-import io.github.adorableskullmaster.nozomi.core.database.layer.Guild;
+import io.github.adorableskullmaster.nozomi.core.database.layer.BotDatabase;
+import io.github.adorableskullmaster.nozomi.core.database.layer.GuildSettings;
+import io.github.adorableskullmaster.nozomi.core.database.layer.tables.VacModeModule;
 import io.github.adorableskullmaster.nozomi.core.util.Instances;
 import io.github.adorableskullmaster.nozomi.core.util.Utility;
 import io.github.adorableskullmaster.pw4j.PoliticsAndWarAPIException;
@@ -42,20 +43,20 @@ public class VMBeigeService implements Runnable {
   private void process() throws PoliticsAndWarAPIException, NullPointerException {
     try {
       Nations nationsObj = Bot.CACHE.getNations();
-      DB db = Instances.getDBLayer();
-      List<Long> guildIds = db.getAllSetupGuildIds();
+      BotDatabase db = Instances.getBotDatabaseLayer();
+      List<Long> guildIds = db.getAllActivatedGuildIds();
 
       if (nationsObj.isSuccess()) {
         List<SNationContainer> nations = nationsObj.getNationsContainer();
         for (SNationContainer nation : nations) {
           if (Integer.parseInt(nation.getVacmode()) == 1) {
             for (Long guildId : guildIds) {
-              Guild guild = db.getGuild(guildId);
-              Integer filter = guild.getNationScoreFilter();
-              if(filter==null)
-                filter = 500;
-              if (guild.isVmBeigeTracker() && nation.getScore()>=filter) {
-                TextChannel channel = Bot.jda.getGuildById(guild.getId()).getTextChannelById(guild.getGuildChannels().getVmBeigeChannel());
+
+              GuildSettings guildSettings = db.getGuildSettings(guildId);
+              VacModeModule vacModeModuleSettings = guildSettings.getVacModeModuleSettings();
+
+              if (guildSettings.getModuleSettings().isVacModeModuleEnabled() && nation.getScore()>=vacModeModuleSettings.getScoreFilter()) {
+                TextChannel channel = Bot.jda.getGuildById(guildId).getTextChannelById(vacModeModuleSettings.getVmTrackerChannel());
                 channel.sendMessage(
                     new EmbedBuilder()
                         .setAuthor("https://politicsandwar.com/nation/id=" + nation.getNationId(), "https://politicsandwar.com/nation/id=" + nation.getNationId())

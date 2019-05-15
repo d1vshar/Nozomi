@@ -1,9 +1,11 @@
 package io.github.adorableskullmaster.nozomi.features.services;
 
 import io.github.adorableskullmaster.nozomi.Bot;
-import io.github.adorableskullmaster.nozomi.core.database.DB;
 import io.github.adorableskullmaster.nozomi.core.database.generated.tables.records.WarsRecord;
-import io.github.adorableskullmaster.nozomi.core.database.layer.Guild;
+import io.github.adorableskullmaster.nozomi.core.database.layer.BotDatabase;
+import io.github.adorableskullmaster.nozomi.core.database.layer.GuildSettings;
+import io.github.adorableskullmaster.nozomi.core.database.layer.tables.ModuleSettings;
+import io.github.adorableskullmaster.nozomi.core.database.layer.tables.WarModule;
 import io.github.adorableskullmaster.nozomi.core.util.Instances;
 import io.github.adorableskullmaster.nozomi.core.util.Utility;
 import io.github.adorableskullmaster.nozomi.features.commands.pw.member.CounterCommand;
@@ -28,11 +30,11 @@ import java.util.stream.Collectors;
 public class NewWarService implements Runnable {
 
   private static PoliticsAndWar politicsAndWar = Instances.getDefaultPW();
-  private DB db;
+  private BotDatabase db;
 
   public NewWarService() {
     try {
-      db = Instances.getDBLayer();
+      db = Instances.getBotDatabaseLayer();
     } catch (SQLException e) {
       Bot.BOT_EXCEPTION_HANDLER.captureException(e);
     }
@@ -44,7 +46,7 @@ public class NewWarService implements Runnable {
       Bot.LOGGER.info("Starting War Thread");
 
       List<War> newWars = getNewWars();
-      List<Long> guildIds = db.getAllSetupGuildIds();
+      List<Long> guildIds = db.getAllActivatedGuildIds();
 
       Bot.LOGGER.info("New Wars: {}", newWars.size());
 
@@ -54,7 +56,7 @@ public class NewWarService implements Runnable {
         WarContainer warObj = newWars.get(i).getWar().get(0);
 
         for (Long guildId : guildIds) {
-          Guild guild = db.getGuild(guildId);
+          GuildSettings guildSettings = db.getGuildSettings(guildId);
           List<SNationContainer> nations = Bot.CACHE.getNations().getNationsContainer();
           List<NationMilitaryContainer> nationMilitaries = Bot.CACHE.getNationMilitary().getNationMilitaries();
 
@@ -80,28 +82,30 @@ public class NewWarService implements Runnable {
               .findFirst()
               .orElse(null);
 
-          if (guild.isSetup() && guild.isWarNotifier() && (agg != null && def != null)) {
-            if (agg.getAllianceid() == guild.getPwId() || def.getAllianceid() == guild.getPwId()) {
+          ModuleSettings moduleSettings = guildSettings.getModuleSettings();
+          if (moduleSettings.isWarModuleEnabled() && (agg != null && def != null)) {
+            WarModule warModuleSettings = guildSettings.getWarModuleSettings();
+
+            if (agg.getAllianceid() == moduleSettings.getAaId() || def.getAllianceid() == moduleSettings.getAaId()) {
               EmbedBuilder embedBuilder = embed(warObj, agg, def, aggMil, defMil);
 
-              if (agg.getAllianceid() == guild.getPwId()) {
+              if (agg.getAllianceid() == moduleSettings.getAaId()) {
                 embedBuilder.setColor(Color.GREEN);
-                Bot.jda.getGuildById(guild.getId())
-                    .getTextChannelById(guild.getGuildChannels().getOffensiveChannel())
+                Bot.jda.getGuildById(guildSettings.getId())
+                    .getTextChannelById(warModuleSettings.getOffensiveWarChannel())
                     .sendMessage(embedBuilder.build())
                     .queue();
               } else {
                 embedBuilder.setColor(Color.RED);
-                Message counter = new CounterCommand().getMessage(agg.getNationId(), guild);
+                Message counter = new CounterCommand().getMessage(agg.getNationId(), guildSettings);
 
-                long defensiveChannel = guild.getGuildChannels().getDefensiveChannel();
-                Bot.jda.getGuildById(guild.getId())
-                    .getTextChannelById(defensiveChannel)
+                Bot.jda.getGuildById(guildSettings.getId())
+                    .getTextChannelById(warModuleSettings.getDefensiveWarChannel())
                     .sendMessage(embedBuilder.build())
                     .queue();
-                if (guild.isAutoCounter()) {
-                  Bot.jda.getGuildById(guild.getId())
-                      .getTextChannelById(defensiveChannel)
+                if (warModuleSettings.getAutoCounter()) {
+                  Bot.jda.getGuildById(guildSettings.getId())
+                      .getTextChannelById(warModuleSettings.getDefensiveWarChannel())
                       .sendMessage(counter)
                       .queue();
                 }

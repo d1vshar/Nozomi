@@ -23,24 +23,39 @@ import javax.annotation.Generated;
 public class Tables {
 
     /**
+     * The table <code>public.applicantmodule</code>.
+     */
+    public static final Applicantmodule APPLICANTMODULE = io.github.adorableskullmaster.nozomi.core.database.generated.tables.Applicantmodule.APPLICANTMODULE;
+
+    /**
      * The table <code>public.applicants</code>.
      */
     public static final Applicants APPLICANTS = io.github.adorableskullmaster.nozomi.core.database.generated.tables.Applicants.APPLICANTS;
 
     /**
-     * The table <code>public.channels</code>.
+     * The table <code>public.bankmodule</code>.
      */
-    public static final Channels CHANNELS = io.github.adorableskullmaster.nozomi.core.database.generated.tables.Channels.CHANNELS;
+    public static final Bankmodule BANKMODULE = io.github.adorableskullmaster.nozomi.core.database.generated.tables.Bankmodule.BANKMODULE;
 
     /**
-     * The table <code>public.guilds</code>.
+     * The table <code>public.guildconfig</code>.
      */
-    public static final Guilds GUILDS = io.github.adorableskullmaster.nozomi.core.database.generated.tables.Guilds.GUILDS;
+    public static final Guildconfig GUILDCONFIG = io.github.adorableskullmaster.nozomi.core.database.generated.tables.Guildconfig.GUILDCONFIG;
 
     /**
-     * The table <code>public.texts</code>.
+     * The table <code>public.textsmodule</code>.
      */
-    public static final Texts TEXTS = io.github.adorableskullmaster.nozomi.core.database.generated.tables.Texts.TEXTS;
+    public static final Textsmodule TEXTSMODULE = io.github.adorableskullmaster.nozomi.core.database.generated.tables.Textsmodule.TEXTSMODULE;
+
+    /**
+     * The table <code>public.vacmodemodule</code>.
+     */
+    public static final Vacmodemodule VACMODEMODULE = io.github.adorableskullmaster.nozomi.core.database.generated.tables.Vacmodemodule.VACMODEMODULE;
+
+    /**
+     * The table <code>public.warmodule</code>.
+     */
+    public static final Warmodule WARMODULE = io.github.adorableskullmaster.nozomi.core.database.generated.tables.Warmodule.WARMODULE;
 
     /**
      * The table <code>public.wars</code>.

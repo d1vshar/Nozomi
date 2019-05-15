@@ -3,9 +3,8 @@ package io.github.adorableskullmaster.nozomi.features.commands.utility;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import io.github.adorableskullmaster.nozomi.Bot;
-import io.github.adorableskullmaster.nozomi.core.database.layer.Guild;
+import io.github.adorableskullmaster.nozomi.core.database.layer.GuildSettings;
 import io.github.adorableskullmaster.nozomi.core.util.Instances;
-import io.github.adorableskullmaster.nozomi.core.util.Utility;
 import io.github.adorableskullmaster.nozomi.features.commands.FunCommand;
 import io.github.adorableskullmaster.nozomi.features.commands.MemberPoliticsAndWarCommand;
 import io.github.adorableskullmaster.nozomi.features.commands.PoliticsAndWarCommand;
@@ -20,7 +19,7 @@ import java.util.stream.Collectors;
 
 public class HelpCommand extends UtilityCommand {
 
-  private boolean mod, member;
+  private boolean member;
 
   public HelpCommand() {
     this.name = "help";
@@ -32,14 +31,9 @@ public class HelpCommand extends UtilityCommand {
   @Override
   protected void execute(CommandEvent commandEvent) {
     try {
-      Guild guild = Instances.getDBLayer().getGuild(commandEvent.getGuild().getIdLong());
-      if (guild != null) {
-        mod = false;
-        member = false;
-        if (commandEvent.getMember().hasPermission(Utility.getModerator()))
-          mod = true;
-        if (commandEvent.getMember().getRoles().stream().map(Role::getIdLong).anyMatch(id -> id == guild.getMemberRole()))
-          member = true;
+      GuildSettings guildSettings = Instances.getBotDatabaseLayer().getGuildSettings(commandEvent.getGuild().getIdLong());
+      if (guildSettings != null) {
+        member = commandEvent.getMember().getRoles().stream().map(Role::getIdLong).anyMatch(id -> id.equals(guildSettings.getModuleSettings().getMemberRole()));
         String[] args = commandEvent.getArgs().trim().split(" ");
         if (args[0].isEmpty())
           commandEvent.reply(getAll(commandEvent).build());

@@ -1,7 +1,7 @@
 package io.github.adorableskullmaster.nozomi.core.util;
 
 import io.github.adorableskullmaster.nozomi.Bot;
-import io.github.adorableskullmaster.nozomi.core.database.DB;
+import io.github.adorableskullmaster.nozomi.core.database.layer.BotDatabase;
 import io.github.adorableskullmaster.pw4j.PoliticsAndWar;
 import io.github.adorableskullmaster.pw4j.PoliticsAndWarBuilder;
 
@@ -22,8 +22,8 @@ public class Instances {
     return DriverManager.getConnection(Bot.configuration.getDbUrl());
   }
 
-  public static DB getDBLayer() throws SQLException {
-    return new DB();
+  public static BotDatabase getBotDatabaseLayer() throws SQLException {
+    return new BotDatabase();
   }
 
 }

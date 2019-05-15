@@ -1,8 +1,10 @@
 package io.github.adorableskullmaster.nozomi.features.services;
 
 import io.github.adorableskullmaster.nozomi.Bot;
-import io.github.adorableskullmaster.nozomi.core.database.DB;
-import io.github.adorableskullmaster.nozomi.core.database.layer.Guild;
+import io.github.adorableskullmaster.nozomi.core.database.layer.BotDatabase;
+import io.github.adorableskullmaster.nozomi.core.database.layer.GuildSettings;
+import io.github.adorableskullmaster.nozomi.core.database.layer.tables.BankModule;
+import io.github.adorableskullmaster.nozomi.core.database.layer.tables.ModuleSettings;
 import io.github.adorableskullmaster.nozomi.core.util.Instances;
 import io.github.adorableskullmaster.pw4j.PoliticsAndWar;
 import io.github.adorableskullmaster.pw4j.PoliticsAndWarAPIException;
@@ -16,11 +18,11 @@ import java.sql.SQLException;
 import java.util.List;
 
 public class BankCheckService implements Runnable {
-  private DB db;
+  private BotDatabase db;
 
   public BankCheckService() {
     try {
-      db = Instances.getDBLayer();
+      db = Instances.getBotDatabaseLayer();
     } catch (SQLException e) {
       Bot.BOT_EXCEPTION_HANDLER.captureException(e);
     }
@@ -30,12 +32,14 @@ public class BankCheckService implements Runnable {
   public void run() {
     try {
       Bot.LOGGER.info("Starting Bank Thread");
-      List<Long> allGuildIds = db.getAllSetupGuildIds();
-      for (Long id : allGuildIds) {
-        Guild guild = db.getGuild(id);
+      List<Long> allGuildIds = db.getAllActivatedGuildIds();
+      for (Long guildId : allGuildIds) {
+        GuildSettings guildSettings = db.getGuildSettings(guildId);
+        ModuleSettings moduleSettings = guildSettings.getModuleSettings();
+        BankModule bankModuleSettings = guildSettings.getBankModuleSettings();
 
-        if (guild.isSetup() && guild.isBankNotifier() && isBankNotEmpty(id)) {
-          TextChannel channel = Bot.jda.getTextChannelById(guild.getGuildChannels().getGovChannel());
+        if (moduleSettings.isBankModuleEnabled() && isBankNotEmpty(moduleSettings.getAaId(),bankModuleSettings.getApiKey())) {
+          TextChannel channel = Bot.jda.getTextChannelById(bankModuleSettings.getBankNotificationChannel());
           MessageHistory history = channel.getHistory();
           history.retrievePast(10).queue(
               c -> {
@@ -47,9 +51,9 @@ public class BankCheckService implements Runnable {
                 }
               }
           );
-          Bot.jda.getGuildById(guild.getId())
-              .getTextChannelById(guild.getGuildChannels().getGovChannel())
-              .sendMessage(":moneybag: Bank is currently not empty! <https://politicsandwar.com/alliance/id=" + guild.getPwId() + "&display=bank>")
+          Bot.jda.getGuildById(guildId)
+              .getTextChannelById(bankModuleSettings.getBankNotificationChannel())
+              .sendMessage(":moneybag: Bank is currently not empty! <https://politicsandwar.com/alliance/id="+moduleSettings.getAaId()+"&display=bank>")
               .queue();
         }
       }
@@ -58,15 +62,13 @@ public class BankCheckService implements Runnable {
     }
   }
 
-  private boolean isBankNotEmpty(long id) throws PoliticsAndWarAPIException {
-
-    Guild guild = db.getGuild(id);
+  private boolean isBankNotEmpty(int aid, String apiKey) throws PoliticsAndWarAPIException {
 
     PoliticsAndWar politicsAndWar = new PoliticsAndWarBuilder()
-        .setApiKey(guild.getPwKey())
+        .setApiKey(apiKey)
         .build();
 
-    AllianceBankContainer allianceBankContent = politicsAndWar.getBank(guild.getPwId()).getAllianceBanks().get(0);
+    AllianceBankContainer allianceBankContent = politicsAndWar.getBank(aid).getAllianceBanks().get(0);
     return !(allianceBankContent.getMoney() <= 100000) || !(allianceBankContent.getBauxite() <= 100) || !(allianceBankContent.getFood() <= 1000) ||
         !(allianceBankContent.getCoal() <= 100) || !(allianceBankContent.getIron() <= 100) || !(allianceBankContent.getLead() <= 100) || !(allianceBankContent.getGasoline() <= 100) ||
         !(allianceBankContent.getOil() <= 100) || !(allianceBankContent.getMunitions() <= 100) || !(allianceBankContent.getAluminum() <= 100) || !(allianceBankContent.getUranium() <= 100) ||

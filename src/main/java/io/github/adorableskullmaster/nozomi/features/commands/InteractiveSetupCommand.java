@@ -22,12 +22,12 @@ import static io.github.adorableskullmaster.nozomi.core.database.generated.table
 import static io.github.adorableskullmaster.nozomi.core.database.generated.tables.Guilds.GUILDS;
 import static io.github.adorableskullmaster.nozomi.core.database.generated.tables.Texts.TEXTS;
 
-public class SetupCommand extends Command {
+public class InteractiveSetupCommand extends Command {
 
   private EventWaiter waiter;
   private HashMap<String, String> settingsMap;
 
-  public SetupCommand(EventWaiter waiter) {
+  public InteractiveSetupCommand(EventWaiter waiter) {
     this.name = "setup";
     this.help = "This is an interactive setup that needs to be run every time bot configuration needs to be changed.";
     this.arguments = "++setup";

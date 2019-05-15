@@ -14,7 +14,7 @@ abstract class BotCommand extends Command {
         ":x: Not configured to respond here",
         event -> {
           try {
-            return Instances.getDBLayer().getGuild(event.getGuild().getIdLong()).isSetup();
+            return Instances.getBotDatabaseLayer().getGuildSettings(event.getGuild().getIdLong()).getModuleSettings().isBotActivated();
           } catch (SQLException e) {
             Bot.BOT_EXCEPTION_HANDLER.captureException(e);
             return false;

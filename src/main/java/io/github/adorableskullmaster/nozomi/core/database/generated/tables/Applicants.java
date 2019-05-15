@@ -30,7 +30,7 @@ import java.util.List;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Applicants extends TableImpl<ApplicantsRecord> {
 
-    private static final long serialVersionUID = 362030335;
+    private static final long serialVersionUID = 529014073;
 
     /**
      * The reference instance of <code>public.applicants</code>
@@ -46,9 +46,9 @@ public class Applicants extends TableImpl<ApplicantsRecord> {
     }
 
     /**
-     * The column <code>public.applicants.applicants</code>.
+     * The column <code>public.applicants.applicantids</code>.
      */
-    public final TableField<ApplicantsRecord, Integer[]> APPLICANTS_ = createField("applicants", org.jooq.impl.SQLDataType.INTEGER.getArrayDataType(), this, "");
+    public final TableField<ApplicantsRecord, Integer[]> APPLICANTIDS = createField("applicantids", org.jooq.impl.SQLDataType.INTEGER.getArrayDataType(), this, "");
 
     /**
      * The column <code>public.applicants.id</code>.
@@ -118,6 +118,18 @@ public class Applicants extends TableImpl<ApplicantsRecord> {
     @Override
     public List<UniqueKey<ApplicantsRecord>> getKeys() {
         return Arrays.<UniqueKey<ApplicantsRecord>>asList(Keys.APPLICANTS_PKEY);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<ForeignKey<ApplicantsRecord, ?>> getReferences() {
+        return Arrays.<ForeignKey<ApplicantsRecord, ?>>asList(Keys.APPLICANTS__GUILD_ID);
+    }
+
+    public Guildconfig guildconfig() {
+        return new Guildconfig(this, Keys.APPLICANTS__GUILD_ID);
     }
 
     /**
