@@ -70,9 +70,9 @@ public class BankCheckService implements Runnable {
 
     AllianceBankContainer allianceBankContent = politicsAndWar.getBank(aid).getAllianceBanks().get(0);
     return !(allianceBankContent.getMoney() <= 100000) || !(allianceBankContent.getBauxite() <= 100) || !(allianceBankContent.getFood() <= 1000) ||
-        !(allianceBankContent.getCoal() <= 100) || !(allianceBankContent.getIron() <= 100) || !(allianceBankContent.getLead() <= 100) || !(allianceBankContent.getGasoline() <= 100) ||
-        !(allianceBankContent.getOil() <= 100) || !(allianceBankContent.getMunitions() <= 100) || !(allianceBankContent.getAluminum() <= 100) || !(allianceBankContent.getUranium() <= 100) ||
-        !(allianceBankContent.getSteel() <= 100);
+        !(allianceBankContent.getCoal() <= 100) || !(allianceBankContent.getIron() <= 100) || !(allianceBankContent.getLead() <= 100) ||
+        !(allianceBankContent.getGasoline() <= 100) || !(allianceBankContent.getOil() <= 100) || !(allianceBankContent.getMunitions() <= 100) ||
+        !(allianceBankContent.getAluminum() <= 100) || !(allianceBankContent.getUranium() <= 100) || !(allianceBankContent.getSteel() <= 100);
   }
 
 }

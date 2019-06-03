@@ -5,6 +5,7 @@ import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import io.github.adorableskullmaster.nozomi.core.cache.Cache;
 import io.github.adorableskullmaster.nozomi.core.config.Configuration;
 import io.github.adorableskullmaster.nozomi.core.util.BotExceptionHandler;
+import io.github.adorableskullmaster.nozomi.core.util.Emojis;
 import io.github.adorableskullmaster.nozomi.core.util.Setup;
 import io.github.adorableskullmaster.nozomi.features.hooks.GenericListener;
 import io.github.adorableskullmaster.nozomi.features.services.BankCheckService;
@@ -47,7 +48,7 @@ public class Bot {
     CommandClientBuilder clientBuilder = new CommandClientBuilder();
     clientBuilder.setPrefix(configuration.getPrefix())
         .setOwnerId(configuration.getOwnerId())
-        .setEmojis("✔", "‼", "❌")
+        .setEmojis(Emojis.ACCEPT.getAsMention(),Emojis.WARNING.getAsMention(),Emojis.CANCEL.getAsMention())
         .setServerInvite("https://discord.gg/GrnewCF")
         .setStatus(OnlineStatus.ONLINE)
         .setGame(Game.playing(configuration.getPrefix()+"help"))

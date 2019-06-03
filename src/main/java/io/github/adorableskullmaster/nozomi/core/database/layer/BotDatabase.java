@@ -26,21 +26,27 @@ public class BotDatabase {
   }
 
   public GuildSettings getGuildSettings(long id) {
-    return new GuildSettings(db,id);
+    boolean exists = db.fetchExists(
+        db.selectFrom(GUILDCONFIG)
+            .where(GUILDCONFIG.ID.eq(id))
+    );
+    if(exists)
+      new GuildSettings(db,id);
+    return null;
   }
 
   public Result<WarsRecord> getWarsDir() {
     return db.selectFrom(WARS).fetch();
   }
 
-  public int storeWarsDir(List<Integer> newWars) {
+  public void storeWarsDir(List<Integer> newWars) {
 
     db.delete(WARS).execute();
 
     InsertValuesStep1<WarsRecord, Integer> step = db.insertInto(WARS).columns(WARS.WARID);
     for (Integer newWar : newWars)
       step.values(newWar);
-    return step.execute();
+    step.execute();
   }
 
   public List<Long> getAllActivatedGuildIds() {

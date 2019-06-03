@@ -3,7 +3,7 @@ package io.github.adorableskullmaster.nozomi.features.commands.owner;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import io.github.adorableskullmaster.nozomi.Bot;
 import io.github.adorableskullmaster.nozomi.core.util.Utility;
-import io.github.adorableskullmaster.nozomi.features.commands.OwnerCommand;
+import io.github.adorableskullmaster.nozomi.features.commands.types.OwnerCommand;
 import net.dv8tion.jda.core.EmbedBuilder;
 
 import java.time.Duration;

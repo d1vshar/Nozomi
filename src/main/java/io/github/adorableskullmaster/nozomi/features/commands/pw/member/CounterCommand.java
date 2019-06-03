@@ -6,7 +6,7 @@ import io.github.adorableskullmaster.nozomi.core.database.layer.GuildSettings;
 import io.github.adorableskullmaster.nozomi.core.util.CommandResponseHandler;
 import io.github.adorableskullmaster.nozomi.core.util.Instances;
 import io.github.adorableskullmaster.nozomi.core.util.Utility;
-import io.github.adorableskullmaster.nozomi.features.commands.MemberPoliticsAndWarCommand;
+import io.github.adorableskullmaster.nozomi.features.commands.types.MemberPoliticsAndWarCommand;
 import io.github.adorableskullmaster.pw4j.PoliticsAndWar;
 import io.github.adorableskullmaster.pw4j.domains.Nation;
 import io.github.adorableskullmaster.pw4j.domains.NationMilitary;

@@ -1,4 +1,4 @@
-package io.github.adorableskullmaster.nozomi.features.commands;
+package io.github.adorableskullmaster.nozomi.features.commands.types;
 
 import io.github.adorableskullmaster.nozomi.Bot;
 import io.github.adorableskullmaster.nozomi.core.database.layer.GuildSettings;

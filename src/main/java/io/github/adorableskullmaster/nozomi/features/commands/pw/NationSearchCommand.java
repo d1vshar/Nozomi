@@ -7,7 +7,7 @@ import io.github.adorableskullmaster.nozomi.Bot;
 import io.github.adorableskullmaster.nozomi.core.util.CommandResponseHandler;
 import io.github.adorableskullmaster.nozomi.core.util.Instances;
 import io.github.adorableskullmaster.nozomi.core.util.Utility;
-import io.github.adorableskullmaster.nozomi.features.commands.PoliticsAndWarCommand;
+import io.github.adorableskullmaster.nozomi.features.commands.types.PoliticsAndWarCommand;
 import io.github.adorableskullmaster.pw4j.domains.Nations;
 import io.github.adorableskullmaster.pw4j.domains.subdomains.SNationContainer;
 import net.dv8tion.jda.core.EmbedBuilder;

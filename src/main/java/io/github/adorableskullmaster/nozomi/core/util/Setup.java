@@ -3,7 +3,9 @@ package io.github.adorableskullmaster.nozomi.core.util;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import io.github.adorableskullmaster.nozomi.Bot;
+import io.github.adorableskullmaster.nozomi.features.commands.HelpCommand;
 import io.github.adorableskullmaster.nozomi.features.commands.InteractiveSetupCommand;
+import io.github.adorableskullmaster.nozomi.features.commands.configuration.ConfigCommand;
 import io.github.adorableskullmaster.nozomi.features.commands.fun.AnimalCommand;
 import io.github.adorableskullmaster.nozomi.features.commands.fun.ChooseCommand;
 import io.github.adorableskullmaster.nozomi.features.commands.fun.CowsayCommand;
@@ -48,6 +50,7 @@ public class Setup {
     commands.add(new NationSearchCommand(eventWaiter));
     commands.add(new CowsayCommand());
     commands.add(new InteractiveSetupCommand(eventWaiter));
+    commands.add(new ConfigCommand(eventWaiter));
 
     if (cheweyEnabled)
       commands.add(new AnimalCommand());

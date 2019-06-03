@@ -5,7 +5,7 @@ import io.github.adorableskullmaster.nozomi.Bot;
 import io.github.adorableskullmaster.nozomi.core.models.weather.OpenWeatherMapAPI;
 import io.github.adorableskullmaster.nozomi.core.models.weather.current.CurrentWeather;
 import io.github.adorableskullmaster.nozomi.core.util.CommandResponseHandler;
-import io.github.adorableskullmaster.nozomi.features.commands.UtilityCommand;
+import io.github.adorableskullmaster.nozomi.features.commands.types.UtilityCommand;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONObject;
 

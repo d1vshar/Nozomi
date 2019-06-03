@@ -3,24 +3,13 @@ package io.github.adorableskullmaster.nozomi.features.commands;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
-import io.github.adorableskullmaster.nozomi.core.database.generated.tables.records.ChannelsRecord;
-import io.github.adorableskullmaster.nozomi.core.database.generated.tables.records.TextsRecord;
 import io.github.adorableskullmaster.nozomi.core.util.CommandResponseHandler;
-import io.github.adorableskullmaster.nozomi.core.util.Instances;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
-import org.jooq.DSLContext;
-import org.jooq.UpdateSetMoreStep;
-import org.jooq.impl.DSL;
 
-import java.sql.Connection;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
-
-import static io.github.adorableskullmaster.nozomi.core.database.generated.tables.Channels.CHANNELS;
-import static io.github.adorableskullmaster.nozomi.core.database.generated.tables.Guilds.GUILDS;
-import static io.github.adorableskullmaster.nozomi.core.database.generated.tables.Texts.TEXTS;
 
 public class InteractiveSetupCommand extends Command {
 
@@ -40,13 +29,13 @@ public class InteractiveSetupCommand extends Command {
 
   @Override
   protected void execute(CommandEvent commandEvent) {
-    commandEvent.async(
+    /*commandEvent.async(
         () -> commandEvent.getTextChannel().sendMessage("**Welcome to Nozomi Interactive Setup.** Let's start the setup.").queue(
             c -> main(commandEvent)
         )
-    );
+    );*/
   }
-
+  /*
   private void echo(CommandEvent commandEvent) {
     if (mapToSetup(commandEvent))
       commandEvent.reply(":white_check_mark: Bot setup successful.");
@@ -313,7 +302,7 @@ public class InteractiveSetupCommand extends Command {
       e.printStackTrace();
       return false;
     }
-  }
+  }*/
 
   private void waitForEvent(CommandEvent commandEvent, Consumer<MessageReceivedEvent> action) {
     waiter.waitForEvent(

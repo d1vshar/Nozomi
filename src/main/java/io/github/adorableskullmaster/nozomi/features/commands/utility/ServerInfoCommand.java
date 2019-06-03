@@ -4,7 +4,7 @@ import com.jagrosh.jdautilities.command.CommandEvent;
 import io.github.adorableskullmaster.nozomi.Bot;
 import io.github.adorableskullmaster.nozomi.core.database.layer.GuildSettings;
 import io.github.adorableskullmaster.nozomi.core.util.Instances;
-import io.github.adorableskullmaster.nozomi.features.commands.UtilityCommand;
+import io.github.adorableskullmaster.nozomi.features.commands.types.UtilityCommand;
 import io.github.adorableskullmaster.pw4j.PoliticsAndWar;
 import io.github.adorableskullmaster.pw4j.domains.Alliance;
 import net.dv8tion.jda.core.EmbedBuilder;

@@ -4,7 +4,7 @@ import com.jagrosh.jdautilities.command.CommandEvent;
 import io.github.adorableskullmaster.nozomi.Bot;
 import io.github.adorableskullmaster.nozomi.core.util.Instances;
 import io.github.adorableskullmaster.nozomi.core.util.Utility;
-import io.github.adorableskullmaster.nozomi.features.commands.MemberPoliticsAndWarCommand;
+import io.github.adorableskullmaster.nozomi.features.commands.types.MemberPoliticsAndWarCommand;
 import io.github.adorableskullmaster.pw4j.PoliticsAndWar;
 import io.github.adorableskullmaster.pw4j.domains.Alliance;
 import io.github.adorableskullmaster.pw4j.domains.City;

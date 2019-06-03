@@ -2,7 +2,7 @@ package io.github.adorableskullmaster.nozomi.features.commands.fun;
 
 import com.jagrosh.jdautilities.command.CommandEvent;
 import io.github.adorableskullmaster.nozomi.Bot;
-import io.github.adorableskullmaster.nozomi.features.commands.FunCommand;
+import io.github.adorableskullmaster.nozomi.features.commands.types.FunCommand;
 
 public class EchoCommand extends FunCommand {
 

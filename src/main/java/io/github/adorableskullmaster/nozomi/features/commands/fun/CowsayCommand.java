@@ -3,7 +3,7 @@ package io.github.adorableskullmaster.nozomi.features.commands.fun;
 import com.github.ricksbrown.cowsay.Cowsay;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import io.github.adorableskullmaster.nozomi.Bot;
-import io.github.adorableskullmaster.nozomi.features.commands.FunCommand;
+import io.github.adorableskullmaster.nozomi.features.commands.types.FunCommand;
 import net.dv8tion.jda.core.MessageBuilder;
 
 import java.util.Arrays;

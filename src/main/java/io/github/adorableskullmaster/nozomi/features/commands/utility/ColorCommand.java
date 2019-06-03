@@ -4,7 +4,7 @@ import com.jagrosh.jdautilities.command.CommandEvent;
 import io.github.adorableskullmaster.nozomi.Bot;
 import io.github.adorableskullmaster.nozomi.core.util.CommandResponseHandler;
 import io.github.adorableskullmaster.nozomi.core.util.Utility;
-import io.github.adorableskullmaster.nozomi.features.commands.UtilityCommand;
+import io.github.adorableskullmaster.nozomi.features.commands.types.UtilityCommand;
 import net.dv8tion.jda.core.EmbedBuilder;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONObject;

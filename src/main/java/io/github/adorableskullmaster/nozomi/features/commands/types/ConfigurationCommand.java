@@ -1,4 +1,4 @@
-package io.github.adorableskullmaster.nozomi.features.commands;
+package io.github.adorableskullmaster.nozomi.features.commands.types;
 
 import com.jagrosh.jdautilities.command.Command;
 import net.dv8tion.jda.core.Permission;
@@ -9,7 +9,9 @@ public abstract class ConfigurationCommand extends Command {
     this.category = new Command.Category(
         "Configuration",
         ":x: Do not have enough permissions.",
-        event -> event.getMember().hasPermission(Permission.ADMINISTRATOR) || event.isOwner()
+        event -> {
+          return event.getMember().hasPermission(Permission.ADMINISTRATOR) || event.isOwner();
+        }
     );
   }
 }
