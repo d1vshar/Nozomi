@@ -2,7 +2,7 @@ package io.github.adorableskullmaster.nozomi.features.commands.fun;
 
 import com.jagrosh.jdautilities.command.CommandEvent;
 import io.github.adorableskullmaster.nozomi.Bot;
-import io.github.adorableskullmaster.nozomi.core.models.animals.RandomAnimal;
+import io.github.adorableskullmaster.nozomi.core.apis.animals.RandomAnimal;
 import io.github.adorableskullmaster.nozomi.core.util.Utility;
 import io.github.adorableskullmaster.nozomi.features.commands.types.FunCommand;
 import net.dv8tion.jda.core.EmbedBuilder;

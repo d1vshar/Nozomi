@@ -2,8 +2,8 @@ package io.github.adorableskullmaster.nozomi.features.commands.utility;
 
 import com.jagrosh.jdautilities.command.CommandEvent;
 import io.github.adorableskullmaster.nozomi.Bot;
-import io.github.adorableskullmaster.nozomi.core.models.weather.OpenWeatherMapAPI;
-import io.github.adorableskullmaster.nozomi.core.models.weather.current.CurrentWeather;
+import io.github.adorableskullmaster.nozomi.core.apis.weather.OpenWeatherMapAPI;
+import io.github.adorableskullmaster.nozomi.core.apis.weather.current.CurrentWeather;
 import io.github.adorableskullmaster.nozomi.core.util.CommandResponseHandler;
 import io.github.adorableskullmaster.nozomi.features.commands.types.UtilityCommand;
 import org.apache.commons.io.IOUtils;
