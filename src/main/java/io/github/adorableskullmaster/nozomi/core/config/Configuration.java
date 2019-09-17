@@ -34,8 +34,8 @@ public class Configuration {
     return System.getenv("SENTRY");
   }
 
-  public String getDbUrl() {
-    return System.getenv("JDBC_DATABASE_URL");
+    public String getMongoDBUrl() {
+        return System.getenv("MONGO_DATABASE_URL");
   }
 
   public String getCheweyKey() {

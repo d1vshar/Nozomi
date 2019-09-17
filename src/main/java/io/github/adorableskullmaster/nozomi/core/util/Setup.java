@@ -5,7 +5,6 @@ import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import io.github.adorableskullmaster.nozomi.Bot;
 import io.github.adorableskullmaster.nozomi.features.commands.HelpCommand;
 import io.github.adorableskullmaster.nozomi.features.commands.InteractiveSetupCommand;
-import io.github.adorableskullmaster.nozomi.features.commands.configuration.ConfigCommand;
 import io.github.adorableskullmaster.nozomi.features.commands.fun.AnimalCommand;
 import io.github.adorableskullmaster.nozomi.features.commands.fun.ChooseCommand;
 import io.github.adorableskullmaster.nozomi.features.commands.fun.CowsayCommand;
@@ -16,7 +15,10 @@ import io.github.adorableskullmaster.nozomi.features.commands.pw.AllianceSearchC
 import io.github.adorableskullmaster.nozomi.features.commands.pw.NationSearchCommand;
 import io.github.adorableskullmaster.nozomi.features.commands.pw.member.AnalyzeCommand;
 import io.github.adorableskullmaster.nozomi.features.commands.pw.member.CounterCommand;
-import io.github.adorableskullmaster.nozomi.features.commands.utility.*;
+import io.github.adorableskullmaster.nozomi.features.commands.utility.AboutCommand;
+import io.github.adorableskullmaster.nozomi.features.commands.utility.ColorCommand;
+import io.github.adorableskullmaster.nozomi.features.commands.utility.PingCommand;
+import io.github.adorableskullmaster.nozomi.features.commands.utility.WeatherCommand;
 
 import java.util.ArrayList;
 
@@ -41,7 +43,6 @@ public class Setup {
     commands.add(new EchoCommand());
     commands.add(new CounterCommand());
     commands.add(new ColorCommand());
-    commands.add(new ServerInfoCommand());
     commands.add(new StatusCommand());
     commands.add(new ShutdownCommand(eventWaiter));
     commands.add(new AllianceSearchCommand(eventWaiter));
@@ -50,7 +51,6 @@ public class Setup {
     commands.add(new NationSearchCommand(eventWaiter));
     commands.add(new CowsayCommand());
     commands.add(new InteractiveSetupCommand(eventWaiter));
-    commands.add(new ConfigCommand(eventWaiter));
 
     if (cheweyEnabled)
       commands.add(new AnimalCommand());

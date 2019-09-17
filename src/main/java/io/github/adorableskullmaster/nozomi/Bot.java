@@ -2,6 +2,10 @@ package io.github.adorableskullmaster.nozomi;
 
 import com.jagrosh.jdautilities.command.CommandClientBuilder;
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
+import com.mongodb.MongoClient;
+import com.mongodb.MongoClientURI;
+import dev.morphia.Datastore;
+import dev.morphia.Morphia;
 import io.github.adorableskullmaster.nozomi.core.cache.Cache;
 import io.github.adorableskullmaster.nozomi.core.config.Configuration;
 import io.github.adorableskullmaster.nozomi.core.util.BotExceptionHandler;
@@ -9,9 +13,8 @@ import io.github.adorableskullmaster.nozomi.core.util.Emojis;
 import io.github.adorableskullmaster.nozomi.core.util.Setup;
 import io.github.adorableskullmaster.nozomi.features.hooks.GenericListener;
 import io.github.adorableskullmaster.nozomi.features.services.BankCheckService;
-import io.github.adorableskullmaster.nozomi.features.services.NewApplicantService;
 import io.github.adorableskullmaster.nozomi.features.services.NewWarService;
-import io.github.adorableskullmaster.nozomi.features.services.VMBeigeService;
+import io.github.adorableskullmaster.nozomi.features.services.VacModeService;
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
@@ -31,12 +34,20 @@ public class Bot {
   public static final BotExceptionHandler BOT_EXCEPTION_HANDLER;
   public static final Cache CACHE;
   public static JDA jda;
+  public static Datastore DATA_STORE;
   public static Configuration configuration;
 
   static {
     LOGGER = LoggerFactory.getLogger(Bot.class);
     configuration = new Configuration();
     BOT_EXCEPTION_HANDLER = new BotExceptionHandler();
+
+    String mongoDBUrl = configuration.getMongoDBUrl();
+    MongoClient mongoClient = new MongoClient(new MongoClientURI(mongoDBUrl));
+    Morphia morphia = new Morphia();
+    morphia.mapPackage("io.github.adorableskullmaster.nozomi.core.mongo.morphia");
+    DATA_STORE = morphia.createDatastore(mongoClient, "nozomi");
+
     CACHE = new Cache();
   }
 
@@ -71,7 +82,7 @@ public class Bot {
     ScheduledExecutorService executorService = new ScheduledThreadPoolExecutor(2);
     executorService.scheduleAtFixedRate(new NewWarService(), 0, configuration.getNewWarFrequency(), TimeUnit.MINUTES);
     executorService.scheduleAtFixedRate(new BankCheckService(), 0, configuration.getBankCheckFrequency(), TimeUnit.MINUTES);
-    executorService.scheduleAtFixedRate(new NewApplicantService(), 0, configuration.getNewApplicantFrequency(), TimeUnit.MINUTES);
-    executorService.scheduleAtFixedRate(new VMBeigeService(), 0, 1, TimeUnit.MINUTES);
+    //executorService.scheduleAtFixedRate(new NewApplicantService(), 0, configuration.getNewApplicantFrequency(), TimeUnit.MINUTES);
+    executorService.scheduleAtFixedRate(new VacModeService(), 0, 1, TimeUnit.MINUTES);
   }
 }

@@ -1,11 +1,9 @@
 package io.github.adorableskullmaster.nozomi.features.services;
 
 import io.github.adorableskullmaster.nozomi.Bot;
-import io.github.adorableskullmaster.nozomi.core.database.generated.tables.records.WarsRecord;
-import io.github.adorableskullmaster.nozomi.core.database.layer.BotDatabase;
-import io.github.adorableskullmaster.nozomi.core.database.layer.GuildSettings;
-import io.github.adorableskullmaster.nozomi.core.database.layer.tables.ModuleSettings;
-import io.github.adorableskullmaster.nozomi.core.database.layer.tables.WarModule;
+import io.github.adorableskullmaster.nozomi.core.mongo.bridge.AllianceProfileRepository;
+import io.github.adorableskullmaster.nozomi.core.mongo.bridge.WarRepository;
+import io.github.adorableskullmaster.nozomi.core.mongo.bridge.model.AllianceProfile;
 import io.github.adorableskullmaster.nozomi.core.util.Instances;
 import io.github.adorableskullmaster.nozomi.core.util.Utility;
 import io.github.adorableskullmaster.nozomi.features.commands.pw.member.CounterCommand;
@@ -18,10 +16,8 @@ import io.github.adorableskullmaster.pw4j.domains.subdomains.SWarContainer;
 import io.github.adorableskullmaster.pw4j.domains.subdomains.WarContainer;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Message;
-import org.jooq.Result;
 
 import java.awt.*;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -30,14 +26,12 @@ import java.util.stream.Collectors;
 public class NewWarService implements Runnable {
 
   private static PoliticsAndWar politicsAndWar = Instances.getDefaultPW();
-  private BotDatabase db;
+    private static AllianceProfileRepository allianceProfileRepository;
+    private static WarRepository warRepository;
 
   public NewWarService() {
-    try {
-      db = Instances.getBotDatabaseLayer();
-    } catch (SQLException e) {
-      Bot.BOT_EXCEPTION_HANDLER.captureException(e);
-    }
+      allianceProfileRepository = new AllianceProfileRepository();
+      warRepository = new WarRepository();
   }
 
   @Override
@@ -45,75 +39,83 @@ public class NewWarService implements Runnable {
     try {
       Bot.LOGGER.info("Starting War Thread");
 
-      List<War> newWars = getNewWars();
-      List<Long> guildIds = db.getAllActivatedGuildIds();
 
+        List<AllianceProfile> allAllianceProfiles = allianceProfileRepository.findAllAllianceProfiles();
+        List<SNationContainer> nations = Bot.CACHE.getNations().getNationsContainer();
+        List<NationMilitaryContainer> nationMilitaries = Bot.CACHE.getNationMilitary().getNationMilitaries();
+
+      List<War> newWars = getNewWars();
       Bot.LOGGER.info("New Wars: {}", newWars.size());
 
+        for (AllianceProfile allianceProfile : allAllianceProfiles) {
 
-      for (int i = newWars.size() - 1; i >= 0; i--) {
+            if (allianceProfile.getNewWarModule() != null) {
+                long offChannel = allianceProfile.getNewWarModule().getOffensiveChannel();
+                long defChannel = allianceProfile.getNewWarModule().getDefensiveChannel();
+                boolean counter = allianceProfile.getNewWarModule().isCounterSuggestion();
 
-        WarContainer warObj = newWars.get(i).getWar().get(0);
+                for (int i = newWars.size() - 1; i >= 0; i--) {
+                    WarContainer warObj = newWars.get(i).getWar().get(0);
 
-        for (Long guildId : guildIds) {
-          GuildSettings guildSettings = db.getGuildSettings(guildId);
-          List<SNationContainer> nations = Bot.CACHE.getNations().getNationsContainer();
-          List<NationMilitaryContainer> nationMilitaries = Bot.CACHE.getNationMilitary().getNationMilitaries();
+                    int aggId = Integer.parseInt(warObj.getAggressorId());
+                    int defId = Integer.parseInt(warObj.getDefenderId());
+                    int aaId = allianceProfile.getAaId();
 
-          int aggId = Integer.parseInt(warObj.getAggressorId());
-          int defId = Integer.parseInt(warObj.getDefenderId());
+                    if (aaId == aggId || aaId == defId) {
 
-          SNationContainer agg = nations.stream()
-              .filter(nationContainer -> nationContainer.getNationId() == aggId)
-              .findFirst()
-              .orElse(null);
-          SNationContainer def = nations.stream()
-              .filter(nationContainer -> nationContainer.getNationId() == defId)
-              .findFirst()
-              .orElse(null);
+                        SNationContainer agg = nations.stream()
+                                .filter(nationContainer -> nationContainer.getNationId() == aggId)
+                                .findFirst()
+                                .orElse(null);
+                        SNationContainer def = nations.stream()
+                                .filter(nationContainer -> nationContainer.getNationId() == defId)
+                                .findFirst()
+                                .orElse(null);
 
-          NationMilitaryContainer aggMil = nationMilitaries.stream()
-              .filter(nationMilitaryContainer -> nationMilitaryContainer.getNationId() == aggId)
-              .findFirst()
-              .orElse(null);
+                        NationMilitaryContainer aggMil = nationMilitaries.stream()
+                                .filter(nationMilitaryContainer -> nationMilitaryContainer.getNationId() == aggId)
+                                .findFirst()
+                                .orElse(null);
 
-          NationMilitaryContainer defMil = nationMilitaries.stream()
-              .filter(nationMilitaryContainer -> nationMilitaryContainer.getNationId() == defId)
-              .findFirst()
-              .orElse(null);
+                        NationMilitaryContainer defMil = nationMilitaries.stream()
+                                .filter(nationMilitaryContainer -> nationMilitaryContainer.getNationId() == defId)
+                                .findFirst()
+                                .orElse(null);
 
-          ModuleSettings moduleSettings = guildSettings.getModuleSettings();
-          if (moduleSettings.isWarModuleEnabled() && (agg != null && def != null)) {
-            WarModule warModuleSettings = guildSettings.getWarModuleSettings();
+                        assert defMil != null;
+                        assert aggMil != null;
+                        assert def != null;
+                        assert agg != null;
+                        EmbedBuilder embedBuilder = embed(warObj, agg, def, aggMil, defMil);
 
-            if (agg.getAllianceid() == moduleSettings.getAaId() || def.getAllianceid() == moduleSettings.getAaId()) {
-              EmbedBuilder embedBuilder = embed(warObj, agg, def, aggMil, defMil);
+                        if (aaId == aggId) {
+                            embedBuilder.setColor(Color.GREEN);
+                            Bot.jda.getGuildById(allianceProfile.getServerId())
+                                    .getTextChannelById(offChannel)
+                                    .sendMessage(embedBuilder.build())
+                                    .queue();
+                        } else {
+                            embedBuilder.setColor(Color.RED);
+                            Message counterMessage = new CounterCommand().getMessage(aggId, aaId);
 
-              if (agg.getAllianceid() == moduleSettings.getAaId()) {
-                embedBuilder.setColor(Color.GREEN);
-                Bot.jda.getGuildById(guildSettings.getId())
-                    .getTextChannelById(warModuleSettings.getOffensiveWarChannel())
-                    .sendMessage(embedBuilder.build())
-                    .queue();
-              } else {
-                embedBuilder.setColor(Color.RED);
-                Message counter = new CounterCommand().getMessage(agg.getNationId(), guildSettings);
-
-                Bot.jda.getGuildById(guildSettings.getId())
-                    .getTextChannelById(warModuleSettings.getDefensiveWarChannel())
-                    .sendMessage(embedBuilder.build())
-                    .queue();
-                if (warModuleSettings.getAutoCounter()) {
-                  Bot.jda.getGuildById(guildSettings.getId())
-                      .getTextChannelById(warModuleSettings.getDefensiveWarChannel())
-                      .sendMessage(counter)
-                      .queue();
+                            Bot.jda.getGuildById(allianceProfile.getServerId())
+                                    .getTextChannelById(defChannel)
+                                    .sendMessage(embedBuilder.build())
+                                    .queue();
+                            if (counter) {
+                                Bot.jda.getGuildById(allianceProfile.getServerId())
+                                        .getTextChannelById(defChannel)
+                                        .sendMessage(counterMessage)
+                                        .queue();
+                            }
+                        }
+                    }
                 }
-              }
+
+
             }
-          }
+
         }
-      }
     } catch (Throwable e) {
       Bot.BOT_EXCEPTION_HANDLER.captureException(e);
     }
@@ -186,16 +188,13 @@ public class NewWarService implements Runnable {
   }
 
   private List<Integer> getWarsFromDB() {
-    List<Integer> result = new ArrayList<>();
-    result.add(0);
-    Result<WarsRecord> warsDir = db.getWarsDir();
-    for (WarsRecord warsRecord : warsDir) {
-      result.add(warsRecord.getWarid());
-    }
-    return result;
+      List<Integer> allStoredWars = warRepository.getAllStoredWars();
+      if (allStoredWars.size() == 0)
+          allStoredWars.add(0);
+      return allStoredWars;
   }
 
   private void storeNewWars(List<Integer> newWars) {
-    db.storeWarsDir(newWars);
+      warRepository.storeWars(newWars);
   }
 }

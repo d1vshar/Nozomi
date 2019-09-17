@@ -1,63 +1,33 @@
 package io.github.adorableskullmaster.nozomi.features.services;
 
 import io.github.adorableskullmaster.nozomi.Bot;
-import io.github.adorableskullmaster.nozomi.core.database.layer.BotDatabase;
-import io.github.adorableskullmaster.nozomi.core.database.layer.GuildSettings;
-import io.github.adorableskullmaster.nozomi.core.database.layer.tables.ModuleSettings;
-import io.github.adorableskullmaster.nozomi.core.util.Instances;
-import io.github.adorableskullmaster.pw4j.domains.subdomains.SNationContainer;
-import net.dv8tion.jda.core.EmbedBuilder;
-import org.jooq.exception.DataAccessException;
-
-import java.awt.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
+import io.github.adorableskullmaster.nozomi.core.mongo.bridge.AllianceProfileRepository;
 
 public class NewApplicantService implements Runnable {
+
+    private AllianceProfileRepository allianceProfileRepository;
 
   @Override
   public void run() {
     try {
       Bot.LOGGER.info("Starting Applicant Thread");
-      BotDatabase db = Instances.getBotDatabaseLayer();
-      List<Long> guildIds = db.getAllActivatedGuildIds();
 
-      for (Long guildId : guildIds) {
+        allianceProfileRepository.findAllAllianceProfiles();
 
-        GuildSettings guildSettings = db.getGuildSettings(guildId);
-        ModuleSettings moduleSettings = guildSettings.getModuleSettings();
-
-        if (moduleSettings.isApplicantModuleEnabled()) {
-          List<SNationContainer> newApplicants = getNewApplicants(db,guildId,moduleSettings.getAaId());
-
-          for (SNationContainer applicant : newApplicants) {
-            EmbedBuilder embedBuilder = new EmbedBuilder().setTitle("New Applicant: " + applicant.getNation())
-                .setColor(Color.GREEN)
-                .setAuthor("https://politicsandwar.com/alliance/id=" + moduleSettings.getAaId(),
-                    "https://politicsandwar.com/alliance/id=" + moduleSettings.getAaId());
-
-            Bot.jda.getTextChannelById(moduleSettings.getId())
-                .sendMessage(embedBuilder.build())
-                .queue();
-
-          }
-        }
-      }
     } catch (Throwable e) {
       Bot.BOT_EXCEPTION_HANDLER.captureException(e);
     }
   }
-
-  private List<SNationContainer> getNewApplicants(BotDatabase botDatabase, long id, int aid) {
+/*
+  private List<SNationContainer> getNewApplicants(long id, int aid) {
     List<SNationContainer> containerApplicants = getCurrentApplicants(aid);
 
     List<Integer> currentApplicants = containerApplicants.stream()
         .map(SNationContainer::getNationId)
         .collect(Collectors.toList());
-    List<Integer> loadedApplicants = getLoadedApplicants(botDatabase, id);
+    List<Integer> loadedApplicants = getLoadedApplicants(id);
 
-    update(botDatabase, currentApplicants, id);
+    update(currentApplicants, id);
     List<Integer> diff = getDiff(loadedApplicants, currentApplicants);
 
     return containerApplicants.stream()
@@ -84,7 +54,7 @@ public class NewApplicantService implements Runnable {
         .collect(Collectors.toList());
   }
 
-  private List<Integer> getLoadedApplicants(BotDatabase botDatabase, long id) {
+  private List<Integer> getLoadedApplicants(long id) {
     ArrayList<Integer> result = new ArrayList<>();
     try {
       List<Integer> applicants = botDatabase.getApplicants(id);
@@ -103,6 +73,6 @@ public class NewApplicantService implements Runnable {
     } catch (DataAccessException e) {
       Bot.BOT_EXCEPTION_HANDLER.captureException(e);
     }
-  }
+  }*/
 
 }
