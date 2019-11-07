@@ -20,7 +20,7 @@ public class BotExceptionHandler {
     }
 
     public void captureException(Throwable t, CommandEvent event) {
-        event.reply(":x: An Error occurred. It has been reported.");
+        event.reply(Emojis.CANCEL.getAsMention() + " An Error occurred. It has been reported.");
         captureException(t);
     }
 

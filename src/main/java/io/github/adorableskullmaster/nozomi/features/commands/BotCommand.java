@@ -1,24 +1,29 @@
 package io.github.adorableskullmaster.nozomi.features.commands;
 
 import com.jagrosh.jdautilities.command.Command;
-import io.github.adorableskullmaster.nozomi.Bot;
-import io.github.adorableskullmaster.nozomi.core.util.Instances;
+import io.github.adorableskullmaster.nozomi.core.database.ConfigurationDataSource;
+import io.github.adorableskullmaster.nozomi.core.util.Emojis;
+import net.dv8tion.jda.core.entities.ISnowflake;
 
-import java.sql.SQLException;
+import java.util.stream.Collectors;
 
-abstract class BotCommand extends Command {
-    BotCommand() {
+public abstract class BotCommand extends Command {
+    protected BotCommand() {
         this.guildOnly = true;
         this.category = new Command.Category(
-                "BotCommand",
-                ":x: Not configured to respond here",
+                "Bot Command",
+                Emojis.CANCEL.getAsMention() + " Join Arrgh pleb.",
                 event -> {
-                    try {
-                        return Instances.getDBLayer().getGuild(event.getGuild().getIdLong()).isSetup();
-                    } catch (SQLException e) {
-                        Bot.BOT_EXCEPTION_HANDLER.captureException(e);
-                        return false;
+                    System.out.println("HIT " + ConfigurationDataSource.isSetup());
+                    if (ConfigurationDataSource.isSetup()) {
+                        Long memberRole = ConfigurationDataSource.getConfiguration().getMemberRole();
+                        return event.getMember()
+                                .getRoles()
+                                .stream()
+                                .map(ISnowflake::getIdLong).collect(Collectors.toList())
+                                .contains(memberRole);
                     }
+                    return false;
                 }
         );
     }

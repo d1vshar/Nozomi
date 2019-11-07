@@ -7,14 +7,29 @@ import java.sql.*;
 
 public class ConfigurationDataSource {
 
+    public static Boolean isSetup() {
+        String sql = "SELECT COUNT(*) FROM config";
+        int count = 0;
+        try (Connection connection = Bot.dataSource.getConnection();
+             Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery(sql)
+        ) {
+            resultSet.next();
+            count = resultSet.getInt(1);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return count == 1;
+    }
+
     public static Configuration getConfiguration() {
         String sql = "SELECT * FROM config";
         Configuration configuration = new Configuration();
 
         try (Connection connection = Bot.dataSource.getConnection();
              Statement statement = connection.createStatement();
-             ResultSet resultSet = statement.executeQuery(sql);) {
-
+             ResultSet resultSet = statement.executeQuery(sql)) {
+            resultSet.next();
             configuration.setMainChannel(resultSet.getLong(1));
             configuration.setMembersChannel(resultSet.getLong(2));
             configuration.setGovChannel(resultSet.getLong(3));
@@ -34,10 +49,14 @@ public class ConfigurationDataSource {
     }
 
     public static void setConfiguration(Configuration configuration) {
+        //noinspection SqlWithoutWhere
+        String sqlDel = "DELETE FROM config";
         String sql = "INSERT INTO config VALUES (?,?,?,?,?,?,?,?,?,?)";
 
         try (Connection connection = Bot.dataSource.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(sql);) {
+             Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery(sqlDel);
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setLong(1, configuration.getMainChannel());
             preparedStatement.setLong(2, configuration.getMembersChannel());
             preparedStatement.setLong(3, configuration.getGovChannel());

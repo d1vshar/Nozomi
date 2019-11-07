@@ -1,16 +1,16 @@
-package io.github.adorableskullmaster.nozomi.features.commands.owner;
+package io.github.adorableskullmaster.nozomi.features.commands.closed;
 
+import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import io.github.adorableskullmaster.nozomi.Bot;
 import io.github.adorableskullmaster.nozomi.core.util.CommandResponseHandler;
-import io.github.adorableskullmaster.nozomi.features.commands.OwnerCommand;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 import java.util.concurrent.TimeUnit;
 
-public class ShutdownCommand extends OwnerCommand {
+public class ShutdownCommand extends Command {
 
     private EventWaiter waiter;
 
@@ -19,6 +19,7 @@ public class ShutdownCommand extends OwnerCommand {
         this.name = "shutdown";
         this.aliases = new String[]{"kill"};
         this.help = "Shutdowns the bot.";
+        this.category = new Category("Owner Command");
         this.arguments = "++shutdown";
     }
 

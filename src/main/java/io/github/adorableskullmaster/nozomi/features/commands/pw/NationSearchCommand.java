@@ -7,7 +7,7 @@ import io.github.adorableskullmaster.nozomi.Bot;
 import io.github.adorableskullmaster.nozomi.core.util.CommandResponseHandler;
 import io.github.adorableskullmaster.nozomi.core.util.Instances;
 import io.github.adorableskullmaster.nozomi.core.util.Utility;
-import io.github.adorableskullmaster.nozomi.features.commands.PoliticsAndWarCommand;
+import io.github.adorableskullmaster.nozomi.features.commands.BotCommand;
 import io.github.adorableskullmaster.pw4j.domains.Nations;
 import io.github.adorableskullmaster.pw4j.domains.subdomains.SNationContainer;
 import net.dv8tion.jda.core.EmbedBuilder;
@@ -20,12 +20,13 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-public class NationSearchCommand extends PoliticsAndWarCommand {
+public class NationSearchCommand extends BotCommand {
 
     private final EventWaiter waiter;
     private CommandEvent commandEvent;
 
     public NationSearchCommand(EventWaiter waiter) {
+        super();
         this.waiter = waiter;
         this.name = "nation";
         this.help = "Search an nation by name or id.";

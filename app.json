@@ -14,6 +14,9 @@
     "TOKEN": {
       "description": "Discord bot token"
     },
+    "PW_ID": {
+      "description": "Alliance ID of the alliance"
+    },
     "OWNER_ID": {
       "description": "Discord ID of the owner"
     },
@@ -21,18 +24,12 @@
       "description": "Politics and War API key of the owner",
       "value": ""
     },
+    "SERVICES_FREQUENCY": {
+      "description": "Service frequency",
+      "value": ""
+    },
     "SENTRY": {
       "description": "Sentry Bug Reporting DSN",
-      "value": "",
-      "required": false
-    },
-    "CHW_KEY": {
-      "description": "Chewey API key",
-      "value": "",
-      "required": false
-    },
-    "OWM_KEY": {
-      "description": "Open Weather Map API key",
       "value": "",
       "required": false
     }

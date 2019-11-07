@@ -16,6 +16,10 @@ public class StaticConfiguration {
         return System.getenv("TOKEN");
     }
 
+    public int getPWId() {
+        return Integer.parseInt(System.getenv("PW_ID"));
+    }
+
     public String getOwnerId() {
         return System.getenv("OWNER_ID");
     }

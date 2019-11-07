@@ -1,11 +1,11 @@
-package io.github.adorableskullmaster.nozomi.features.commands.pw.member;
+package io.github.adorableskullmaster.nozomi.features.commands.pw;
 
 import com.jagrosh.jdautilities.command.CommandEvent;
 import io.github.adorableskullmaster.nozomi.Bot;
 import io.github.adorableskullmaster.nozomi.core.util.CommandResponseHandler;
 import io.github.adorableskullmaster.nozomi.core.util.Instances;
 import io.github.adorableskullmaster.nozomi.core.util.Utility;
-import io.github.adorableskullmaster.nozomi.features.commands.MemberPoliticsAndWarCommand;
+import io.github.adorableskullmaster.nozomi.features.commands.BotCommand;
 import io.github.adorableskullmaster.pw4j.PoliticsAndWar;
 import io.github.adorableskullmaster.pw4j.domains.Nation;
 import io.github.adorableskullmaster.pw4j.domains.NationMilitary;
@@ -21,12 +21,13 @@ import java.util.List;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class CounterCommand extends MemberPoliticsAndWarCommand {
+public class CounterCommand extends BotCommand {
 
     private final PoliticsAndWar politicsAndWar;
     private CommandEvent commandEvent;
 
     public CounterCommand() {
+        super();
         this.name = "counter";
         this.aliases = new String[]{"backup"};
         this.help = "Gives closest counter for the target nation";
@@ -38,7 +39,6 @@ public class CounterCommand extends MemberPoliticsAndWarCommand {
     protected void execute(CommandEvent commandEvent) {
         this.commandEvent = commandEvent;
         try {
-            Guild guild = Instances.getDBLayer().getGuild(commandEvent.getGuild().getIdLong());
             commandEvent.async(() -> {
                 commandEvent.getChannel().sendTyping().queue();
                 if (!commandEvent.getArgs().trim().isEmpty() && commandEvent.getArgs().trim().split(" ").length != 1) {
@@ -49,10 +49,10 @@ public class CounterCommand extends MemberPoliticsAndWarCommand {
                     int id;
                     if (Utility.isNumber(args)) {
                         id = Integer.parseInt(args);
-                        commandEvent.reply(getMessage(id, guild));
+                        commandEvent.reply(getMessage(id));
                     } else if (Utility.isNumber(args.substring(args.lastIndexOf('=') + 1))) {
                         id = Integer.parseInt(args.substring(args.lastIndexOf('=') + 1));
-                        commandEvent.reply(getMessage(id, guild));
+                        commandEvent.reply(getMessage(id));
                     } else
                         CommandResponseHandler.illegal(commandEvent, name);
                 }
@@ -62,10 +62,10 @@ public class CounterCommand extends MemberPoliticsAndWarCommand {
         }
     }
 
-    public Message getMessage(int targetId, Guild guild) {
+    public Message getMessage(int targetId) {
         MessageBuilder messageBuilder = new MessageBuilder();
         Nation targetNation = politicsAndWar.getNation(targetId);
-        messageBuilder.setEmbed(getCounters(targetId, guild.getPwId()).build());
+        messageBuilder.setEmbed(getCounters(targetId, Bot.staticConfiguration.getPWId()).build());
         if (targetNation.getDefensivewars() >= 3)
             messageBuilder.appendFormat("**NOTE:** %s has no defensive slots available.", targetNation.getName());
         return messageBuilder.build();

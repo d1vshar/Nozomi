@@ -26,19 +26,6 @@ public class Utility {
         }
     }
 
-    public static boolean isColorHex(String hex) {
-        hex = hex.trim();
-        if (hex.length() == 6) {
-            try {
-                Long.parseLong(hex, 16);
-                return true;
-            } catch (NumberFormatException e) {
-                return false;
-            }
-        } else
-            return false;
-    }
-
     public static Color getGuildSpecificRoleColor(CommandEvent commandEvent) {
         Color color = commandEvent.getSelfMember().getColor();
         if (color != null)
@@ -55,11 +42,11 @@ public class Utility {
 
     public static String getMinutesString(int min) {
         if (min >= 24 * 60 * 7)
-            return Integer.toString((int) Math.floor(min / (24 * 60 * 7))) + 'w';
+            return Integer.toString((int) Math.floor(min / (24 * 60 * 7.0))) + 'w';
         else if (min >= 24 * 60)
-            return Integer.toString((int) Math.floor(min / (24 * 60))) + 'd';
+            return Integer.toString((int) Math.floor(min / (24 * 60.0))) + 'd';
         else if (min >= 60)
-            return Integer.toString((int) Math.floor(min / (24))) + 'h';
+            return Integer.toString((int) Math.floor(min / (24.0))) + 'h';
         else
             return Integer.toString(min) + 'm';
     }

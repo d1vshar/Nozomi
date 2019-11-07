@@ -5,7 +5,13 @@ import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import io.github.adorableskullmaster.nozomi.core.cache.Cache;
 import io.github.adorableskullmaster.nozomi.core.config.StaticConfiguration;
 import io.github.adorableskullmaster.nozomi.core.util.BotExceptionHandler;
-import io.github.adorableskullmaster.nozomi.core.util.Setup;
+import io.github.adorableskullmaster.nozomi.features.commands.closed.ShutdownCommand;
+import io.github.adorableskullmaster.nozomi.features.commands.closed.StatusCommand;
+import io.github.adorableskullmaster.nozomi.features.commands.pw.AllianceSearchCommand;
+import io.github.adorableskullmaster.nozomi.features.commands.pw.AnalyzeCommand;
+import io.github.adorableskullmaster.nozomi.features.commands.pw.CounterCommand;
+import io.github.adorableskullmaster.nozomi.features.commands.pw.NationSearchCommand;
+import io.github.adorableskullmaster.nozomi.features.commands.utility.HelpCommand;
 import io.github.adorableskullmaster.nozomi.features.hooks.GenericListener;
 import io.github.adorableskullmaster.nozomi.features.services.BankCheckService;
 import io.github.adorableskullmaster.nozomi.features.services.NewApplicantService;
@@ -41,7 +47,6 @@ public class Bot {
         BOT_EXCEPTION_HANDLER = new BotExceptionHandler();
         CACHE = new Cache();
         dataSource = setupDataSource(staticConfiguration.getDbUrl());
-        Setup.initDatabase();
     }
 
     public static void main(String[] args) throws LoginException, InterruptedException {
@@ -53,11 +58,17 @@ public class Bot {
         clientBuilder.setPrefix(staticConfiguration.getPrefix())
                 .setOwnerId(staticConfiguration.getOwnerId())
                 .setEmojis("✔", "‼", "❌")
+                .addCommand(new HelpCommand())
+                .addCommand(new CounterCommand())
+                .addCommand(new StatusCommand())
+                .addCommand(new ShutdownCommand(eventWaiter))
+                .addCommand(new AllianceSearchCommand(eventWaiter))
+                .addCommand(new AnalyzeCommand())
+                .addCommand(new NationSearchCommand(eventWaiter))
                 .setServerInvite("https://discord.gg/GrnewCF")
                 .setStatus(OnlineStatus.ONLINE)
                 .setGame(Game.playing(staticConfiguration.getPrefix() + "help"))
-                .useHelpBuilder(false)
-                .addCommands(Setup.initCommands(eventWaiter));
+                .useHelpBuilder(false);
 
         jda = new JDABuilder(AccountType.BOT)
                 .setToken(staticConfiguration.getBotToken())
@@ -66,8 +77,16 @@ public class Bot {
                 .addEventListener(new GenericListener())
                 .build()
                 .awaitReady();
-
         initServices();
+    }
+
+    private static DataSource setupDataSource(String uri) {
+        BasicDataSource bds = new BasicDataSource();
+        bds.setUrl(uri);
+        bds.setMinIdle(2);
+        bds.setMaxIdle(4);
+        bds.setDriverClassName("org.postgresql.Driver");
+        return bds;
     }
 
     private static void initServices() {
@@ -77,13 +96,5 @@ public class Bot {
         executorService.scheduleAtFixedRate(new BankCheckService(), 0, staticConfiguration.getBankCheckFrequency(), TimeUnit.MINUTES);
         executorService.scheduleAtFixedRate(new NewApplicantService(), 0, staticConfiguration.getNewApplicantFrequency(), TimeUnit.MINUTES);
         executorService.scheduleAtFixedRate(new VMBeigeService(), 0, 1, TimeUnit.MINUTES);
-    }
-
-    private static DataSource setupDataSource(String uri) {
-        BasicDataSource bds = new BasicDataSource();
-        bds.setUrl(uri);
-        bds.setMinIdle(2);
-        bds.setMaxIdle(4);
-        return bds;
     }
 }

@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ApplicantsDataSource {
-    public static List<Integer> getStoredWars() {
+    public static List<Integer> getStoredApplicants() {
         List<Integer> storedWars = new ArrayList<>();
 
         String sql = "SELECT * FROM applicants";
@@ -18,7 +18,7 @@ public class ApplicantsDataSource {
         try (
                 Connection connection = Bot.dataSource.getConnection();
                 Statement statement = connection.createStatement();
-                ResultSet resultSet = statement.executeQuery(sql);
+                ResultSet resultSet = statement.executeQuery(sql)
         ) {
             while (resultSet.next())
                 storedWars.add(resultSet.getInt(1));
@@ -29,7 +29,7 @@ public class ApplicantsDataSource {
         return storedWars;
     }
 
-    public static void setStoredWars(List<Integer> newApplicants) {
+    public static void setStoredApplicants(List<Integer> newApplicants) {
         String sql = "INSERT INTO applicants(id) VALUES (?)";
 
         DataUtils.executeIntegerBatch(newApplicants, sql);

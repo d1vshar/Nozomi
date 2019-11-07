@@ -1,9 +1,12 @@
 package io.github.adorableskullmaster.nozomi.features.services;
 
 import io.github.adorableskullmaster.nozomi.Bot;
+import io.github.adorableskullmaster.nozomi.core.database.ConfigurationDataSource;
+import io.github.adorableskullmaster.nozomi.core.database.WarsDataSource;
+import io.github.adorableskullmaster.nozomi.core.database.models.Configuration;
 import io.github.adorableskullmaster.nozomi.core.util.Instances;
 import io.github.adorableskullmaster.nozomi.core.util.Utility;
-import io.github.adorableskullmaster.nozomi.features.commands.pw.member.CounterCommand;
+import io.github.adorableskullmaster.nozomi.features.commands.pw.CounterCommand;
 import io.github.adorableskullmaster.pw4j.PoliticsAndWar;
 import io.github.adorableskullmaster.pw4j.domains.War;
 import io.github.adorableskullmaster.pw4j.domains.Wars;
@@ -13,10 +16,8 @@ import io.github.adorableskullmaster.pw4j.domains.subdomains.SWarContainer;
 import io.github.adorableskullmaster.pw4j.domains.subdomains.WarContainer;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Message;
-import org.jooq.Result;
 
 import java.awt.*;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -25,33 +26,25 @@ import java.util.stream.Collectors;
 public class NewWarService implements Runnable {
 
     private static PoliticsAndWar politicsAndWar = Instances.getDefaultPW();
-    private DB db;
-
-    public NewWarService() {
-        try {
-            db = Instances.getDBLayer();
-        } catch (SQLException e) {
-            Bot.BOT_EXCEPTION_HANDLER.captureException(e);
-        }
-    }
 
     @Override
     public void run() {
-        try {
-            Bot.LOGGER.info("Starting War Thread");
+        if (ConfigurationDataSource.isSetup()) {
 
-            List<War> newWars = getNewWars();
-            List<Long> guildIds = db.getAllSetupGuildIds();
+            try {
+                Bot.LOGGER.info("Starting War Thread");
 
-            Bot.LOGGER.info("New Wars: {}", newWars.size());
+                int pwId = Bot.staticConfiguration.getPWId();
+                Configuration configuration = ConfigurationDataSource.getConfiguration();
+
+                List<War> newWars = getNewWars();
+
+                Bot.LOGGER.info("New Wars: {}", newWars.size());
 
 
-            for (int i = newWars.size() - 1; i >= 0; i--) {
+                for (int i = newWars.size() - 1; i >= 0; i--) {
 
-                WarContainer warObj = newWars.get(i).getWar().get(0);
-
-                for (Long guildId : guildIds) {
-                    Guild guild = db.getGuild(guildId);
+                    WarContainer warObj = newWars.get(i).getWar().get(0);
                     List<SNationContainer> nations = Bot.CACHE.getNations().getNationsContainer();
                     List<NationMilitaryContainer> nationMilitaries = Bot.CACHE.getNationMilitary().getNationMilitaries();
 
@@ -77,38 +70,32 @@ public class NewWarService implements Runnable {
                             .findFirst()
                             .orElse(null);
 
-                    if (guild.isSetup() && guild.isWarNotifier() && (agg != null && def != null)) {
-                        if (agg.getAllianceid() == guild.getPwId() || def.getAllianceid() == guild.getPwId()) {
+                    if (agg != null && def != null && aggMil != null && defMil != null) {
+                        if (agg.getAllianceid() == pwId || def.getAllianceid() == pwId) {
                             EmbedBuilder embedBuilder = embed(warObj, agg, def, aggMil, defMil);
 
-                            if (agg.getAllianceid() == guild.getPwId()) {
+                            if (agg.getAllianceid() == pwId) {
                                 embedBuilder.setColor(Color.GREEN);
-                                Bot.jda.getGuildById(guild.getId())
-                                        .getTextChannelById(guild.getGuildChannels().getOffensiveChannel())
+                                Bot.jda.getTextChannelById(configuration.getWarsChannel())
                                         .sendMessage(embedBuilder.build())
                                         .queue();
                             } else {
                                 embedBuilder.setColor(Color.RED);
-                                Message counter = new CounterCommand().getMessage(agg.getNationId(), guild);
+                                Message counter = new CounterCommand().getMessage(agg.getNationId());
 
-                                long defensiveChannel = guild.getGuildChannels().getDefensiveChannel();
-                                Bot.jda.getGuildById(guild.getId())
-                                        .getTextChannelById(defensiveChannel)
+                                Bot.jda.getTextChannelById(configuration.getWarsChannel())
                                         .sendMessage(embedBuilder.build())
                                         .queue();
-                                if (guild.isAutoCounter()) {
-                                    Bot.jda.getGuildById(guild.getId())
-                                            .getTextChannelById(defensiveChannel)
-                                            .sendMessage(counter)
-                                            .queue();
-                                }
+                                Bot.jda.getTextChannelById(configuration.getWarsChannel())
+                                        .sendMessage(counter)
+                                        .queue();
                             }
                         }
                     }
                 }
+            } catch (Throwable e) {
+                Bot.BOT_EXCEPTION_HANDLER.captureException(e);
             }
-        } catch (Throwable e) {
-            Bot.BOT_EXCEPTION_HANDLER.captureException(e);
         }
     }
 
@@ -179,16 +166,10 @@ public class NewWarService implements Runnable {
     }
 
     private List<Integer> getWarsFromDB() {
-        List<Integer> result = new ArrayList<>();
-        result.add(0);
-        Result<WarsRecord> warsDir = db.getWarsDir();
-        for (WarsRecord warsRecord : warsDir) {
-            result.add(warsRecord.getWarid());
-        }
-        return result;
+        return WarsDataSource.getStoredWars();
     }
 
     private void storeNewWars(List<Integer> newWars) {
-        db.storeWarsDir(newWars);
+        WarsDataSource.setStoredWars(newWars);
     }
 }

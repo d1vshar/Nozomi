@@ -1,10 +1,10 @@
-package io.github.adorableskullmaster.nozomi.features.commands.pw.member;
+package io.github.adorableskullmaster.nozomi.features.commands.pw;
 
 import com.jagrosh.jdautilities.command.CommandEvent;
 import io.github.adorableskullmaster.nozomi.Bot;
 import io.github.adorableskullmaster.nozomi.core.util.Instances;
 import io.github.adorableskullmaster.nozomi.core.util.Utility;
-import io.github.adorableskullmaster.nozomi.features.commands.MemberPoliticsAndWarCommand;
+import io.github.adorableskullmaster.nozomi.features.commands.BotCommand;
 import io.github.adorableskullmaster.pw4j.PoliticsAndWar;
 import io.github.adorableskullmaster.pw4j.domains.Alliance;
 import io.github.adorableskullmaster.pw4j.domains.City;
@@ -19,11 +19,12 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-public class AnalyzeCommand extends MemberPoliticsAndWarCommand {
+public class AnalyzeCommand extends BotCommand {
 
     private CommandEvent commandEvent;
 
     public AnalyzeCommand() {
+        super();
         this.name = "analyze";
         this.aliases = new String[]{"kowalski"};
         this.help = "Analyzes target nations";

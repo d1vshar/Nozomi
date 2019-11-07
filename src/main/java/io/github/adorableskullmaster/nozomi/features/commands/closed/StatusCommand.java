@@ -1,10 +1,11 @@
-package io.github.adorableskullmaster.nozomi.features.commands.owner;
+package io.github.adorableskullmaster.nozomi.features.commands.closed;
 
+import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import io.github.adorableskullmaster.nozomi.Bot;
 import io.github.adorableskullmaster.nozomi.core.util.Utility;
-import io.github.adorableskullmaster.nozomi.features.commands.OwnerCommand;
 import net.dv8tion.jda.core.EmbedBuilder;
+import net.dv8tion.jda.core.Permission;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -12,13 +13,15 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class StatusCommand extends OwnerCommand {
+public class StatusCommand extends Command {
     private final Instant startup;
 
     public StatusCommand() {
         startup = Instant.now();
         this.name = "status";
         this.help = "Status of bot";
+        this.category = new Category("Gov Command");
+        this.userPermissions = new Permission[]{Permission.ADMINISTRATOR};
         this.arguments = "++uptime";
     }
 

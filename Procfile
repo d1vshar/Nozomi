@@ -1,1 +1,1 @@
-worker: java -jar target/Nozomi-jar-with-dependencies.jar
+worker: java -jar target/ArrghBot-jar-with-dependencies.jar
