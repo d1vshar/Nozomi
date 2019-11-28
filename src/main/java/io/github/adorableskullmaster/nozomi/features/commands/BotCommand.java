@@ -12,9 +12,8 @@ public abstract class BotCommand extends Command {
         this.guildOnly = true;
         this.category = new Command.Category(
                 "Bot Command",
-                Emojis.CANCEL.getAsMention() + " Join Arrgh pleb.",
+                Emojis.CANCEL.getAsMention() + " Join Arrgh, pleb.",
                 event -> {
-                    System.out.println("HIT " + ConfigurationDataSource.isSetup());
                     if (ConfigurationDataSource.isSetup()) {
                         Long memberRole = ConfigurationDataSource.getConfiguration().getMemberRole();
                         return event.getMember()

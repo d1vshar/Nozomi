@@ -8,6 +8,7 @@ import io.github.adorableskullmaster.pw4j.domains.Alliances;
 import io.github.adorableskullmaster.pw4j.domains.NationMilitary;
 import io.github.adorableskullmaster.pw4j.domains.Nations;
 
+import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.concurrent.ScheduledExecutorService;
@@ -61,7 +62,7 @@ public class Cache {
 
             Instant end = Instant.now();
             Bot.LOGGER.info(String.format("Cache updated in %ds.", Duration.between(start, end).getSeconds()));
-        } catch (PoliticsAndWarAPIException e) {
+        } catch (PoliticsAndWarAPIException | IOException e) {
             Bot.BOT_EXCEPTION_HANDLER.captureException(e);
         }
     }

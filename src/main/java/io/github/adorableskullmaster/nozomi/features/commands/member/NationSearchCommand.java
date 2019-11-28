@@ -1,4 +1,4 @@
-package io.github.adorableskullmaster.nozomi.features.commands.pw;
+package io.github.adorableskullmaster.nozomi.features.commands.member;
 
 import com.jagrosh.jdautilities.command.CommandEvent;
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
@@ -13,6 +13,7 @@ import io.github.adorableskullmaster.pw4j.domains.subdomains.SNationContainer;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.MessageEmbed;
 
+import java.io.IOException;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -86,7 +87,7 @@ public class NationSearchCommand extends BotCommand {
         return embed.build();
     }
 
-    private List<SNationContainer> search(String args) {
+    private List<SNationContainer> search(String args) throws IOException {
         List<String> commons = new ArrayList<>(Arrays.asList("the", "is", "a", "an", "of", "some", "few"));
         List<SNationContainer> result = new ArrayList<>();
         Nations nations = Bot.CACHE.getNations();

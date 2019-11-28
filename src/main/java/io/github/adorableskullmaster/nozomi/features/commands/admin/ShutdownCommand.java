@@ -1,4 +1,4 @@
-package io.github.adorableskullmaster.nozomi.features.commands.closed;
+package io.github.adorableskullmaster.nozomi.features.commands.admin;
 
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
@@ -21,6 +21,7 @@ public class ShutdownCommand extends Command {
         this.help = "Shutdowns the bot.";
         this.category = new Category("Owner Command");
         this.arguments = "++shutdown";
+        this.ownerCommand = true;
     }
 
     private static void safExit(JDA jda) {

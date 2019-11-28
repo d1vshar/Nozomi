@@ -12,7 +12,7 @@ class DataUtils {
         int count = 1;
 
         try (
-                Connection connection = Bot.dataSource.getConnection();
+                Connection connection = Bot.dataSource.getConnection()
         ) {
             for (Integer integer : newIntegers) {
                 PreparedStatement preparedStatement = connection.prepareStatement(sql);
@@ -25,7 +25,7 @@ class DataUtils {
                 count++;
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            Bot.BOT_EXCEPTION_HANDLER.captureException(e);
         }
     }
 }

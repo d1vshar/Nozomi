@@ -5,14 +5,10 @@ import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import io.github.adorableskullmaster.nozomi.core.cache.Cache;
 import io.github.adorableskullmaster.nozomi.core.config.StaticConfiguration;
 import io.github.adorableskullmaster.nozomi.core.util.BotExceptionHandler;
-import io.github.adorableskullmaster.nozomi.features.commands.closed.ShutdownCommand;
-import io.github.adorableskullmaster.nozomi.features.commands.closed.StatusCommand;
-import io.github.adorableskullmaster.nozomi.features.commands.pw.AllianceSearchCommand;
-import io.github.adorableskullmaster.nozomi.features.commands.pw.AnalyzeCommand;
-import io.github.adorableskullmaster.nozomi.features.commands.pw.CounterCommand;
-import io.github.adorableskullmaster.nozomi.features.commands.pw.NationSearchCommand;
-import io.github.adorableskullmaster.nozomi.features.commands.utility.HelpCommand;
-import io.github.adorableskullmaster.nozomi.features.hooks.GenericListener;
+import io.github.adorableskullmaster.nozomi.features.commands.admin.ShutdownCommand;
+import io.github.adorableskullmaster.nozomi.features.commands.admin.StatusCommand;
+import io.github.adorableskullmaster.nozomi.features.commands.member.*;
+import io.github.adorableskullmaster.nozomi.features.hooks.JoinListener;
 import io.github.adorableskullmaster.nozomi.features.services.BankCheckService;
 import io.github.adorableskullmaster.nozomi.features.services.NewApplicantService;
 import io.github.adorableskullmaster.nozomi.features.services.NewWarService;
@@ -74,7 +70,7 @@ public class Bot {
                 .setToken(staticConfiguration.getBotToken())
                 .addEventListener(eventWaiter)
                 .addEventListener(clientBuilder.build())
-                .addEventListener(new GenericListener())
+                .addEventListener(new JoinListener())
                 .build()
                 .awaitReady();
         initServices();

@@ -6,7 +6,7 @@ import io.github.adorableskullmaster.nozomi.core.database.WarsDataSource;
 import io.github.adorableskullmaster.nozomi.core.database.models.Configuration;
 import io.github.adorableskullmaster.nozomi.core.util.Instances;
 import io.github.adorableskullmaster.nozomi.core.util.Utility;
-import io.github.adorableskullmaster.nozomi.features.commands.pw.CounterCommand;
+import io.github.adorableskullmaster.nozomi.features.commands.member.CounterCommand;
 import io.github.adorableskullmaster.pw4j.PoliticsAndWar;
 import io.github.adorableskullmaster.pw4j.domains.War;
 import io.github.adorableskullmaster.pw4j.domains.Wars;
@@ -18,6 +18,7 @@ import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Message;
 
 import java.awt.*;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -140,14 +141,14 @@ public class NewWarService implements Runnable {
                 .setTimestamp(Utility.convertISO8601(warObj.getDate()));
     }
 
-    private List<War> getNewWars() {
+    private List<War> getNewWars() throws IOException {
         List<Integer> newWars = getWarsFromAPI();
         List<Integer> oldWars = getWarsFromDB();
         storeNewWars(newWars);
         return getDiff(oldWars, newWars);
     }
 
-    private List<War> getDiff(List<Integer> oldWars, List<Integer> newWars) {
+    private List<War> getDiff(List<Integer> oldWars, List<Integer> newWars) throws IOException {
         List<War> diff = new ArrayList<>();
         for (Integer id : newWars) {
             if (!oldWars.contains(id)) {
@@ -157,7 +158,7 @@ public class NewWarService implements Runnable {
         return diff;
     }
 
-    private List<Integer> getWarsFromAPI() {
+    private List<Integer> getWarsFromAPI() throws IOException {
         Wars wars = politicsAndWar.getWarsByAmount(25);
         return wars.getWars()
                 .stream()

@@ -10,6 +10,8 @@ import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageHistory;
 import net.dv8tion.jda.core.entities.TextChannel;
 
+import java.io.IOException;
+
 public class BankCheckService implements Runnable {
 
     @Override
@@ -46,7 +48,7 @@ public class BankCheckService implements Runnable {
         }
     }
 
-    private boolean isBankNotEmpty() throws PoliticsAndWarAPIException {
+    private boolean isBankNotEmpty() throws PoliticsAndWarAPIException, IOException {
 
         String apiKey = ConfigurationDataSource.getConfiguration().getApiKeys()[0];
 

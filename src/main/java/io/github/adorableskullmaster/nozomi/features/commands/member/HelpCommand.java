@@ -1,4 +1,4 @@
-package io.github.adorableskullmaster.nozomi.features.commands.utility;
+package io.github.adorableskullmaster.nozomi.features.commands.member;
 
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;

@@ -1,8 +1,8 @@
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
 
-# Nozomi
+# ArrghBot
 
-Nozomi is a Discord bot made by WarGamer for the online browser game Politics and War.
+ArrghBot is a fork of Nozomi, rewritten to be single-server ready.
 
 ## Features
 

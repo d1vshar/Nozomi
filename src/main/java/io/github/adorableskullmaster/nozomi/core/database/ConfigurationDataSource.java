@@ -17,7 +17,7 @@ public class ConfigurationDataSource {
             resultSet.next();
             count = resultSet.getInt(1);
         } catch (SQLException e) {
-            e.printStackTrace();
+            Bot.BOT_EXCEPTION_HANDLER.captureException(e);
         }
         return count == 1;
     }

@@ -1,4 +1,4 @@
-package io.github.adorableskullmaster.nozomi.features.commands.pw;
+package io.github.adorableskullmaster.nozomi.features.commands.member;
 
 import com.jagrosh.jdautilities.command.CommandEvent;
 import io.github.adorableskullmaster.nozomi.Bot;
@@ -11,6 +11,7 @@ import io.github.adorableskullmaster.pw4j.domains.City;
 import io.github.adorableskullmaster.pw4j.domains.Nation;
 import net.dv8tion.jda.core.EmbedBuilder;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
@@ -119,7 +120,7 @@ public class AnalyzeCommand extends BotCommand {
                 alliance = politicsAndWar.getAlliance(Integer.parseInt(nation.getAllianceid()));
 
             return createEmbed(nation, newNation, inactive, mines, powered, commerce, manufacturing, military, alliance);
-        } catch (ParseException e) {
+        } catch (ParseException | IOException e) {
             return null;
         }
     }

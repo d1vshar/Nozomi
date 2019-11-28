@@ -1,4 +1,4 @@
-package io.github.adorableskullmaster.nozomi.features.commands.closed;
+package io.github.adorableskullmaster.nozomi.features.commands.admin;
 
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
@@ -23,6 +23,7 @@ public class StatusCommand extends Command {
         this.category = new Category("Gov Command");
         this.userPermissions = new Permission[]{Permission.ADMINISTRATOR};
         this.arguments = "++uptime";
+        this.ownerCommand = true;
     }
 
     @Override

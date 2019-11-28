@@ -1,4 +1,4 @@
-package io.github.adorableskullmaster.nozomi.features.commands.pw;
+package io.github.adorableskullmaster.nozomi.features.commands.member;
 
 import com.jagrosh.jdautilities.command.CommandEvent;
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
@@ -13,6 +13,7 @@ import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.MessageEmbed;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
+import java.io.IOException;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -39,22 +40,27 @@ public class AllianceSearchCommand extends BotCommand {
             commandEvent.async(() -> {
                 if (!commandEvent.getArgs().trim().isEmpty()) {
                     commandEvent.getChannel().sendTyping().queue();
-                    List<SAllianceContainer> results = search(commandEvent.getArgs());
-                    List<String> names = results
-                            .stream()
+                    List<SAllianceContainer> results = new ArrayList<>();
+                    try {
+                        results = search(commandEvent.getArgs());
+                    } catch (IOException e) {
+                        Bot.BOT_EXCEPTION_HANDLER.captureException(e, commandEvent);
+                    }
+                    List<String> names = results.stream()
                             .map(SAllianceContainer::getName)
                             .collect(Collectors.toList());
                     if (results.size() > 0) {
                         if (results.size() == 1) {
                             commandEvent.reply(embed(results.get(0)));
                         } else {
+                            List<SAllianceContainer> finalResults = results;
                             commandEvent.getChannel().sendMessage("**Choose one of the following:**\n" + String.join(", ", names)).queue(
                                     (c) -> waiter.waitForEvent(
                                             MessageReceivedEvent.class,
                                             (event) -> event.getAuthor().equals(commandEvent.getAuthor()) && event.getChannel().equals(commandEvent.getChannel()),
                                             (event) -> {
                                                 if (names.contains(event.getMessage().getContentDisplay()))
-                                                    commandEvent.getChannel().sendMessage(embed(results.get(names.indexOf(event.getMessage().getContentDisplay())))).queue();
+                                                    commandEvent.getChannel().sendMessage(embed(finalResults.get(names.indexOf(event.getMessage().getContentDisplay())))).queue();
                                             },
                                             30,
                                             TimeUnit.SECONDS,
@@ -91,7 +97,7 @@ public class AllianceSearchCommand extends BotCommand {
         return embed.build();
     }
 
-    private List<SAllianceContainer> search(String arg) {
+    private List<SAllianceContainer> search(String arg) throws IOException {
         List<String> commons = new ArrayList<>(Arrays.asList("the", "is", "a", "an", "of", "some", "few"));
         List<SAllianceContainer> result = new ArrayList<>();
 

@@ -1,4 +1,4 @@
-package io.github.adorableskullmaster.nozomi.features.commands.pw;
+package io.github.adorableskullmaster.nozomi.features.commands.member;
 
 import com.jagrosh.jdautilities.command.CommandEvent;
 import io.github.adorableskullmaster.nozomi.Bot;
@@ -16,6 +16,7 @@ import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.entities.Message;
 
 import java.awt.*;
+import java.io.IOException;
 import java.time.Instant;
 import java.util.List;
 import java.util.*;
@@ -49,10 +50,18 @@ public class CounterCommand extends BotCommand {
                     int id;
                     if (Utility.isNumber(args)) {
                         id = Integer.parseInt(args);
-                        commandEvent.reply(getMessage(id));
+                        try {
+                            commandEvent.reply(getMessage(id));
+                        } catch (IOException e) {
+                            Bot.BOT_EXCEPTION_HANDLER.captureException(e, commandEvent);
+                        }
                     } else if (Utility.isNumber(args.substring(args.lastIndexOf('=') + 1))) {
                         id = Integer.parseInt(args.substring(args.lastIndexOf('=') + 1));
-                        commandEvent.reply(getMessage(id));
+                        try {
+                            commandEvent.reply(getMessage(id));
+                        } catch (IOException e) {
+                            Bot.BOT_EXCEPTION_HANDLER.captureException(e, commandEvent);
+                        }
                     } else
                         CommandResponseHandler.illegal(commandEvent, name);
                 }
@@ -62,7 +71,7 @@ public class CounterCommand extends BotCommand {
         }
     }
 
-    public Message getMessage(int targetId) {
+    public Message getMessage(int targetId) throws IOException {
         MessageBuilder messageBuilder = new MessageBuilder();
         Nation targetNation = politicsAndWar.getNation(targetId);
         messageBuilder.setEmbed(getCounters(targetId, Bot.staticConfiguration.getPWId()).build());
