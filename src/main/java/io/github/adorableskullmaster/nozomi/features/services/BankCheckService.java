@@ -37,8 +37,7 @@ public class BankCheckService implements Runnable {
                             }
                     );
 
-                    Bot.jda.getGuildById(pwId)
-                            .getTextChannelById(govChannel)
+                    Bot.jda.getTextChannelById(govChannel)
                             .sendMessage(":moneybag: Bank is currently not empty! <https://politicsandwar.com/alliance/id=" + pwId + "&display=bank>")
                             .queue();
                 }

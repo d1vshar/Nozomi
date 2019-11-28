@@ -7,6 +7,8 @@ import io.github.adorableskullmaster.nozomi.core.config.StaticConfiguration;
 import io.github.adorableskullmaster.nozomi.core.util.BotExceptionHandler;
 import io.github.adorableskullmaster.nozomi.features.commands.admin.ShutdownCommand;
 import io.github.adorableskullmaster.nozomi.features.commands.admin.StatusCommand;
+import io.github.adorableskullmaster.nozomi.features.commands.gov.RegisterCommand;
+import io.github.adorableskullmaster.nozomi.features.commands.gov.WhoIsCommand;
 import io.github.adorableskullmaster.nozomi.features.commands.member.*;
 import io.github.adorableskullmaster.nozomi.features.hooks.JoinListener;
 import io.github.adorableskullmaster.nozomi.features.services.BankCheckService;
@@ -61,6 +63,8 @@ public class Bot {
                 .addCommand(new AllianceSearchCommand(eventWaiter))
                 .addCommand(new AnalyzeCommand())
                 .addCommand(new NationSearchCommand(eventWaiter))
+                .addCommand(new RegisterCommand())
+                .addCommand(new WhoIsCommand())
                 .setServerInvite("https://discord.gg/GrnewCF")
                 .setStatus(OnlineStatus.ONLINE)
                 .setGame(Game.playing(staticConfiguration.getPrefix() + "help"))
