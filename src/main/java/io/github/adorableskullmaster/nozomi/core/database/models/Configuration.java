@@ -1,5 +1,7 @@
 package io.github.adorableskullmaster.nozomi.core.database.models;
 
+import java.util.Arrays;
+
 public class Configuration {
     private Long mainChannel;
     private Long membersChannel;
@@ -11,6 +13,7 @@ public class Configuration {
     private Long govRole;
     private String[] apiKeys;
     private String joinText;
+    private Integer[] aaTrack;
 
     public Long getMainChannel() {
         return mainChannel;
@@ -90,5 +93,30 @@ public class Configuration {
 
     public void setJoinText(String joinText) {
         this.joinText = joinText;
+    }
+
+    public Integer[] getAaTrack() {
+        return aaTrack;
+    }
+
+    public void setAaTrack(Integer[] aaTrack) {
+        this.aaTrack = aaTrack;
+    }
+
+    @Override
+    public String toString() {
+        return "Configuration{" +
+                "mainChannel=" + mainChannel +
+                ", membersChannel=" + membersChannel +
+                ", govChannel=" + govChannel +
+                ", warsChannel=" + warsChannel +
+                ", vmChannel=" + vmChannel +
+                ", beigeChannel=" + beigeChannel +
+                ", memberRole=" + memberRole +
+                ", govRole=" + govRole +
+                ", apiKeys=" + Arrays.toString(apiKeys) +
+                ", joinText='" + joinText + '\'' +
+                ", aaTrack=" + Arrays.toString(aaTrack) +
+                '}';
     }
 }

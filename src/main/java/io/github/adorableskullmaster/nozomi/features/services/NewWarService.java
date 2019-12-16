@@ -23,6 +23,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+// TODO check if requests can be reduced to 1 from current 3
+// TODO add multiple alliance checks
+
 
 public class NewWarService implements Runnable {
 

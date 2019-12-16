@@ -19,7 +19,7 @@ public class WarsDataSource {
         try (
                 Connection connection = Bot.dataSource.getConnection();
                 Statement statement = connection.createStatement();
-                ResultSet resultSet = statement.executeQuery(sql);
+                ResultSet resultSet = statement.executeQuery(sql)
         ) {
             while (resultSet.next())
                 storedWars.add(resultSet.getInt(1));

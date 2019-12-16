@@ -1,9 +1,9 @@
 {
-  "name": "Nozomi",
+  "name": "ArrghBot",
   "logo": "https://i.imgur.com/cfkCAhu.png",
-  "description": "A Discord bot for online game Politics and War.",
-  "website": "https://github.com/Adorable-SkullMaster/Nozomi",
-  "repository": "https://github.com/Adorable-SkullMaster/Nozomi",
+  "description": "A Discord bot for online game Politics and War. Made for alliance Arrgh.",
+  "website": "https://github.com/Adorable-SkullMaster/ArrghBot",
+  "repository": "https://github.com/Adorable-SkullMaster/ArrghBot",
   "addons": [
     "heroku-postgresql:hobby-dev"
   ],

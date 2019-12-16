@@ -17,7 +17,7 @@ public class PlayerDataSource {
              PreparedStatement statement = connection.prepareStatement(sql)
         ) {
             statement.setInt(1, nid);
-            ResultSet resultSet = statement.executeQuery(sql);
+            ResultSet resultSet = statement.executeQuery();
             resultSet.next();
             count = resultSet.getInt(1);
         } catch (SQLException e) {
@@ -33,7 +33,7 @@ public class PlayerDataSource {
              PreparedStatement statement = connection.prepareStatement(sql)
         ) {
             statement.setLong(1, discordId);
-            ResultSet resultSet = statement.executeQuery(sql);
+            ResultSet resultSet = statement.executeQuery();
             resultSet.next();
             count = resultSet.getInt(1);
         } catch (SQLException e) {
@@ -51,7 +51,7 @@ public class PlayerDataSource {
             preparedStatement.setInt(2, player.getNationId());
             preparedStatement.setBoolean(3, player.isMember());
             preparedStatement.setInt(4, player.getAllianceId());
-            preparedStatement.executeUpdate(sql);
+            preparedStatement.executeUpdate();
         } catch (SQLException e) {
             Bot.BOT_EXCEPTION_HANDLER.captureException(e);
         }
@@ -63,7 +63,7 @@ public class PlayerDataSource {
              PreparedStatement statement = connection.prepareStatement(sql)
         ) {
             statement.setLong(1, discordId);
-            ResultSet resultSet = statement.executeQuery(sql);
+            ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
                 return new Player(resultSet.getLong("discordid"),
                         resultSet.getInt("nationid"),
@@ -82,7 +82,7 @@ public class PlayerDataSource {
              PreparedStatement statement = connection.prepareStatement(sql)
         ) {
             statement.setLong(1, nationId);
-            ResultSet resultSet = statement.executeQuery(sql);
+            ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
                 return new Player(resultSet.getLong("discordid"),
                         resultSet.getInt("nationid"),
@@ -104,7 +104,7 @@ public class PlayerDataSource {
             preparedStatement.setBoolean(2, player.isMember());
             preparedStatement.setInt(3, player.getAllianceId());
             preparedStatement.setLong(4, player.getDiscordId());
-            preparedStatement.executeUpdate(sql);
+            preparedStatement.executeUpdate();
         } catch (SQLException e) {
             Bot.BOT_EXCEPTION_HANDLER.captureException(e);
         }
@@ -116,7 +116,7 @@ public class PlayerDataSource {
         try (Connection connection = Bot.dataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setLong(1, discordId);
-            preparedStatement.executeUpdate(sql);
+            preparedStatement.executeUpdate();
         } catch (SQLException e) {
             Bot.BOT_EXCEPTION_HANDLER.captureException(e);
         }

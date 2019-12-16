@@ -40,6 +40,7 @@ public class ConfigurationDataSource {
             configuration.setGovRole(resultSet.getLong(8));
             configuration.setApiKeys((String[]) resultSet.getArray(9).getArray());
             configuration.setJoinText(resultSet.getString(10));
+            configuration.setAaTrack((Integer[]) resultSet.getArray(11).getArray());
 
         } catch (SQLException e) {
             Bot.BOT_EXCEPTION_HANDLER.captureException(e);

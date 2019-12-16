@@ -63,6 +63,7 @@ public class RegisterCommand extends Command {
 
                     Player player = new Player(newPlayerId, newNationId, nation.getAllianceposition() > 1, nation.getAllianceid());
                     PlayerDataSource.insertPlayerData(player);
+                    commandEvent.reply(Emojis.ACCEPT.getAsMention() + " Player successfully registered.");
                 }
             } else {
                 CommandResponseHandler.illegal(commandEvent, this.name);

@@ -4,6 +4,8 @@ import com.jagrosh.jdautilities.command.CommandClientBuilder;
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import io.github.adorableskullmaster.nozomi.core.cache.Cache;
 import io.github.adorableskullmaster.nozomi.core.config.StaticConfiguration;
+import io.github.adorableskullmaster.nozomi.core.database.ConfigurationDataSource;
+import io.github.adorableskullmaster.nozomi.core.database.models.Configuration;
 import io.github.adorableskullmaster.nozomi.core.util.BotExceptionHandler;
 import io.github.adorableskullmaster.nozomi.features.commands.admin.ShutdownCommand;
 import io.github.adorableskullmaster.nozomi.features.commands.admin.StatusCommand;
@@ -77,6 +79,8 @@ public class Bot {
                 .addEventListener(new JoinListener())
                 .build()
                 .awaitReady();
+
+        printConfig();
         initServices();
     }
 
@@ -87,6 +91,16 @@ public class Bot {
         bds.setMaxIdle(4);
         bds.setDriverClassName("org.postgresql.Driver");
         return bds;
+    }
+
+    private static void printConfig() {
+        System.out.printf("Bot set for alliance ID: %d", staticConfiguration.getPWId());
+        if (ConfigurationDataSource.isSetup()) {
+            System.out.println("Found configuration in database");
+            Configuration configuration1 = ConfigurationDataSource.getConfiguration();
+            System.out.println(configuration1);
+        } else
+            System.out.println("No configuration found in database or database corrupt");
     }
 
     private static void initServices() {

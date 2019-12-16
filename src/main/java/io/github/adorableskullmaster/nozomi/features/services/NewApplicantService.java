@@ -22,9 +22,9 @@ public class NewApplicantService implements Runnable {
                 List<SNationContainer> newApplicants = getNewApplicants(pwId);
 
                 for (SNationContainer applicant : newApplicants) {
-                    String msg = Emojis.ADD.getAsMention() + " **New Applicant!** https://politicsandwar.com/alliance/id="
+                    String msg = Emojis.ADD.getAsMention() + " **New Applicant!** <https://politicsandwar.com/alliance/id="
                             + pwId +
-                            "\nName: " + applicant.getNation();
+                            ">\nName: " + applicant.getNation();
 
                     Bot.jda.getTextChannelById(ConfigurationDataSource.getConfiguration().getGovChannel())
                             .sendMessage(msg)
