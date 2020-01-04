@@ -1,29 +1,32 @@
-package io.github.adorableskullmaster.nozomi.features.hooks;
+package io.github.adorableskullmaster.nozomi.hooks;
 
 import io.github.adorableskullmaster.nozomi.Bot;
 import io.github.adorableskullmaster.nozomi.core.database.ConfigurationDataSource;
 import io.github.adorableskullmaster.nozomi.core.database.models.Configuration;
 import io.github.adorableskullmaster.nozomi.core.util.Utility;
-import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.MessageBuilder;
-import net.dv8tion.jda.core.entities.Message;
-import net.dv8tion.jda.core.events.guild.GuildJoinEvent;
-import net.dv8tion.jda.core.events.guild.member.GuildMemberJoinEvent;
-import net.dv8tion.jda.core.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.MessageBuilder;
+import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
+import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
+import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Objects;
 
 public class JoinListener extends ListenerAdapter {
 
     @Override
     public void onGuildMemberJoin(GuildMemberJoinEvent event) {
         Long mainChannel = ConfigurationDataSource.getConfiguration().getMainChannel();
-                event.getJDA()
-                        .getTextChannelById(mainChannel)
+        Objects.requireNonNull(event.getJDA()
+                .getTextChannelById(mainChannel))
                         .sendMessage(getJoinEmbed(event))
                         .queue();
     }
 
     @Override
-    public void onGuildJoin(GuildJoinEvent event) {
+    public void onGuildJoin(@NotNull GuildJoinEvent event) {
         super.onGuildJoin(event);
     }
 

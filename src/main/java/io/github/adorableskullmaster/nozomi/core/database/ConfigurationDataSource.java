@@ -41,6 +41,7 @@ public class ConfigurationDataSource {
             configuration.setApiKeys((String[]) resultSet.getArray(9).getArray());
             configuration.setJoinText(resultSet.getString(10));
             configuration.setAaTrack((Integer[]) resultSet.getArray(11).getArray());
+            configuration.setLogChannel(resultSet.getLong(12));
 
         } catch (SQLException e) {
             Bot.BOT_EXCEPTION_HANDLER.captureException(e);
@@ -58,6 +59,9 @@ public class ConfigurationDataSource {
              Statement statement = connection.createStatement();
              ResultSet resultSet = statement.executeQuery(sqlDel);
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            Array textArray = connection.createArrayOf("text", configuration.getApiKeys());
+            Array aaArray = connection.createArrayOf("integer", configuration.getApiKeys());
+
             preparedStatement.setLong(1, configuration.getMainChannel());
             preparedStatement.setLong(2, configuration.getMembersChannel());
             preparedStatement.setLong(3, configuration.getGovChannel());
@@ -66,8 +70,13 @@ public class ConfigurationDataSource {
             preparedStatement.setLong(6, configuration.getBeigeChannel());
             preparedStatement.setLong(7, configuration.getMemberRole());
             preparedStatement.setLong(8, configuration.getGovRole());
-            preparedStatement.setArray(9, connection.createArrayOf("text", configuration.getApiKeys()));
+            preparedStatement.setArray(9, textArray);
             preparedStatement.setString(10, configuration.getJoinText());
+            preparedStatement.setArray(11, aaArray);
+            preparedStatement.setLong(12, configuration.getLogChannel());
+
+            textArray.free();
+            aaArray.free();
             preparedStatement.executeUpdate(sql);
         } catch (SQLException e) {
             Bot.BOT_EXCEPTION_HANDLER.captureException(e);

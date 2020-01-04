@@ -5,6 +5,7 @@ import io.github.adorableskullmaster.nozomi.Bot;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.List;
 
 class DataUtils {
@@ -12,15 +13,15 @@ class DataUtils {
         int count = 1;
 
         try (
-                Connection connection = Bot.dataSource.getConnection()
+                Connection connection = Bot.dataSource.getConnection();
+                PreparedStatement preparedStatement = connection.prepareStatement(sql);
         ) {
             for (Integer integer : newIntegers) {
-                PreparedStatement preparedStatement = connection.prepareStatement(sql);
                 preparedStatement.setInt(1, integer);
                 preparedStatement.addBatch();
 
                 if (count == newIntegers.size())
-                    preparedStatement.executeBatch();
+                    System.out.println(Arrays.toString(preparedStatement.executeBatch()));
 
                 count++;
             }

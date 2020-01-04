@@ -13,7 +13,7 @@ public class Configuration {
     private Long govRole;
     private String[] apiKeys;
     private String joinText;
-    private Integer[] aaTrack;
+    private Long logChannel;
 
     public Long getMainChannel() {
         return mainChannel;
@@ -95,12 +95,12 @@ public class Configuration {
         this.joinText = joinText;
     }
 
-    public Integer[] getAaTrack() {
-        return aaTrack;
+    public Long getLogChannel() {
+        return logChannel;
     }
 
-    public void setAaTrack(Integer[] aaTrack) {
-        this.aaTrack = aaTrack;
+    public void setLogChannel(Long logChannel) {
+        this.logChannel = logChannel;
     }
 
     @Override
@@ -116,7 +116,6 @@ public class Configuration {
                 ", govRole=" + govRole +
                 ", apiKeys=" + Arrays.toString(apiKeys) +
                 ", joinText='" + joinText + '\'' +
-                ", aaTrack=" + Arrays.toString(aaTrack) +
                 '}';
     }
 }

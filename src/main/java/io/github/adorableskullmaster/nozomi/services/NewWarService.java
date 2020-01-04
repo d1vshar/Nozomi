@@ -1,12 +1,14 @@
-package io.github.adorableskullmaster.nozomi.features.services;
+package io.github.adorableskullmaster.nozomi.services;
 
 import io.github.adorableskullmaster.nozomi.Bot;
+import io.github.adorableskullmaster.nozomi.commands.member.CounterCommand;
 import io.github.adorableskullmaster.nozomi.core.database.ConfigurationDataSource;
+import io.github.adorableskullmaster.nozomi.core.database.WarTrackedEntityDataSource;
 import io.github.adorableskullmaster.nozomi.core.database.WarsDataSource;
 import io.github.adorableskullmaster.nozomi.core.database.models.Configuration;
+import io.github.adorableskullmaster.nozomi.core.database.models.WarTrackedEntity;
 import io.github.adorableskullmaster.nozomi.core.util.Instances;
 import io.github.adorableskullmaster.nozomi.core.util.Utility;
-import io.github.adorableskullmaster.nozomi.features.commands.member.CounterCommand;
 import io.github.adorableskullmaster.pw4j.PoliticsAndWar;
 import io.github.adorableskullmaster.pw4j.domains.War;
 import io.github.adorableskullmaster.pw4j.domains.Wars;
@@ -14,18 +16,17 @@ import io.github.adorableskullmaster.pw4j.domains.subdomains.NationMilitaryConta
 import io.github.adorableskullmaster.pw4j.domains.subdomains.SNationContainer;
 import io.github.adorableskullmaster.pw4j.domains.subdomains.SWarContainer;
 import io.github.adorableskullmaster.pw4j.domains.subdomains.WarContainer;
-import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.entities.Message;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Message;
 
 import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 // TODO check if requests can be reduced to 1 from current 3
-// TODO add multiple alliance checks
-
 
 public class NewWarService implements Runnable {
 
@@ -39,12 +40,13 @@ public class NewWarService implements Runnable {
                 Bot.LOGGER.info("Starting War Thread");
 
                 int pwId = Bot.staticConfiguration.getPWId();
+                List<WarTrackedEntity> trackedEntities = WarTrackedEntityDataSource.getAllTrackedEntities();
+
                 Configuration configuration = ConfigurationDataSource.getConfiguration();
 
                 List<War> newWars = getNewWars();
 
                 Bot.LOGGER.info("New Wars: {}", newWars.size());
-
 
                 for (int i = newWars.size() - 1; i >= 0; i--) {
 
@@ -75,22 +77,24 @@ public class NewWarService implements Runnable {
                             .orElse(null);
 
                     if (agg != null && def != null && aggMil != null && defMil != null) {
-                        if (agg.getAllianceid() == pwId || def.getAllianceid() == pwId) {
+                        if (isBeingTracked(trackedEntities, agg, def)) {
                             EmbedBuilder embedBuilder = embed(warObj, agg, def, aggMil, defMil);
+
+                            Bot.LOGGER.info("War count: {}", i);
 
                             if (agg.getAllianceid() == pwId) {
                                 embedBuilder.setColor(Color.GREEN);
-                                Bot.jda.getTextChannelById(configuration.getWarsChannel())
+                                Objects.requireNonNull(Bot.jda.getTextChannelById(configuration.getWarsChannel()))
                                         .sendMessage(embedBuilder.build())
                                         .queue();
                             } else {
                                 embedBuilder.setColor(Color.RED);
                                 Message counter = new CounterCommand().getMessage(agg.getNationId());
 
-                                Bot.jda.getTextChannelById(configuration.getWarsChannel())
+                                Objects.requireNonNull(Bot.jda.getTextChannelById(configuration.getWarsChannel()))
                                         .sendMessage(embedBuilder.build())
                                         .queue();
-                                Bot.jda.getTextChannelById(configuration.getWarsChannel())
+                                Objects.requireNonNull(Bot.jda.getTextChannelById(configuration.getWarsChannel()))
                                         .sendMessage(counter)
                                         .queue();
                             }
@@ -101,6 +105,13 @@ public class NewWarService implements Runnable {
                 Bot.BOT_EXCEPTION_HANDLER.captureException(e);
             }
         }
+    }
+
+    private Boolean isBeingTracked(List<WarTrackedEntity> trackedEntities, SNationContainer agg, SNationContainer def) {
+        return trackedEntities.contains(new WarTrackedEntity(true, agg.getNationId()))
+                || trackedEntities.contains(new WarTrackedEntity(true, def.getNationId()))
+                || trackedEntities.contains(new WarTrackedEntity(false, agg.getAllianceid()))
+                || trackedEntities.contains(new WarTrackedEntity(false, def.getAllianceid()));
     }
 
     private EmbedBuilder embed(WarContainer warObj, SNationContainer agg, SNationContainer def, NationMilitaryContainer aggMil, NationMilitaryContainer defMil) {
@@ -145,15 +156,15 @@ public class NewWarService implements Runnable {
     }
 
     private List<War> getNewWars() throws IOException {
-        List<Integer> newWars = getWarsFromAPI();
+        List<Integer> apiWars = getWarsFromAPI();
         List<Integer> oldWars = getWarsFromDB();
-        storeNewWars(newWars);
-        return getDiff(oldWars, newWars);
+        storeNewWars(apiWars);
+        return getDiff(oldWars, apiWars);
     }
 
-    private List<War> getDiff(List<Integer> oldWars, List<Integer> newWars) throws IOException {
+    private List<War> getDiff(List<Integer> oldWars, List<Integer> apiWars) throws IOException {
         List<War> diff = new ArrayList<>();
-        for (Integer id : newWars) {
+        for (Integer id : apiWars) {
             if (!oldWars.contains(id)) {
                 diff.add(politicsAndWar.getWar(id));
             }
@@ -173,7 +184,8 @@ public class NewWarService implements Runnable {
         return WarsDataSource.getStoredWars();
     }
 
-    private void storeNewWars(List<Integer> newWars) {
-        WarsDataSource.setStoredWars(newWars);
+    private void storeNewWars(List<Integer> apiWars) {
+        WarsDataSource.deleteStoredWars();
+        WarsDataSource.setStoredWars(apiWars);
     }
 }

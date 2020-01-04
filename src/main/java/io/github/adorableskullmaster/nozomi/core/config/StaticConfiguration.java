@@ -20,6 +20,10 @@ public class StaticConfiguration {
         return Integer.parseInt(System.getenv("PW_ID"));
     }
 
+    public long getServerId() {
+        return Long.parseLong(System.getenv("SERVER_ID"));
+    }
+
     public String getOwnerId() {
         return System.getenv("OWNER_ID");
     }

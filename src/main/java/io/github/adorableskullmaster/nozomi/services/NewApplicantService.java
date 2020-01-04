@@ -1,4 +1,4 @@
-package io.github.adorableskullmaster.nozomi.features.services;
+package io.github.adorableskullmaster.nozomi.services;
 
 import io.github.adorableskullmaster.nozomi.Bot;
 import io.github.adorableskullmaster.nozomi.core.database.ApplicantsDataSource;

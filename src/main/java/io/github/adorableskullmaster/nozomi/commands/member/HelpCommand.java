@@ -1,10 +1,10 @@
-package io.github.adorableskullmaster.nozomi.features.commands.member;
+package io.github.adorableskullmaster.nozomi.commands.member;
 
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import io.github.adorableskullmaster.nozomi.Bot;
-import io.github.adorableskullmaster.nozomi.features.commands.BotCommand;
-import net.dv8tion.jda.core.EmbedBuilder;
+import io.github.adorableskullmaster.nozomi.commands.BotCommand;
+import net.dv8tion.jda.api.EmbedBuilder;
 
 import java.awt.*;
 import java.util.List;

@@ -1,4 +1,4 @@
-package io.github.adorableskullmaster.nozomi.features.commands.gov;
+package io.github.adorableskullmaster.nozomi.commands.gov;
 
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
@@ -7,8 +7,8 @@ import io.github.adorableskullmaster.nozomi.core.database.PlayerDataSource;
 import io.github.adorableskullmaster.nozomi.core.database.models.Player;
 import io.github.adorableskullmaster.nozomi.core.util.CommandResponseHandler;
 import io.github.adorableskullmaster.nozomi.core.util.Emojis;
-import net.dv8tion.jda.core.Permission;
-import net.dv8tion.jda.core.entities.User;
+import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.User;
 
 import java.util.List;
 

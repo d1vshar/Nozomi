@@ -3,10 +3,9 @@ package io.github.adorableskullmaster.nozomi.core.database;
 import io.github.adorableskullmaster.nozomi.Bot;
 import io.github.adorableskullmaster.nozomi.core.database.models.Player;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class PlayerDataSource {
 
@@ -55,6 +54,29 @@ public class PlayerDataSource {
         } catch (SQLException e) {
             Bot.BOT_EXCEPTION_HANDLER.captureException(e);
         }
+    }
+
+    public static List<Player> getAllPlayerData() {
+
+        List<Player> players = new ArrayList<>();
+
+        String sql = "SELECT * FROM players";
+        try (Connection connection = Bot.dataSource.getConnection();
+             Statement statement = connection.createStatement()
+        ) {
+            ResultSet resultSet = statement.executeQuery(sql);
+            while (resultSet.next()) {
+                players.add(new Player(
+                        resultSet.getLong("discordid"),
+                        resultSet.getInt("nationid"),
+                        resultSet.getBoolean("member"),
+                        resultSet.getInt("alliance")
+                ));
+            }
+        } catch (SQLException e) {
+            Bot.BOT_EXCEPTION_HANDLER.captureException(e);
+        }
+        return players;
     }
 
     public static Player getPlayerData(long discordId) {

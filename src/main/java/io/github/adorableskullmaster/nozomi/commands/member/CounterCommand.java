@@ -1,19 +1,19 @@
-package io.github.adorableskullmaster.nozomi.features.commands.member;
+package io.github.adorableskullmaster.nozomi.commands.member;
 
 import com.jagrosh.jdautilities.command.CommandEvent;
 import io.github.adorableskullmaster.nozomi.Bot;
+import io.github.adorableskullmaster.nozomi.commands.BotCommand;
 import io.github.adorableskullmaster.nozomi.core.util.CommandResponseHandler;
 import io.github.adorableskullmaster.nozomi.core.util.Instances;
 import io.github.adorableskullmaster.nozomi.core.util.Utility;
-import io.github.adorableskullmaster.nozomi.features.commands.BotCommand;
 import io.github.adorableskullmaster.pw4j.PoliticsAndWar;
 import io.github.adorableskullmaster.pw4j.domains.Nation;
 import io.github.adorableskullmaster.pw4j.domains.NationMilitary;
 import io.github.adorableskullmaster.pw4j.domains.subdomains.NationMilitaryContainer;
 import io.github.adorableskullmaster.pw4j.domains.subdomains.SNationContainer;
-import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.MessageBuilder;
-import net.dv8tion.jda.core.entities.Message;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.MessageBuilder;
+import net.dv8tion.jda.api.entities.Message;
 
 import java.awt.*;
 import java.io.IOException;

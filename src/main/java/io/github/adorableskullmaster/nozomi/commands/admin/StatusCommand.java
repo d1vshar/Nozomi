@@ -1,11 +1,11 @@
-package io.github.adorableskullmaster.nozomi.features.commands.admin;
+package io.github.adorableskullmaster.nozomi.commands.admin;
 
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import io.github.adorableskullmaster.nozomi.Bot;
 import io.github.adorableskullmaster.nozomi.core.util.Utility;
-import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.Permission;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.Permission;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -39,7 +39,7 @@ public class StatusCommand extends Command {
 
                         long totalMemory = Runtime.getRuntime().totalMemory() / 1000000;
                         int threadCount = Thread.activeCount();
-                        long ping = commandEvent.getJDA().getPing();
+                        long ping = commandEvent.getJDA().getGatewayPing();
 
                         boolean nationsCache = Bot.CACHE.getNations() != null;
                         boolean alliancesCache = Bot.CACHE.getAlliances() != null;

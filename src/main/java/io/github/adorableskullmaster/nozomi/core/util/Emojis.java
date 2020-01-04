@@ -7,6 +7,8 @@ public enum Emojis {
     CANCEL("<:PAcancelcircle:578884559219720202>"),
     ADD("<:PAaddcircle:578884553238642689>"),
     BALLOT("<:PAarchive:578884549212241920>"),
+    APPROVAL("<:PAapproval:578884553163407360>"),
+    CHANGE("<:PAexchange:658639133589110785>"),
     AWARD("<:PAaward:578884560566091806>"),
     CHECKLIST("<:PAchecklist:578884549929598976>"),
     LETTER_CHECK("<:PAlettercheckbox:578884561849810945>");

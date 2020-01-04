@@ -2,26 +2,26 @@ package io.github.adorableskullmaster.nozomi;
 
 import com.jagrosh.jdautilities.command.CommandClientBuilder;
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
+import io.github.adorableskullmaster.nozomi.commands.admin.ShutdownCommand;
+import io.github.adorableskullmaster.nozomi.commands.admin.StatusCommand;
+import io.github.adorableskullmaster.nozomi.commands.gov.RegisterCommand;
+import io.github.adorableskullmaster.nozomi.commands.gov.WhoIsCommand;
+import io.github.adorableskullmaster.nozomi.commands.member.*;
 import io.github.adorableskullmaster.nozomi.core.cache.Cache;
 import io.github.adorableskullmaster.nozomi.core.config.StaticConfiguration;
 import io.github.adorableskullmaster.nozomi.core.database.ConfigurationDataSource;
 import io.github.adorableskullmaster.nozomi.core.database.models.Configuration;
 import io.github.adorableskullmaster.nozomi.core.util.BotExceptionHandler;
-import io.github.adorableskullmaster.nozomi.features.commands.admin.ShutdownCommand;
-import io.github.adorableskullmaster.nozomi.features.commands.admin.StatusCommand;
-import io.github.adorableskullmaster.nozomi.features.commands.gov.RegisterCommand;
-import io.github.adorableskullmaster.nozomi.features.commands.gov.WhoIsCommand;
-import io.github.adorableskullmaster.nozomi.features.commands.member.*;
-import io.github.adorableskullmaster.nozomi.features.hooks.JoinListener;
-import io.github.adorableskullmaster.nozomi.features.services.BankCheckService;
-import io.github.adorableskullmaster.nozomi.features.services.NewApplicantService;
-import io.github.adorableskullmaster.nozomi.features.services.NewWarService;
-import io.github.adorableskullmaster.nozomi.features.services.VMBeigeService;
-import net.dv8tion.jda.core.AccountType;
-import net.dv8tion.jda.core.JDA;
-import net.dv8tion.jda.core.JDABuilder;
-import net.dv8tion.jda.core.OnlineStatus;
-import net.dv8tion.jda.core.entities.Game;
+import io.github.adorableskullmaster.nozomi.hooks.JoinListener;
+import io.github.adorableskullmaster.nozomi.logging.BotLogger;
+import io.github.adorableskullmaster.nozomi.services.BankCheckService;
+import io.github.adorableskullmaster.nozomi.services.NewApplicantService;
+import io.github.adorableskullmaster.nozomi.services.NewWarService;
+import io.github.adorableskullmaster.nozomi.services.VMBeigeService;
+import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.OnlineStatus;
+import net.dv8tion.jda.api.entities.Activity;
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,6 +35,7 @@ import java.util.concurrent.TimeUnit;
 public class Bot {
 
     public static final Logger LOGGER;
+    public static final BotLogger BOT_LOGGER;
     public static final BotExceptionHandler BOT_EXCEPTION_HANDLER;
     public static final Cache CACHE;
     public static JDA jda;
@@ -43,10 +44,12 @@ public class Bot {
 
     static {
         LOGGER = LoggerFactory.getLogger(Bot.class);
+        BOT_LOGGER = new BotLogger();
         staticConfiguration = new StaticConfiguration();
         BOT_EXCEPTION_HANDLER = new BotExceptionHandler();
         CACHE = new Cache();
         dataSource = setupDataSource(staticConfiguration.getDbUrl());
+        BOT_LOGGER.setChannelId(ConfigurationDataSource.getConfiguration().getLogChannel());
     }
 
     public static void main(String[] args) throws LoginException, InterruptedException {
@@ -69,14 +72,12 @@ public class Bot {
                 .addCommand(new WhoIsCommand())
                 .setServerInvite("https://discord.gg/GrnewCF")
                 .setStatus(OnlineStatus.ONLINE)
-                .setGame(Game.playing(staticConfiguration.getPrefix() + "help"))
+                .setActivity(Activity.playing(staticConfiguration.getPrefix() + "help"))
                 .useHelpBuilder(false);
 
-        jda = new JDABuilder(AccountType.BOT)
+        jda = new JDABuilder()
                 .setToken(staticConfiguration.getBotToken())
-                .addEventListener(eventWaiter)
-                .addEventListener(clientBuilder.build())
-                .addEventListener(new JoinListener())
+                .addEventListeners(eventWaiter, clientBuilder.build(), new JoinListener())
                 .build()
                 .awaitReady();
 
@@ -94,7 +95,7 @@ public class Bot {
     }
 
     private static void printConfig() {
-        System.out.printf("Bot set for alliance ID: %d", staticConfiguration.getPWId());
+        LOGGER.info("Bot set for alliance ID: {}", staticConfiguration.getPWId());
         if (ConfigurationDataSource.isSetup()) {
             System.out.println("Found configuration in database");
             Configuration configuration1 = ConfigurationDataSource.getConfiguration();

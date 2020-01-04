@@ -1,9 +1,9 @@
-package io.github.adorableskullmaster.nozomi.features.commands;
+package io.github.adorableskullmaster.nozomi.commands;
 
 import com.jagrosh.jdautilities.command.Command;
 import io.github.adorableskullmaster.nozomi.core.database.ConfigurationDataSource;
 import io.github.adorableskullmaster.nozomi.core.util.Emojis;
-import net.dv8tion.jda.core.entities.ISnowflake;
+import net.dv8tion.jda.api.entities.ISnowflake;
 
 import java.util.stream.Collectors;
 

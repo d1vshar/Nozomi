@@ -36,5 +36,18 @@ public class WarsDataSource {
         DataUtils.executeIntegerBatch(newWars, sql);
     }
 
+    public static void deleteStoredWars() {
+        String sql = "DELETE FROM wars";
+
+        try (Connection connection = Bot.dataSource.getConnection();
+             Statement statement = connection.createStatement()) {
+            statement.executeQuery(sql);
+        } catch (SQLException e) {
+            Bot.BOT_EXCEPTION_HANDLER.captureException(e);
+        }
+    }
+
+    // TODO make delete option
+
 
 }
