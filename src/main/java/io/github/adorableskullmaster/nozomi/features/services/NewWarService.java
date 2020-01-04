@@ -116,7 +116,9 @@ public class NewWarService implements Runnable {
   }
 
   private EmbedBuilder embed(WarContainer warObj, SNationContainer agg, SNationContainer def, NationMilitaryContainer aggMil, NationMilitaryContainer defMil) {
-    return new EmbedBuilder().setTitle(String.format("%s on %s: " + warObj.getWarType(), agg.getAlliance(), def.getAlliance()))
+    String aggPos = agg.getAllianceposition() == 1 ? " Applicant" : "";
+    String defPos = def.getAllianceposition() == 1 ? " Applicant" : "";
+    return new EmbedBuilder().setTitle(String.format("%s%s on %s%s: " + warObj.getWarType(), agg.getAlliance(), aggPos, def.getAlliance(), defPos))
         .setDescription(String.format(
             "[%s of %s](https://politicsandwar.com/nation/id=%d) attacked [%s of %s](https://politicsandwar.com/nation/id=%d) \n\n Reason: `%s`",
             agg.getLeader(), agg.getNation(), agg.getNationId(), def.getLeader(), def.getNation(), def.getNationId(), warObj.getWarReason()))
