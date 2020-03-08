@@ -4,64 +4,38 @@ import java.util.Arrays;
 
 public class Configuration {
 
-  public boolean isSentryEnabled() {
-    return getSentryDSN() != null;
-  }
+    public static boolean isSentryEnabled() {
+        return getSentryDSN() != null;
+    }
 
-  public boolean isCheweyEnabled() {
-    return getCheweyKey() != null;
-  }
+    public static String getPrefix() {
+        return System.getenv("PREFIX");
+    }
 
-  public boolean isWeatherEnabled() {
-    return getOwmKey() != null;
-  }
+    public static String getBotToken() {
+        return System.getenv("TOKEN");
+    }
 
-  public String getPrefix() { return System.getenv("PREFIX"); }
+    public static String getOwnerId() {
+        return System.getenv("OWNER_ID");
+    }
 
-  public String getBotToken() {
-    return System.getenv("TOKEN");
-  }
+    public static String getMasterPWKey() {
+        return System.getenv("PW_KEY");
+    }
 
-  public String getOwnerId() {
-    return System.getenv("OWNER_ID");
-  }
+    public static String getSentryDSN() {
+        return System.getenv("SENTRY");
+    }
 
-  public String getMasterPWKey() {
-    return System.getenv("PW_KEY");
-  }
+    public static int getNewWarFrequency() {
+        return parseServicesFrequency()[0];
+    }
 
-  public String getSentryDSN() {
-    return System.getenv("SENTRY");
-  }
-
-  public String getDbUrl() {
-    return System.getenv("JDBC_DATABASE_URL");
-  }
-
-  public String getCheweyKey() {
-    return System.getenv("CHW_KEY");
-  }
-
-  public String getOwmKey() {
-    return System.getenv("OWM_KEY");
-  }
-
-  public int getNewWarFrequency() {
-    return parseServicesFrequency()[0];
-  }
-
-  public int getBankCheckFrequency() {
-    return parseServicesFrequency()[1];
-  }
-
-  public int getNewApplicantFrequency() {
-    return parseServicesFrequency()[2];
-  }
-
-  private Integer[] parseServicesFrequency() {
-    String services_frequency = System.getenv("SERVICES_FREQUENCY");
-    String[] split = services_frequency.trim().split("-");
-    return Arrays.stream(split).map(Integer::parseInt).toArray(Integer[]::new);
-  }
+    private static Integer[] parseServicesFrequency() {
+        String services_frequency = System.getenv("SERVICES_FREQUENCY");
+        String[] split = services_frequency.trim().split("-");
+        return Arrays.stream(split).map(Integer::parseInt).toArray(Integer[]::new);
+    }
 
 }

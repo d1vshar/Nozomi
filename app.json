@@ -25,16 +25,6 @@
       "description": "Sentry Bug Reporting DSN",
       "value": "",
       "required": false
-    },
-    "CHW_KEY": {
-      "description": "Chewey API key",
-      "value": "",
-      "required": false
-    },
-    "OWM_KEY": {
-      "description": "Open Weather Map API key",
-      "value": "",
-      "required": false
     }
   },
   "formation": {

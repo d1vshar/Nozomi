@@ -2,14 +2,11 @@ package io.github.adorableskullmaster.nozomi;
 
 import com.jagrosh.jdautilities.command.CommandClientBuilder;
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
+import com.mongodb.ConnectionString;
+import com.mongodb.MongoClientSettings;
 import io.github.adorableskullmaster.nozomi.core.cache.Cache;
 import io.github.adorableskullmaster.nozomi.core.config.Configuration;
-import io.github.adorableskullmaster.nozomi.core.util.BotExceptionHandler;
-import io.github.adorableskullmaster.nozomi.core.util.Setup;
-import io.github.adorableskullmaster.nozomi.features.hooks.DatabaseListener;
-import io.github.adorableskullmaster.nozomi.features.hooks.GenericListener;
-import io.github.adorableskullmaster.nozomi.features.services.BankCheckService;
-import io.github.adorableskullmaster.nozomi.features.services.NewApplicantService;
+import io.github.adorableskullmaster.nozomi.core.mongo.MongoBotConnection;
 import io.github.adorableskullmaster.nozomi.features.services.NewWarService;
 import io.github.adorableskullmaster.nozomi.features.services.VMBeigeService;
 import net.dv8tion.jda.core.AccountType;
@@ -17,6 +14,8 @@ import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
 import net.dv8tion.jda.core.OnlineStatus;
 import net.dv8tion.jda.core.entities.Game;
+import org.bson.codecs.configuration.CodecRegistry;
+import org.bson.codecs.pojo.PojoCodecProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,55 +24,76 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
+import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
+
 public class Bot {
 
-  public static final Logger LOGGER;
-  public static final BotExceptionHandler BOT_EXCEPTION_HANDLER;
-  public static final Cache CACHE;
-  public static JDA jda;
-  public static Configuration configuration;
+    private static final Logger LOGGER;
+    private static final Cache CACHE;
+    private static JDA jda;
+    private static MongoBotConnection mongoBotConnection;
 
-  static {
-    LOGGER = LoggerFactory.getLogger(Bot.class);
-    configuration = new Configuration();
-    BOT_EXCEPTION_HANDLER = new BotExceptionHandler();
-    CACHE = new Cache();
-    Setup.initDatabase();
-  }
+    static {
+        LOGGER = LoggerFactory.getLogger(Bot.class);
+        CACHE = new Cache();
 
-  public static void main(String[] args) throws LoginException, InterruptedException {
-    LOGGER.info("Starting Bot");
+        CodecRegistry pojoCodecRegistry = fromRegistries(MongoClientSettings.getDefaultCodecRegistry(),
+                fromProviders(PojoCodecProvider.builder().automatic(true).build()));
 
-    EventWaiter eventWaiter = new EventWaiter();
+        MongoClientSettings mongoClientSettings = MongoClientSettings.builder()
+                .applicationName("poscaBot")
+                .codecRegistry(pojoCodecRegistry)
+                .applyConnectionString(new ConnectionString(System.getenv("MONGO_URL")))
+                .build();
 
-    CommandClientBuilder clientBuilder = new CommandClientBuilder();
-    clientBuilder.setPrefix(configuration.getPrefix())
-        .setOwnerId(configuration.getOwnerId())
-        .setEmojis("✔", "‼", "❌")
-        .setServerInvite("https://discord.gg/GrnewCF")
-        .setStatus(OnlineStatus.ONLINE)
-        .setGame(Game.playing(configuration.getPrefix()+"help"))
-        .useHelpBuilder(false)
-        .addCommands(Setup.initCommands(eventWaiter));
+        mongoBotConnection = new MongoBotConnection(mongoClientSettings);
+    }
 
-    jda = new JDABuilder(AccountType.BOT)
-        .setToken(configuration.getBotToken())
-        .addEventListener(eventWaiter)
-        .addEventListener(clientBuilder.build())
-        .addEventListener(new GenericListener())
-        .addEventListener(new DatabaseListener())
-        .build()
-        .awaitReady();
+    public static void main(String[] args) throws LoginException, InterruptedException {
+        getLOGGER().info("Starting Bot");
 
-    initServices();
-  }
+        EventWaiter eventWaiter = new EventWaiter();
 
-  private static void initServices() {
-    LOGGER.info("Starting Services");
-    ScheduledExecutorService executorService = new ScheduledThreadPoolExecutor(2);
-    executorService.scheduleAtFixedRate(new NewWarService(), 0, configuration.getNewWarFrequency(), TimeUnit.MINUTES);
-    executorService.scheduleAtFixedRate(new BankCheckService(), 0, configuration.getBankCheckFrequency(), TimeUnit.MINUTES);
-    executorService.scheduleAtFixedRate(new NewApplicantService(), 0, configuration.getNewApplicantFrequency(), TimeUnit.MINUTES);
-    executorService.scheduleAtFixedRate(new VMBeigeService(), 0, 1, TimeUnit.MINUTES);
-  }
+        CommandClientBuilder clientBuilder = new CommandClientBuilder();
+        clientBuilder.setPrefix(Configuration.getPrefix())
+                .setOwnerId(Configuration.getOwnerId())
+                .setEmojis("✔", "‼", "❌")
+                .setServerInvite("https://discord.gg/GrnewCF")
+                .setStatus(OnlineStatus.ONLINE)
+                .setGame(Game.playing(Configuration.getPrefix() + "help"))
+                .useHelpBuilder(false);
+
+        jda = new JDABuilder(AccountType.BOT)
+                .setToken(Configuration.getBotToken())
+                .addEventListener(eventWaiter)
+                .addEventListener(clientBuilder.build())
+                .build()
+                .awaitReady();
+
+        initServices();
+    }
+
+    private static void initServices() {
+        getLOGGER().info("Starting Services");
+        ScheduledExecutorService executorService = new ScheduledThreadPoolExecutor(2);
+        executorService.scheduleAtFixedRate(new NewWarService(), 0, Configuration.getNewWarFrequency(), TimeUnit.MINUTES);
+        executorService.scheduleAtFixedRate(new VMBeigeService(), 0, 1, TimeUnit.MINUTES);
+    }
+
+    public static Logger getLOGGER() {
+        return LOGGER;
+    }
+
+    public static Cache getCACHE() {
+        return CACHE;
+    }
+
+    public static JDA getJda() {
+        return jda;
+    }
+
+    public static MongoBotConnection getMongoBotConnection() {
+        return mongoBotConnection;
+    }
 }
