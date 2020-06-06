@@ -21,6 +21,10 @@
       "description": "Politics and War API key of the owner",
       "value": ""
     },
+    "SERVICES_FREQUENCY": {
+      "description": "Discord bot token",
+      "value":"3-60-60"
+    },
     "SENTRY": {
       "description": "Sentry Bug Reporting DSN",
       "value": "",
