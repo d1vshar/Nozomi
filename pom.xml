@@ -20,7 +20,7 @@
         <repository>
             <id>jcenter</id>
             <name>jcenter-bintray</name>
-            <url>http://jcenter.bintray.com</url>
+            <url>https://jcenter.bintray.com</url>
         </repository>
         <repository> <!-- Required for OkHTTP 3.13.0-SNAPSHOT -->
             <id>sonatype</id>
