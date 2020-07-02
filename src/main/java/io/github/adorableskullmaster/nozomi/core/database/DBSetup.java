@@ -14,7 +14,7 @@ public class DBSetup {
 
   public void setupApplicants() {
     db.createTableIfNotExists(Applicants.APPLICANTS)
-        .columns(Guilds.GUILDS.fields())
+        .columns(Applicants.APPLICANTS.fields())
         .constraint(DSL.constraint("applicants_pkey").primaryKey(Applicants.APPLICANTS.ID))
         .execute();
   }
